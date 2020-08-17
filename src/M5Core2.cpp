@@ -22,6 +22,8 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
     Serial.print("M5Core2 initializing...");
   }
 
+  Touch.begin();
+
 // I2C init
   if (I2CEnable == true) {
     Wire.begin(21, 22);

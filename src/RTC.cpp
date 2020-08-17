@@ -5,23 +5,23 @@ RTC::RTC(){
 }
 
 void RTC::begin(void) {
-   Wire.begin(21,22);   
+   Wire1.begin(21,22);   
 }
 
 void RTC::GetBm8563Time(void){
-  Wire.beginTransmission(0x51);
-  Wire.write(0x02);
-  Wire.endTransmission();
-  Wire.requestFrom(0x51,7); 
-  while(Wire.available()){
+  Wire1.beginTransmission(0x51);
+  Wire1.write(0x02);
+  Wire1.endTransmission();
+  Wire1.requestFrom(0x51,7); 
+  while(Wire1.available()){
     
-      trdata[0] = Wire.read();
-      trdata[1] = Wire.read();
-      trdata[2] = Wire.read();
-      trdata[3] = Wire.read();
-      trdata[4] = Wire.read();
-      trdata[5] = Wire.read();
-      trdata[6] = Wire.read();
+      trdata[0] = Wire1.read();
+      trdata[1] = Wire1.read();
+      trdata[2] = Wire1.read();
+      trdata[3] = Wire1.read();
+      trdata[4] = Wire1.read();
+      trdata[5] = Wire1.read();
+      trdata[6] = Wire1.read();
      
   }
 
@@ -103,16 +103,16 @@ void RTC::GetTime(RTC_TimeTypeDef* RTC_TimeStruct){
     //if()
     uint8_t buf[3] = {0};
 
-    Wire.beginTransmission(0x51);
-    Wire.write(0x02);
-    Wire.endTransmission();
-    Wire.requestFrom(0x51,3); 
+    Wire1.beginTransmission(0x51);
+    Wire1.write(0x02);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x51,3); 
 
-    while(Wire.available()){
+    while(Wire1.available()){
     
-      buf[0] = Wire.read();
-      buf[1] = Wire.read();
-      buf[2] = Wire.read();
+      buf[0] = Wire1.read();
+      buf[1] = Wire1.read();
+      buf[2] = Wire1.read();
      
    }
 
@@ -126,12 +126,12 @@ void RTC::SetTime(RTC_TimeTypeDef* RTC_TimeStruct){
   if(RTC_TimeStruct == NULL)
     return;
 
-  Wire.beginTransmission(0x51);
-  Wire.write(0x02);
-  Wire.write(ByteToBcd2(RTC_TimeStruct->Seconds)); 
-  Wire.write(ByteToBcd2(RTC_TimeStruct->Minutes)); 
-  Wire.write(ByteToBcd2(RTC_TimeStruct->Hours)); 
-  Wire.endTransmission();
+  Wire1.beginTransmission(0x51);
+  Wire1.write(0x02);
+  Wire1.write(ByteToBcd2(RTC_TimeStruct->Seconds)); 
+  Wire1.write(ByteToBcd2(RTC_TimeStruct->Minutes)); 
+  Wire1.write(ByteToBcd2(RTC_TimeStruct->Hours)); 
+  Wire1.endTransmission();
 
 
 }
@@ -142,17 +142,17 @@ void RTC::GetData(RTC_DateTypeDef* RTC_DateStruct){
 
   uint8_t buf[4] = {0};
 
-  Wire.beginTransmission(0x51);
-  Wire.write(0x05);
-  Wire.endTransmission();
-  Wire.requestFrom(0x51,4); 
+  Wire1.beginTransmission(0x51);
+  Wire1.write(0x05);
+  Wire1.endTransmission();
+  Wire1.requestFrom(0x51,4); 
 
-  while(Wire.available()){
+  while(Wire1.available()){
     
-      buf[0] = Wire.read();
-      buf[1] = Wire.read();
-      buf[2] = Wire.read();
-      buf[3] = Wire.read();
+      buf[0] = Wire1.read();
+      buf[1] = Wire1.read();
+      buf[2] = Wire1.read();
+      buf[3] = Wire1.read();
      
   }
 
@@ -174,24 +174,24 @@ void RTC::SetData(RTC_DateTypeDef* RTC_DateStruct){
 
   if(RTC_DateStruct == NULL)
     return;
-  Wire.beginTransmission(0x51);
-  Wire.write(0x05);
-  Wire.write(ByteToBcd2(RTC_DateStruct->Date)); 
-  Wire.write(ByteToBcd2(RTC_DateStruct->WeekDay)); 
+  Wire1.beginTransmission(0x51);
+  Wire1.write(0x05);
+  Wire1.write(ByteToBcd2(RTC_DateStruct->Date)); 
+  Wire1.write(ByteToBcd2(RTC_DateStruct->WeekDay)); 
   
   if(RTC_DateStruct->Year < 2000){
 
-    Wire.write(ByteToBcd2(RTC_DateStruct->Month) | 0x80); 
-    Wire.write(ByteToBcd2((uint8_t)(RTC_DateStruct->Year % 100))); 
+    Wire1.write(ByteToBcd2(RTC_DateStruct->Month) | 0x80); 
+    Wire1.write(ByteToBcd2((uint8_t)(RTC_DateStruct->Year % 100))); 
 
   }else
   {
     /* code */
-    Wire.write(ByteToBcd2(RTC_DateStruct->Month) | 0x00); 
-    Wire.write(ByteToBcd2((uint8_t)(RTC_DateStruct->Year %100))); 
+    Wire1.write(ByteToBcd2(RTC_DateStruct->Month) | 0x00); 
+    Wire1.write(ByteToBcd2((uint8_t)(RTC_DateStruct->Year %100))); 
   }
   
-  Wire.endTransmission();
+  Wire1.endTransmission();
 
 }
 

@@ -8,24 +8,24 @@ MPU6886::MPU6886(){
 
 void MPU6886::I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *read_Buffer){
     
-  Wire.beginTransmission(driver_Addr);
-  Wire.write(start_Addr);  
-  Wire.endTransmission(false);
+  Wire1.beginTransmission(driver_Addr);
+  Wire1.write(start_Addr);  
+  Wire1.endTransmission(false);
   uint8_t i = 0;
-  Wire.requestFrom(driver_Addr,number_Bytes);
+  Wire1.requestFrom(driver_Addr,number_Bytes);
   
   //! Put read results in the Rx buffer
-  while (Wire.available()) {
-    read_Buffer[i++] = Wire.read();
+  while (Wire1.available()) {
+    read_Buffer[i++] = Wire1.read();
   }        
 }
 
 void MPU6886::I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *write_Buffer){
 
-  Wire.beginTransmission(driver_Addr);
-  Wire.write(start_Addr);
-  Wire.write(*write_Buffer);
-  Wire.endTransmission();
+  Wire1.beginTransmission(driver_Addr);
+  Wire1.write(start_Addr);
+  Wire1.write(*write_Buffer);
+  Wire1.endTransmission();
 
 }
 
@@ -33,7 +33,7 @@ int MPU6886::Init(void){
   unsigned char tempdata[1];
   unsigned char regdata;
   
-  Wire.begin(21,22);
+  Wire1.begin(21,22);
   
   I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_WHOAMI, 1, tempdata);
   if(tempdata[0] != 0x19)

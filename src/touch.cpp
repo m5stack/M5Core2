@@ -2,11 +2,17 @@
 
 touch::touch(/* args */)
 {
-    pinMode(39, INPUT);
+    //Wire1.begin(21,22);  
 }
 touch::~touch()
 {
 
+}
+
+void touch::begin()
+{
+    Wire1.begin(21,22);  
+    pinMode(39, INPUT);
 }
 
 bool touch::ispressed()
@@ -45,14 +51,14 @@ TouchPoint_t touch::getPressPoint()
 int touch::readTouchtoBuff(uint16_t *posx, uint16_t *posy)
 {
     uint8_t buff[5];
-    Wire.beginTransmission(CST_DEVICE_ADDR);
-    Wire.write(0x02);
-    if (Wire.endTransmission() != 0)
+    Wire1.beginTransmission(CST_DEVICE_ADDR);
+    Wire1.write(0x02);
+    if (Wire1.endTransmission() != 0)
         return -1;
-    Wire.requestFrom(CST_DEVICE_ADDR, 5);
+    Wire1.requestFrom(CST_DEVICE_ADDR, 5);
     for (int i = 0; i < 5; i++)
     {
-        buff[i] = Wire.read();
+        buff[i] = Wire1.read();
         //Serial.printf("%02X ", buff[i]);
     }
     //Serial.println(".");

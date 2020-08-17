@@ -72,6 +72,7 @@ public:
 public:
     touch(/* args */);
     ~touch();
+    void begin();
     bool ispressed();
     TouchPoint_t getPressPoint();
     HotZone_t* creatHotZone(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h);

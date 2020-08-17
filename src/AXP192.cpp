@@ -7,8 +7,8 @@ AXP192::AXP192()
 void AXP192::begin(void)
 {
 
-    Wire.begin(21, 22);
-    Wire.setClock(400000);
+    Wire1.begin(21, 22);
+    Wire1.setClock(400000);
 
     //AXP192 30H
     Write1Byte(0x30, (Read8bit(0x30) & 0x04) | 0X02);
@@ -65,19 +65,19 @@ void AXP192::begin(void)
 
 void AXP192::Write1Byte(uint8_t Addr, uint8_t Data)
 {
-    Wire.beginTransmission(0x34);
-    Wire.write(Addr);
-    Wire.write(Data);
-    Wire.endTransmission();
+    Wire1.beginTransmission(0x34);
+    Wire1.write(Addr);
+    Wire1.write(Data);
+    Wire1.endTransmission();
 }
 
 uint8_t AXP192::Read8bit(uint8_t Addr)
 {
-    Wire.beginTransmission(0x34);
-    Wire.write(Addr);
-    Wire.endTransmission();
-    Wire.requestFrom(0x34, 1);
-    return Wire.read();
+    Wire1.beginTransmission(0x34);
+    Wire1.write(Addr);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    return Wire1.read();
 }
 
 uint16_t AXP192::Read12Bit(uint8_t Addr)
@@ -101,14 +101,14 @@ uint16_t AXP192::Read13Bit(uint8_t Addr)
 uint16_t AXP192::Read16bit(uint8_t Addr)
 {
     uint16_t ReData = 0;
-    Wire.beginTransmission(0x34);
-    Wire.write(Addr);
-    Wire.endTransmission();
-    Wire.requestFrom(0x34, 2);
+    Wire1.beginTransmission(0x34);
+    Wire1.write(Addr);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 2);
     for (int i = 0; i < 2; i++)
     {
         ReData <<= 8;
-        ReData |= Wire.read();
+        ReData |= Wire1.read();
     }
     return ReData;
 }
@@ -116,14 +116,14 @@ uint16_t AXP192::Read16bit(uint8_t Addr)
 uint32_t AXP192::Read24bit(uint8_t Addr)
 {
     uint32_t ReData = 0;
-    Wire.beginTransmission(0x34);
-    Wire.write(Addr);
-    Wire.endTransmission();
-    Wire.requestFrom(0x34, 3);
+    Wire1.beginTransmission(0x34);
+    Wire1.write(Addr);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 3);
     for (int i = 0; i < 3; i++)
     {
         ReData <<= 8;
-        ReData |= Wire.read();
+        ReData |= Wire1.read();
     }
     return ReData;
 }
@@ -131,27 +131,27 @@ uint32_t AXP192::Read24bit(uint8_t Addr)
 uint32_t AXP192::Read32bit(uint8_t Addr)
 {
     uint32_t ReData = 0;
-    Wire.beginTransmission(0x34);
-    Wire.write(Addr);
-    Wire.endTransmission();
-    Wire.requestFrom(0x34, 2);
+    Wire1.beginTransmission(0x34);
+    Wire1.write(Addr);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 2);
     for (int i = 0; i < 4; i++)
     {
         ReData <<= 8;
-        ReData |= Wire.read();
+        ReData |= Wire1.read();
     }
     return ReData;
 }
 
 void AXP192::ReadBuff(uint8_t Addr, uint8_t Size, uint8_t *Buff)
 {
-    Wire.beginTransmission(0x34);
-    Wire.write(Addr);
-    Wire.endTransmission();
-    Wire.requestFrom(0x34, (int)Size);
+    Wire1.beginTransmission(0x34);
+    Wire1.write(Addr);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, (int)Size);
     for (int i = 0; i < Size; i++)
     {
-        *(Buff + i) = Wire.read();
+        *(Buff + i) = Wire1.read();
     }
 }
 
@@ -238,11 +238,11 @@ void AXP192::SetSleep(void)
 
 uint8_t AXP192::GetWarningLeve(void)
 {
-    Wire.beginTransmission(0x34);
-    Wire.write(0x47);
-    Wire.endTransmission();
-    Wire.requestFrom(0x34, 1);
-    uint8_t buf = Wire.read();
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x47);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t buf = Wire1.read();
     return (buf & 0x01);
 }
 
