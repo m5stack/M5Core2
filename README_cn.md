@@ -49,7 +49,7 @@ TF 卡最大支持 16GB
 **AXP电源指示灯 & 震动马达**
 
 <table>
- <tr><td>AXP192</td><td>AXP_IO1</td><td>AXP_IO3</td></tr>
+ <tr><td>AXP192</td><td>AXP_IO1</td><td>AXP_LDO3</td></tr>
  <tr><td>Green LED</td><td>Vcc</td><td></td></tr>
  <tr><td>Vibration motor</td><td></td><td>Vcc</td></tr>
 </table>
