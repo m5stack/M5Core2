@@ -65,19 +65,17 @@ class touch
 {
 private:
     /* data */
-public:
-    
     TouchPoint_t _TouchPoint;
-    
+
 public:
     touch(/* args */);
-    ~touch();
-    void begin();
-    bool ispressed();
-    TouchPoint_t getPressPoint();
+    ~touch(void);
+    void begin(void);
+    bool ispressed(void);
+    const TouchPoint_t& getPressPoint(void);
     HotZone_t* creatHotZone(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h);
 private:
-    int readTouchtoBuff(uint16_t *posx, uint16_t *posy);
+    int readTouchtoBuff(void);
 };
 
 

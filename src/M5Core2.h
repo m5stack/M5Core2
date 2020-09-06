@@ -74,6 +74,7 @@
     #include "utility/Config.h"
     #include "utility/CommUtil.h"
     #include "utility/MPU6886.h"
+    #include "utility/Button.h"
     #include "touch.h"
     #include "AXP192.h"
     #include "RTC.h"
@@ -85,7 +86,11 @@
         M5Core2();
         void begin(bool LCDEnable = true, bool SDEnable = true, bool SerialEnable = true, bool I2CEnable = false);
         void update();
-    
+
+        Button BtnA = Button(-1, true, 1);
+        Button BtnB = Button(-1, true, 1);
+        Button BtnC = Button(-1, true, 1);
+
         // LCD
         M5Display Lcd = M5Display();
 
