@@ -391,7 +391,7 @@ bool AXP192::isACIN()
 }
 bool AXP192::isCharging()
 {
-    return ( Read8bit(0x00) & 0x02 ) ? true : false;
+    return ( Read8bit(0x00) & 0x04 ) ? true : false;
 }
 bool AXP192::isVBUS()
 {
