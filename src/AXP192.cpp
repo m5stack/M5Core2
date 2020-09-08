@@ -405,10 +405,10 @@ void AXP192::SetLDOVoltage(uint8_t number, uint16_t voltage)
     {
     //uint8_t reg, data;
     case 2:
-        Write1Byte(AXP_ADDR, (Read8bit(0x28) & 0X0F) | (voltage << 4));
+        Write1Byte(0x28, (Read8bit(0x28) & 0X0F) | (voltage << 4));
         break;
     case 3:
-        Write1Byte(AXP_ADDR, (Read8bit(0x28) & 0XF0) | voltage);
+        Write1Byte(0x28, (Read8bit(0x28) & 0XF0) | voltage);
         break;
     }
 }
