@@ -54,12 +54,7 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
 }
 
 void M5Core2::update() {
-  //Button update
-  auto tp = Touch.getPressPoint();
-  int idx = (tp.y >= 256) ? tp.x * 3 / 320 : -1;
-  BtnA.setState(idx == 0);
-  BtnB.setState(idx == 1);
-  BtnC.setState(idx == 2);
+  touchButtons.read();
 }
 
 M5Core2 M5;
