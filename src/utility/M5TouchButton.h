@@ -32,7 +32,7 @@
   the area of the screen where you may be showing labels for the buttons,
   simply raise the top of the buttons like this:
 
-    BtnA.y1 = BtnB.y1 = BtnC.y1 = 220;
+     M5.BtnA.y1 = M5.BtnB.y1 = M5.BtnC.y1 = 220;
 
   The screen is 320 x 240 pixels, the touch sensor is 320 x 280, 40 pixels
   are below the screen.
