@@ -40,7 +40,7 @@
 
   Calling functions automatically
 
-  In addition to the standard button functions, you can sepcify a function
+  In addition to the standard button functions, you can specify a function
   to be called when a button is pressed. Let's look at the following
   example:
 
@@ -73,7 +73,7 @@
   So to attach a function to the leftmost button under the screen, simply
   add:
   
-    BtnA.function = myFunction;
+    M5.BtnA.function = myFunction;
 
 
 
@@ -84,7 +84,7 @@
   3.0 Unported License. To view a copy of this license, visit
   http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to
   Creative Commons, 171 Second Street, Suite 300, San Francisco,
-  California, 94105, USA.                               
+  California, 94105, USA.                            
 
 */
 
