@@ -74,8 +74,8 @@
     #include "utility/Config.h"
     #include "utility/CommUtil.h"
     #include "utility/MPU6886.h"
-    #include "utility/Button.h"
     #include "touch.h"
+    #include "utility/M5TouchButton.h"
     #include "AXP192.h"
     #include "RTC.h"
 
@@ -87,10 +87,6 @@
         void begin(bool LCDEnable = true, bool SDEnable = true, bool SerialEnable = true, bool I2CEnable = false);
         void update();
 
-        Button BtnA = Button(-1, true, 1);
-        Button BtnB = Button(-1, true, 1);
-        Button BtnC = Button(-1, true, 1);
-
         // LCD
         M5Display Lcd = M5Display();
 
@@ -98,6 +94,11 @@
         AXP192 Axp;
 
         touch Touch;
+        
+        TouchButtons touchButtons = TouchButtons(Touch);
+        TouchButton BtnA = TouchButton(10,241,120,280);
+        TouchButton BtnB = TouchButton(130,241,200,280);
+        TouchButton BtnC = TouchButton(230,241,310,280);
 
         MPU6886 IMU = MPU6886();
 
