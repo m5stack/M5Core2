@@ -15,7 +15,7 @@
 
   The format is x0, y0, x1, y1 where x0, y0 is the left top of the button
   and x1, y1 is the right bottom. From here on you can use all the standard
-  Arduino button functions such that textButtton.isPressed() will now tell
+  Arduino button functions such that testButtton.isPressed() will now tell
   you if the top left of the screen is touched.
 
   Buttons will be deleted from the list if their variables go out of focus,
