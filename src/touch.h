@@ -5,11 +5,12 @@
 #include <Wire.h>
 
 #define CST_DEVICE_ADDR 0x38
+#define MIN_INTERVAL 5
 
 typedef struct point
 {
-    int x;
-    int y;
+    uint16_t x;
+    uint16_t y;
 }TouchPoint_t;
 
 typedef struct HotZone
@@ -63,20 +64,23 @@ typedef struct HotZone
 
 class touch
 {
-private:
-    /* data */
-    TouchPoint_t _TouchPoint;
-
 public:
-    touch(/* args */);
-    ~touch(void);
-    void begin(void);
-    bool ispressed(void);
-    const TouchPoint_t& getPressPoint(void);
-    HotZone_t* creatHotZone(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h);
+    touch();
+    ~touch();
+    void begin();
+    bool ispressed();
+    void read();
+    bool inBox(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+    bool hasChanged();
+    uint8_t points;
+    TouchPoint_t point[2];
+	    
+    TouchPoint_t getPressPoint();
+    
 private:
-    int readTouchtoBuff(void);
+	uint32_t _lastRead;
+	TouchPoint_t _p0;
+	TouchPoint_t _p1;
 };
-
 
 #endif

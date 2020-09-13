@@ -95,7 +95,7 @@
 
         touch Touch;
         
-        TouchButtons touchButtons = TouchButtons(Touch);
+        TouchButtons touchButtons = TouchButtons();
         TouchButton BtnA = TouchButton(10,241,120,280);
         TouchButton BtnB = TouchButton(130,241,200,280);
         TouchButton BtnC = TouchButton(230,241,310,280);
