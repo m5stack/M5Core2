@@ -50,19 +50,11 @@ void touch::read()
 		if (points > 2) points = 0;
 		if (points)
 		{
-			uint8_t flag0 = data[1] >> 6;
 			uint8_t id0 = data[3] >> 4;
-			if (flag0 != 0x01)
-			{
-				point[0].x = ((data[1] << 8) | data[2]) & 0x0fff;
-				point[0].y = ((data[3] << 8) | data[4]) & 0x0fff;
-			}
-			uint8_t flag1 = data[7] >> 6;
-			if (flag1 != 0x01)
-			{
-				point[1].x = ((data[7] << 8) | data[8]) & 0x0fff;
-				point[1].y = ((data[9] << 8) | data[10]) & 0x0fff;
-			}
+			point[0].x = ((data[1] << 8) | data[2]) & 0x0fff;
+			point[0].y = ((data[3] << 8) | data[4]) & 0x0fff;
+			point[1].x = ((data[7] << 8) | data[8]) & 0x0fff;
+			point[1].y = ((data[9] << 8) | data[10]) & 0x0fff;
 			if (points == 2 && id0 == 1)
 			{
 				TouchPoint_t tmp = point[0];
