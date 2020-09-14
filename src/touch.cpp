@@ -1,18 +1,18 @@
 #include "touch.h"
 
-touch::touch(/* args */)
+touch::touch()
 {
 }
-touch::~touch(void)
-{
 
+touch::~touch()
+{
 }
 
 void touch::begin(void)
 {
     Wire1.begin(21,22);
 
-    pinMode(39, INPUT);
+    pinMode(CST_INT, INPUT);
 
     Wire1.beginTransmission(CST_DEVICE_ADDR);
     Wire1.write(0xA4);
@@ -20,31 +20,74 @@ void touch::begin(void)
     Wire1.endTransmission();
 }
 
-bool touch::ispressed(void)
+bool touch::ispressed()
 {
-    return ( digitalRead(39) == LOW );
+    return ( digitalRead(CST_INT) == LOW );
 }
 
-const TouchPoint_t& touch::getPressPoint(void)
+void touch::read()
 {
-    if( ( digitalRead(39) != LOW ) || readTouchtoBuff() != 0x02 )
-    {
-        _TouchPoint.x = _TouchPoint.y = -1;
-    }
-    return _TouchPoint;
+	if (millis() - _lastRead < MIN_INTERVAL) return;
+	point[0].x = point[0].y = point[1].x = point[1].y = -1;
+	_lastRead = millis();
+	if (!ispressed())
+	{
+		points = 0;
+	}
+	else
+	{
+		const uint8_t size = 11;
+		uint8_t data[size];
+		Wire1.beginTransmission((uint8_t)CST_DEVICE_ADDR);
+		Wire1.write(0x02);
+		Wire1.endTransmission();
+		Wire1.requestFrom((uint8_t)CST_DEVICE_ADDR, size);
+		for (uint8_t i = 0; i < size; i++)
+		{
+			data[i] = Wire1.read();
+		}
+		points = data[0];
+		if (points > 2) points = 0;
+		if (points)
+		{
+			uint8_t id0 = data[3] >> 4;
+			point[0].x = ((data[1] << 8) | data[2]) & 0x0fff;
+			point[0].y = ((data[3] << 8) | data[4]) & 0x0fff;
+			point[1].x = ((data[7] << 8) | data[8]) & 0x0fff;
+			point[1].y = ((data[9] << 8) | data[10]) & 0x0fff;
+			if (points == 2 && id0 == 1)
+			{
+				TouchPoint_t tmp = point[0];
+				point[0] = point[1];
+				point[1] = tmp;
+			}
+		}
+	}
 }
 
-int touch::readTouchtoBuff(void)
+bool touch::inBox(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 {
-    Wire1.beginTransmission(CST_DEVICE_ADDR);
-    Wire1.write(0x02);
-    if (Wire1.endTransmission() != 0)
-        return -1;
-    uint8_t buff[5];
-    Wire1.readTransmission(CST_DEVICE_ADDR, buff, 5);
+	for (uint8_t n = 0; n < points; n++)
+	{
+		if (point[n].x >= x0 && point[n].x <= x1 && point[n].y >= y0 && point[n].y <= y1) {
+			return true;
+		}
+	}
+	return false;
+}
 
-    _TouchPoint.x = ((buff[1] << 8) | buff[2]) & 0x0fff;
-    _TouchPoint.y = ((buff[3] << 8) | buff[4]) & 0x0fff;
+bool touch::hasChanged()
+{
+	bool flag = false;
+	if (point[0].x != _p0.x || point[0].y != _p0.y || \
+	  point[1].x != _p1.x || point[1].y != _p1.y) flag = true;
+	_p0 = point[0];
+	_p1 = point[1];
+	return flag;
+}
 
-    return (buff[1] >> 6) & 0x03;
+TouchPoint_t touch::getPressPoint()
+{
+	read();
+	return point[0];
 }
