@@ -35,7 +35,7 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
   }
 
   // Touch init
-  // Touch.begin(); // Touch begin after AXP begin. (Reset at the start of AXP)
+  Touch.begin(); // Touch begin after AXP begin. (Reset at the start of AXP)
 
   // TF Card
   if (SDEnable == true) {
