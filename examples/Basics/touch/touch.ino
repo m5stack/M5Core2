@@ -15,7 +15,7 @@ void loop() {
 }
 
 void btnHandler(TouchButton &btn) {
-  M5.Lcd.fillRect(btn.x0, btn.y0, btn.x1 - btn.x0, btn.y1 - btn.y0, btn.isPressed() ? 0xffff : 0);
+  M5.Lcd.fillRect(btn.x0, btn.y0, btn.x1 - btn.x0, btn.y1 - btn.y0, btn.isPressed() ? WHITE : BLACK);
 }
 
 TouchButton lt = TouchButton(0, 0, 159, 119, btnHandler, btnHandler);
