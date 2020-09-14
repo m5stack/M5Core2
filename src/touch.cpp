@@ -12,7 +12,7 @@ void touch::begin(void)
 {
     Wire1.begin(21,22);
 
-    pinMode(39, INPUT);
+    pinMode(CST_INT, INPUT);
 
     Wire1.beginTransmission(CST_DEVICE_ADDR);
     Wire1.write(0xA4);
@@ -22,7 +22,7 @@ void touch::begin(void)
 
 bool touch::ispressed()
 {
-    return ( digitalRead(39) == LOW );
+    return ( digitalRead(CST_INT) == LOW );
 }
 
 void touch::read()

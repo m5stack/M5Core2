@@ -1,9 +1,13 @@
 /*
 
-	M5Stack Core2 M5TouchButton library version 1.0, by Rop Gonggrijp
+M5Stack Core2 M5TouchButton library version 1.0
 
 	Implements Arduino button library compatible buttons for any chosen
-	rectangle on the M5Stack Core2 touch screen.
+	rectangle on the M5Stack Core2 touch screen. Up to two buttons can be
+	pressed simultaneously.
+
+
+Basic usage
 
 	For this to work, M5.update() has to be ran to scan for button presses,
 	so make sure to put that in the loop() part of your sketch.
@@ -14,77 +18,66 @@
 		TouchButton testButton(0, 0, 50, 50);
 
 	The format is x0, y0, x1, y1 where x0, y0 is the left top of the button
-	and x1, y1 is the right bottom. From here on you can use all the standard
-	Arduino button functions such that testButtton.isPressed() will now tell
-	you if the top left of the screen is touched.
+	and x1, y1 is the right bottom. From here on you can use all the
+	standard Arduino button functions such that testButtton.isPressed()
+	will now tell you if the top left of the screen is touched.
 
-	Buttons will be deleted from the list if their variables go out of focus,
-	so if you define buttons in a subroutine, they will not be in your way
-	anywhere else.
+	Buttons will be deleted from the list if their variables go out of
+	focus, so if you define buttons in a subroutine, they will not be in
+	your way anywhere else.
 
-	If button areas overlap, both buttons will become pressed if the overlap
-	is touched. Note that you cannot ever press two non-overlapping buttons
-	simultaneously because the M5Core2 touch screen is not multi-touch.
+	If button areas overlap, both buttons will become pressed if the
+	overlap is touched. Note that you cannot ever press two non-overlapping
+	buttons simultaneously because the M5Core2 touch screen is not
+	multi-touch.
 
 	The three buttons BtnA, BtnB and BtnC from the older M5Stack units come
 	already implemented as buttons that lie just below the screen where the
-	three circles are. If you want them to be a little bigger and also cover
-	the area of the screen where you may be showing labels for the buttons,
-	simply raise the top of the buttons like this:
+	three circles are. If you want them to be a little bigger and also
+	cover the area of the screen where you may be showing labels for the
+	buttons, simply raise the top of the buttons like this:
 
 		 M5.BtnA.y0 = M5.BtnB.y0 = M5.BtnC.y0 = 220;
 
-	The screen is 320 x 240 pixels, the touch sensor is 320 x 280, 40 pixels
-	are below the screen.
-
-
-	Calling functions automatically
-
-	In addition to the standard button functions, you can specify a function
-	to be called when a button is pressed. Let's look at the following
-	example:
-
-	#include <M5Core2.h>
-
-	void setup() {
-		M5.begin();
-	}
-
-	void loop() {
-		M5.update();
-	}
+	The screen is 320 x 240 pixels, the touch sensor is 320 x 280, 40
+	pixels are below the screen.
 	
-	void myFunction(uint8_t id) {
-		Serial.println(id);
-	}
 
-	TouchButton testButton1 = TouchButton(0, 0, 100, 100, myFunction, 1);
-	TouchButton testButton2 = TouchButton(100, 0, 200, 100, myFunction, 2);
+Note about multi-touch
+
+	The M5Stack Core2 touch display is only multi-touch in one dimension.
+	What that means is that it can detect two separate touches only if they
+	occur on different vertical positions. This has to do with the way the
+	touch screen is wired, it's not something that can be changed in
+	software. So you will only ever see two points if they do not occur
+	side-by-side. Touches that do happen side-by-side blend into one touch
+	that is detected somewhere between the actual touches.
+
+	While this limits multi-touch somewhat, you can still create multiple
+	buttons and see two that are not on the same row simultaneously.
+	
+
+Calling functions automatically
+
+	In addition to the coordinates, you can optionally specify a
+	function to be called when a button is pressed, a function for when
+	it's released, as well as an id number to figure out what button was
+	pressed if multiple buttons are handled by the same function.
+	
+	Naturally you can also have a separate function for each key in which
+	case you doon't need to supply an id number (it defaults to 0).
+	Function pointers and id can also be retrieved or set later, with
+	btn.fnPress, btn.fnRelease and fn.id. So to attach a function to the
+	leftmost button under the screen, simply say:
+	
+		M5.BtnA.fnPress = myFunction;
 		
-	As you can see we supply a function name (without the brackets) and an
-	8-bit id to the button definition, in addition to the coordinates of the
-	button. If the button is pressed, the specified function is called with
-	the id of the key as an argument. No more tedious testing for all your
-	keys separately!
-	
-	Naturally you can also have a separate function for each key and just
-	ignore the id number (it defaults to 0). Function pointer and id can also
-	be retrieved or set later, with testButton1.function and testButton1.id.
-	So to attach a function to the leftmost button under the screen, simply
-	add:
-	
-		M5.BtnA.function = myFunction;
+		
+Example
 
-
-
-	The button handling is a stripped version from the Arduino TouchButton
-	Library v1.0 by Jack Christensen May 2011, published Mar 2012
-
-	This work is licensed under the Creative Commons Attribution- ShareAlike
-	3.0 Unported License. To view a copy of this license, visit
-	http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to
-	Creative Commons, 171 Second Street, Suite 300, San Francisco,
-	California, 94105, USA.																
+	The examples/Basics directory has an example sketch called "touch" that
+	shows both the touch library and the TouchButton library in action.
+	Should be pretty self-explanatory.														
 
 */
 
@@ -155,9 +148,9 @@ uint8_t TouchButton::setState(uint8_t newState) {
 }
 
 /*----------------------------------------------------------------------*
- * isPressed() and isReleased() check the TouchButton state when it was last *
- * read, and return false (0) or true (!=0) accordingly.								*
- * These functions do not cause the TouchButton to be read.									 *
+ * isPressed() and isReleased() check the TouchButton state when it was
+ * last read, and return false (0) or true (!=0) accordingly.
+ * These functions do not cause the TouchButton to be read.
  *----------------------------------------------------------------------*/
 uint8_t TouchButton::isPressed() {
 	return _state == 0 ? 0 : 1;
@@ -168,10 +161,10 @@ uint8_t TouchButton::isReleased() {
 }
 
 /*----------------------------------------------------------------------*
- * wasPressed() and wasReleased() check the TouchButton state to see if it	 *
- * changed between the last two reads and return false (0) or						*
- * true (!=0) accordingly.																							*
- * These functions do not cause the TouchButton to be read.									 *
+ * wasPressed() and wasReleased() check the TouchButton state to see if it
+ * changed between the last two reads and return false (0) or
+ * true (!=0) accordingly.
+ * These functions do not cause the TouchButton to be read.
  *----------------------------------------------------------------------*/
 uint8_t TouchButton::wasPressed() {
 	return _state && _changed;
@@ -186,10 +179,10 @@ uint8_t TouchButton::wasReleasefor(uint32_t ms) {
 	return !_state && _changed && millis() - _pressTime >= ms;
 }
 /*----------------------------------------------------------------------*
- * pressedFor(ms) and releasedFor(ms) check to see if the TouchButton is		 *
- * pressed (or released), and has been in that state for the specified	*
- * time in milliseconds. Returns false (0) or true (1) accordingly.			*
- * These functions do not cause the TouchButton to be read.									 *
+ * pressedFor(ms) and releasedFor(ms) check to see if the TouchButton is
+ * pressed (or released), and has been in that state for the specified
+ * time in milliseconds. Returns false (0) or true (1) accordingly.
+ * These functions do not cause the TouchButton to be read.
  *----------------------------------------------------------------------*/
 uint8_t TouchButton::pressedFor(uint32_t ms) {
 	return (_state == 1 && _time - _lastChange >= ms) ? 1 : 0;
@@ -207,7 +200,7 @@ uint8_t TouchButton::releasedFor(uint32_t ms) {
 	return (_state == 0 && _time - _lastChange >= ms) ? 1 : 0;
 }
 /*----------------------------------------------------------------------*
- * lastChange() returns the time the TouchButton last changed state,				 *
+ * lastChange() returns the time the TouchButton last changed state,
  * in milliseconds.																											*
  *----------------------------------------------------------------------*/
 uint32_t TouchButton::lastChange() {
