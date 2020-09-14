@@ -9,8 +9,8 @@
 
 typedef struct point
 {
-    uint16_t x;
-    uint16_t y;
+    int x;
+    int y;
 }TouchPoint_t;
 
 typedef struct HotZone
