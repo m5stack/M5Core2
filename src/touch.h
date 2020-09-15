@@ -101,7 +101,7 @@ Example
 
 #define CST_DEVICE_ADDR	0x38
 #define CST_INT 		39
-#define MIN_INTERVAL	5
+#define MIN_INTERVAL	10
 
 typedef struct point
 {
