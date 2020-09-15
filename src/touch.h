@@ -11,13 +11,14 @@ M5Stack Core2 touch library
 
 Two-touch API
 
-	M5.update()
-		In the loop() part of your sketch, call "M5.update()". This is the
-		only part that talks to the touch interface.
-
 	TouchPoint_t
 		Variable type to hold a touchpoint. Has members x and y that hold
 		the coordinates of a touch.
+
+	M5.update()
+		In the loop() part of your sketch, call "M5.update()". This is the
+		only part that talks to the touch interface. It updates the data
+		used by the rest of the two-touch API.
 
 	uint8_t M5.Touch.points
 		Contains the number of touches detected: 0, 1 or 2.
@@ -45,7 +46,9 @@ Note about multi-touch
 	that is detected somewhere between the actual touches.
 
 	While this limits multi-touch somewhat, you can still create multiple
-	buttons and see two that are not on the same row simultaneously.
+	buttons and see two that are not on the same row simultaneously. You
+	could also use one of the buttons below the screen as a modifier for
+	something touched on the screen.
 
 
 Legacy single touch API
