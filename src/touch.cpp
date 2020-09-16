@@ -60,11 +60,11 @@ void touch::read()
 		if (points > 2) points = 0;
 		if (points)
 		{
-			uint8_t id0 = data[3] >> 4;
 			// Read the data. Never mind trying to read the "weight" and
 			// "size" properties or using the built-in gestures: they
 			// are all set to zero. Probably needs more expensive 
 			// touch-sensor.
+			id0 = data[3] >> 4;
 			point[0].x = ((data[1] << 8) | data[2]) & 0x0fff;
 			point[0].y = ((data[3] << 8) | data[4]) & 0x0fff;
 			point[1].x = ((data[7] << 8) | data[8]) & 0x0fff;
@@ -79,6 +79,7 @@ void touch::read()
 				TouchPoint_t tmp = point[0];
 				point[0] = point[1];
 				point[1] = tmp;
+				id0 = 0;
 			}
 		}
 	}

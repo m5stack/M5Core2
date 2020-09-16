@@ -33,6 +33,15 @@ Two-touch API
 	bool M5.Touch.hasChanged()
 		true if anything has moved on the touch screen since the last time
 		this function was called.
+		
+	uint8_t id0
+		(Advanced uses only.) The touch sensor will keep track of a touch
+		between reads. For that purpose each touch has an id, either 1 or
+		0. If there are two touches and one is released, the remaining
+		touch is always in point[0], but id0 will show which of the two it
+		was. If there are two touches, they are always returned in the
+		order of id. You will likely not need id0 unless you want to track
+		gestures or some other advanced use.
 
 
 Note about multi-touch
@@ -168,6 +177,7 @@ public:
     void read();
     bool inBox(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
     bool hasChanged();
+    uint8_t id0;
     uint8_t points;
     TouchPoint_t point[2];
 	    
