@@ -14,9 +14,14 @@ void touch::begin(void)
 
     pinMode(CST_INT, INPUT);
 
+	// By default, the FT6336 will pulse the INT line for every touch event.
+	// But because it shares the Wire1 TwoWire/I2C with other devices, we
+	// cannot create an interrupt service routine to handle these events.
+	// So instead, we set the INT wire to polled mode, so it simply goes low
+	// as long as there is at least one valid touch.
     Wire1.beginTransmission(CST_DEVICE_ADDR);
     Wire1.write(0xA4);
-    Wire1.write(0x00);     // INT polling mode
+    Wire1.write(0x00);
     Wire1.endTransmission();
 }
 
@@ -25,11 +30,16 @@ bool touch::ispressed()
     return ( digitalRead(CST_INT) == LOW );
 }
 
+// This is normally called from M5.update()
 void touch::read()
 {
+	// Return immediately if read() is called more frequently than the
+	// touch sensor updates. This prevents unnecessary I2C reads, and the
+	// data can also get corrupted if reads are too close together.
 	if (millis() - _lastRead < MIN_INTERVAL) return;
-	point[0].x = point[0].y = point[1].x = point[1].y = -1;
 	_lastRead = millis();
+	
+	point[0].x = point[0].y = point[1].x = point[1].y = -1;
 	if (!ispressed())
 	{
 		points = 0;
@@ -51,10 +61,19 @@ void touch::read()
 		if (points)
 		{
 			uint8_t id0 = data[3] >> 4;
+			// Read the data. Never mind trying to read the "weight" and
+			// "size" properties or using the built-in gestures: they
+			// are all set to zero. Probably needs more expensive 
+			// touch-sensor.
 			point[0].x = ((data[1] << 8) | data[2]) & 0x0fff;
 			point[0].y = ((data[3] << 8) | data[4]) & 0x0fff;
 			point[1].x = ((data[7] << 8) | data[8]) & 0x0fff;
 			point[1].y = ((data[9] << 8) | data[10]) & 0x0fff;
+			
+			// As long as there's two points, return them with point[0]
+			// being the one that has id set to 0. Makes things look
+			// cleaner when you move two fingers around: the same touch
+			// stays in the same point. See documentation on id0 variable.
 			if (points == 2 && id0 == 1)
 			{
 				TouchPoint_t tmp = point[0];
@@ -76,6 +95,8 @@ bool touch::inBox(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 	return false;
 }
 
+// Note that you can only use this in one loop: once you've read the value
+// it is reset.
 bool touch::hasChanged()
 {
 	bool flag = false;
