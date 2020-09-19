@@ -86,7 +86,7 @@ bool HotZone::inHotZone(TouchPoint &p) { return contains(p); }
 	
 bool HotZone::inHotZoneDoFun(TouchPoint &p) {
 	if (contains(p)) {
-		if (fun) fun;
+		if (fun) fun();
 		return true;
 	} else {
 		return false;
