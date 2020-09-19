@@ -258,7 +258,6 @@ class touch {
   private:
     void delHandlers(TouchButton* button, Gesture* gesture);
     void doEvents();
-    void doButtons(TouchEvent& e);
     TouchEvent fireEvent(uint8_t finger, uint16_t type, TouchPoint& from, TouchPoint& to, uint16_t duration, TouchButton* button, Gesture* gesture);
     void registerButton(TouchButton* button);
     void deregisterButton(TouchButton* button);
