@@ -384,6 +384,14 @@ void touch::addHandler(void (*fn)(TouchEvent&), uint16_t eventMask /* = TE_ALL *
 	_eventHandlers.push_back(handler);
 }
 
+void touch::delHandlers(TouchButton* button, Gesture* gesture) {
+	for(int i = _eventHandlers.size() - 1; i >= 0 ; --i) {
+		if (button && _eventHandlers[i].button != button) continue;
+		if (gesture && _eventHandlers[i].gesture != gesture) continue;
+		_eventHandlers.erase(_eventHandlers.begin() + i);
+	}
+}
+
 const char* touch::eventTypeName(TouchEvent& e) {
 	const char *unknown = "TE_UNKNOWN";
 	const char *eventNames[6] = {
@@ -444,6 +452,7 @@ void touch::deregisterButton(TouchButton* button) {
 	for(int i = 0; i < _buttons.size(); ++i) {
 		if (_buttons[i] == button) {
 			_buttons.erase(_buttons.begin() + i);
+			delHandlers(button, nullptr);
 			return;
 		}
 	}
@@ -469,6 +478,7 @@ void touch::deregisterGesture(Gesture* gesture) {
 	for(int i = 0; i < _gestures.size(); ++i) {
 		if (_gestures[i] == gesture) {
 			_gestures.erase(_gestures.begin() + i);
+			delHandlers(nullptr, gesture);
 			return;
 		}
 	}
