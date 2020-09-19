@@ -112,81 +112,169 @@ Example
 #define CST_INT 		39
 #define MIN_INTERVAL	10
 
-typedef struct point
-{
-    int x;
-    int y;
-}TouchPoint_t;
+#define MAX_TAP			100
+#define MAX_BETWEEN_TAP	150
 
-typedef struct HotZone
-{
-    HotZone(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, void (*fun)() = nullptr){
-        _x0 = x0; 
-        _y0 = y0;
-        _x1 = x1;
-        _y1 = y1;
-        _fun = fun;
+class TouchZone;
 
-    }
-    inline void setZone(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, void (*fun)() = nullptr )
-    {
-        _x0 = x0; 
-        _y0 = y0;
-        _x1 = x1;
-        _y1 = y1;
-        _fun = fun;
-    }
-    inline bool inHotZone(TouchPoint_t point)
-    {
-        if(( point.x >= _x0 )&&( point.x <=  _x1 )&&
-           ( point.y >= _y0 )&&( point.y <=  _y1 ))
-        {
-            return true;
-        }
-        return false;
-    }
-    inline bool inHotZoneDoFun(TouchPoint_t point)
-    {
-        if(( point.x >= _x0 )&&( point.x <=  _x1 )&&
-           ( point.y >= _y0 )&&( point.y <=  _y1 ))
-        {
-            if( _fun != nullptr )
-            {
-                _fun();
-            }
-            return true;
-        }
-        return false;
-    }
-    uint16_t _x0;
-    uint16_t _y0; 
-    uint16_t _x1;
-    uint16_t _y1;
+class TouchPoint {
+  public:
+	TouchPoint(int16_t x_ = -1, int16_t y_ = -1);
+	bool operator ==(const TouchPoint& p);
+	bool operator !=(const TouchPoint& p);
+	void operator = (const TouchPoint& p);
+	operator char*();
+	void set(int16_t x_ = -1, int16_t y_ = -1);
+    bool in(const TouchZone& z);
+    bool Equals(const TouchPoint& p);
+    bool valid();
+    uint16_t distanceTo(const TouchPoint& p);
+    int16_t x, y;
+  private:
+    char _text[20];
+};
+#define TouchPoint_t TouchPoint
 
-    void (*_fun)();
+class TouchZone {
+  public:
+	TouchZone();
+	TouchZone(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_);
+	void set(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_);
+    bool contains(const TouchPoint &p);
+    uint16_t x0, y0, x1, y1;
+};
 
-}HotZone_t;
+// For compatibility with older M5Core2 code
+class HotZone : public TouchZone {
+  public:
+	HotZone(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, void (*fun_)() = nullptr);
+	void setZone(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, void (*fun_)() = nullptr);
+	bool inHotZone(TouchPoint &p);
+	bool inHotZoneDoFun(TouchPoint &p);
+    void (*fun)();
+};
+#define HotZone_t HotZone
+ 
+#define TE_TOUCH	0x0001
+#define TE_RELEASE	0x0002
+#define TE_MOVE     0x0004
+#define TE_TAP		0x0008
+#define TE_DBLTAP	0x0010
+#define TE_GESTURE	0x0020
 
-class touch
-{
-public:
+#define TE_ALL		0x00FF
+#define TE_BTNONLY	0x8000
+
+struct TouchEvent;
+
+class TouchButton : public TouchZone {
+  public:
+	TouchButton(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, const char* name_ = "");
+	~TouchButton();
+	bool setState(bool);
+	bool isPressed();
+	bool isReleased();
+	bool wasPressed();
+	bool wasReleased();
+	bool pressedFor(uint32_t ms);
+	bool pressedFor(uint32_t ms, uint32_t continuous_time);
+	bool releasedFor(uint32_t ms);
+	bool wasReleasefor(uint32_t ms);
+	void addHandler(void (*fn)(TouchEvent&), uint16_t eventMask = TE_ALL);
+	uint32_t lastChange();
+	uint8_t finger;
+	char name[16];
+  private:
+	bool _state;				//current TouchButton state
+	bool _lastState;			//previous TouchButton state
+	bool _changed;				//state changed since last read
+	uint32_t _time;				//time of current state (all times are in ms)
+	uint32_t _lastChange;		//time of last state change
+	uint32_t _lastLongPress;	//time of last state change
+	uint32_t _pressTime;		//press time
+	uint32_t _hold_time;		//hold time call wasreleasefor
+};
+
+class Gesture {
+  public:
+  	Gesture(TouchZone fromZone_, TouchZone toZone_, const char* name_ = "", uint16_t maxTime_ = 500, uint16_t minDistance_ = 50);
+  	~Gesture();
+  	bool test(TouchEvent& e);
+  	bool detected();
+  	void addHandler(void (*fn)(TouchEvent&), uint16_t eventMask = TE_ALL);
+  	TouchZone fromZone, toZone;
+  	uint16_t maxTime, minDistance;
+  	char name[16];
+  private:
+    bool _detected;
+};
+
+struct TouchEvent {
+	uint8_t finger;
+	uint16_t type;
+	TouchPoint from;
+	TouchPoint to;
+	uint16_t duration;
+	TouchButton* button;
+	Gesture* gesture;
+};
+
+struct EventHandler {
+	uint16_t eventMask;
+	TouchButton* button;
+	Gesture* gesture;
+	void (*fn)(TouchEvent&);
+};
+
+struct Finger {
+	TouchPoint current;
+	TouchPoint previous;
+	uint32_t startTime;
+	TouchPoint startPoint;
+	TouchPoint tapPoint;
+	uint32_t tapTime;
+	TouchButton* button;
+};
+
+class touch {
+  public:
     touch();
     ~touch();
+    static touch* instance;
     void begin();
     bool ispressed();
     void read();
-    bool inBox(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+    bool in(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+    bool in(TouchZone& z);
     bool hasChanged();
-    uint8_t id0;
+    void addHandler(void (*fn)(TouchEvent&), uint16_t eventMask = TE_ALL, TouchButton* button = nullptr, Gesture* gesture = nullptr);
+    const char* eventTypeName(TouchEvent& e);
+    const char* eventObjName(TouchEvent& e);
+    uint8_t point0finger;
     uint8_t points;
-    TouchPoint_t point[2];
-	    
-    TouchPoint_t getPressPoint();
-    
-private:
+    TouchPoint point[2];
+    TouchPoint getPressPoint();
+    TouchButton* buttonFor(TouchPoint& p);
+  private:
+    void doEvents();
+    void doButtons(TouchEvent& e);
+    TouchEvent fireEvent(uint8_t finger, uint16_t type, TouchPoint& from, TouchPoint& to, uint16_t duration, TouchButton* button, Gesture* gesture);
+    void registerButton(TouchButton* button);
+    void deregisterButton(TouchButton* button);
+    friend class TouchButton;
+    bool doGestures(TouchEvent& e);
+    void registerGesture(Gesture* gesture);
+    void deregisterGesture(Gesture* gesture);
+    friend class Gesture;
 	uint32_t _lastRead;
-	TouchPoint_t _p0;
-	TouchPoint_t _p1;
+	TouchPoint _previous[2];
+	Finger _finger[2];
+	uint8_t _tapId;
+	TouchPoint _tapPoint;
+	uint32_t _tapTime;
+	std::vector<EventHandler> _eventHandlers;
+	std::vector<Gesture*> _gestures;
+	std::vector<TouchButton*> _buttons;
 };
 
 #endif
