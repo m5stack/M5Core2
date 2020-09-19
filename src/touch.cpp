@@ -425,25 +425,6 @@ TouchButton* touch::buttonFor(TouchPoint& p) {
 	return nullptr;
 }
 
-void touch::doButtons(TouchEvent& e) {
-	if (e.type == TE_TOUCH) {
-		_finger[e.finger].button = nullptr;
-		for ( auto button : _buttons ) {
-			if (button->contains(e.from)) {
-				_finger[e.finger].button = button;
-				button->setState(true);
-				return;
-			}
-		}
-	}
-	if (e.type == TE_RELEASE) {
-		TouchButton* button = _finger[e.finger].button;
-		if (button) {
-			button->setState(false);
-		}
-	}
-}
-
 void touch::registerButton(TouchButton* button) {
 	_buttons.push_back(button);
 }
