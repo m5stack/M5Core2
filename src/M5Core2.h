@@ -75,7 +75,6 @@
     #include "utility/CommUtil.h"
     #include "utility/MPU6886.h"
     #include "touch.h"
-    #include "utility/M5TouchButton.h"
     #include "AXP192.h"
     #include "RTC.h"
 
@@ -94,11 +93,9 @@
         AXP192 Axp;
 
         touch Touch;
-        
-        TouchButtons touchButtons = TouchButtons();
-        TouchButton BtnA = TouchButton(10,241,120,280, nullptr, nullptr, 1);
-        TouchButton BtnB = TouchButton(130,241,200,280, nullptr, nullptr, 2);
-        TouchButton BtnC = TouchButton(230,241,310,280, nullptr, nullptr, 3);
+        TouchButton BtnA = TouchButton(10,241,120,280);
+        TouchButton BtnB = TouchButton(130,241,200,280);
+        TouchButton BtnC = TouchButton(230,241,310,280);
 
         MPU6886 IMU = MPU6886();
 
