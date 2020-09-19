@@ -256,16 +256,16 @@ class touch {
     TouchPoint getPressPoint();
     TouchButton* buttonFor(TouchPoint& p);
   private:
+	friend class TouchButton;
+	friend class Gesture;
     void delHandlers(TouchButton* button, Gesture* gesture);
     void doEvents();
+    bool doGestures(TouchEvent& e);
     TouchEvent fireEvent(uint8_t finger, uint16_t type, TouchPoint& from, TouchPoint& to, uint16_t duration, TouchButton* button, Gesture* gesture);
     void registerButton(TouchButton* button);
     void deregisterButton(TouchButton* button);
-    friend class TouchButton;
-    bool doGestures(TouchEvent& e);
     void registerGesture(Gesture* gesture);
     void deregisterGesture(Gesture* gesture);
-    friend class Gesture;
 	uint32_t _lastRead;
 	TouchPoint _previous[2];
 	Finger _finger[2];
