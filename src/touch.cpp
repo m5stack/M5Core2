@@ -72,13 +72,13 @@ bool TouchZone::contains(const TouchPoint &p) {
 
 // HotZone class (for compatibility with older M5Core2 code)
 
-HotZone::HotZone(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, void (*fun_)() /* = nullptr */) {
-	set(x_, y_, x_ + w_, y_ + h_);
+HotZone::HotZone(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, void (*fun_)() /* = nullptr */) {
+	set(x0_, y0_, x1_ - x0_, y1_ - y0_);
 	fun = fun_;
 }
 
-void HotZone::setZone(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, void (*fun_)() /*= nullptr */){
-	set(x_, y_, x_ + w_, y_ + h_);
+void HotZone::setZone(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, void (*fun_)() /*= nullptr */){
+	set(x0_, y0_, x1_ - x0_, y1_ - y0_);
 	fun = fun_;
 }
 

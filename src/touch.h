@@ -321,7 +321,7 @@ Example
 	it's all made to be easy to use.
 	
 	Under File/Examples/M5Core2/Basics/touch in your Arduino environment is
-	 an example sketch called "touch" that shows this library in action.
+	an example sketch called "touch" that shows this library in action.
 	Please have a look at it to understand how this all works and run the
 	sketch to see all the events printed to the serial port. It shows
 	buttons, gestures and events and should be pretty self-explanatory.
