@@ -108,12 +108,17 @@ Example
 #include <Arduino.h>
 #include <Wire.h>
 
-#define CST_DEVICE_ADDR	0x38
-#define CST_INT 		39
-#define MIN_INTERVAL	10
+#define CST_DEVICE_ADDR		0x38
+#define CST_INT 			39
 
-#define MAX_TAP			100
-#define MAX_BETWEEN_TAP	150
+// Strangely, the value 13 leads to slightly more frequent updates than 10
+// (Still not every 13 ms, often more like 15 to 20)
+#define DEFAULT_INTERVAL	13
+
+#define MAX_TAP				100
+#define MAX_BETWEEN_TAP		150
+#define GESTURE_MAXTIME		500
+#define GESTURE_MINDIST		75
 
 class TouchZone;
 
@@ -131,17 +136,18 @@ class TouchPoint {
     uint16_t distanceTo(const TouchPoint& p);
     int16_t x, y;
   private:
-    char _text[20];
+    char _text[12];
 };
 #define TouchPoint_t TouchPoint
 
 class TouchZone {
   public:
 	TouchZone();
-	TouchZone(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_);
-	void set(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_);
+	TouchZone(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_);
+	bool operator ==(const TouchPoint& p);
+	void set(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_);
     bool contains(const TouchPoint &p);
-    uint16_t x0, y0, x1, y1;
+    uint16_t x, y, w, h;
 };
 
 // For compatibility with older M5Core2 code
@@ -155,21 +161,24 @@ class HotZone : public TouchZone {
 };
 #define HotZone_t HotZone
  
+#define NUM_EVENTS	8
 #define TE_TOUCH	0x0001
 #define TE_RELEASE	0x0002
 #define TE_MOVE     0x0004
-#define TE_TAP		0x0008
-#define TE_DBLTAP	0x0010
-#define TE_GESTURE	0x0020
+#define TE_GESTURE	0x0008
+#define TE_TAP		0x0010
+#define TE_DBLTAP	0x0020
+#define TE_DRAGGED	0x0040
+#define TE_PRESSED	0x0080
 
-#define TE_ALL		0x00FF
-#define TE_BTNONLY	0x8000
+#define TE_ALL		0x0FFF
+#define TE_BTNONLY	0x1000
 
 struct TouchEvent;
 
 class TouchButton : public TouchZone {
   public:
-	TouchButton(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, const char* name_ = "");
+	TouchButton(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, const char* name_ = "");
 	~TouchButton();
 	bool setState(bool);
 	bool isPressed();
@@ -183,11 +192,10 @@ class TouchButton : public TouchZone {
 	void addHandler(void (*fn)(TouchEvent&), uint16_t eventMask = TE_ALL);
 	uint32_t lastChange();
 	uint8_t finger;
+	bool changed;				//state changed since last read
 	char name[16];
   private:
 	bool _state;				//current TouchButton state
-	bool _lastState;			//previous TouchButton state
-	bool _changed;				//state changed since last read
 	uint32_t _time;				//time of current state (all times are in ms)
 	uint32_t _lastChange;		//time of last state change
 	uint32_t _lastLongPress;	//time of last state change
@@ -197,16 +205,17 @@ class TouchButton : public TouchZone {
 
 class Gesture {
   public:
-  	Gesture(TouchZone fromZone_, TouchZone toZone_, const char* name_ = "", uint16_t maxTime_ = 500, uint16_t minDistance_ = 50);
+  	Gesture(TouchZone fromZone_, TouchZone toZone_, const char* name_ = "",
+  	  uint16_t maxTime_ = GESTURE_MAXTIME,
+  	  uint16_t minDistance_ = GESTURE_MINDIST);
   	~Gesture();
   	bool test(TouchEvent& e);
-  	bool detected();
+  	bool wasDetected();
   	void addHandler(void (*fn)(TouchEvent&), uint16_t eventMask = TE_ALL);
   	TouchZone fromZone, toZone;
   	uint16_t maxTime, minDistance;
   	char name[16];
-  private:
-    bool _detected;
+	bool detected;
 };
 
 struct TouchEvent {
@@ -243,15 +252,16 @@ class touch {
     static touch* instance;
     void begin();
     bool ispressed();
+	uint8_t ft6336(uint8_t reg, int16_t value = -1);
+	uint8_t ft6336(uint8_t reg, uint8_t size, uint8_t* data);
+	uint8_t interval(int16_t ivl);
     void read();
-    bool in(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-    bool in(TouchZone& z);
-    bool hasChanged();
-    void addHandler(void (*fn)(TouchEvent&), uint16_t eventMask = TE_ALL, TouchButton* button = nullptr, Gesture* gesture = nullptr);
+    void addHandler(void (*fn)(TouchEvent&), uint16_t eventMask = TE_ALL,
+      TouchButton* button = nullptr, Gesture* gesture = nullptr);
     const char* eventTypeName(TouchEvent& e);
     const char* eventObjName(TouchEvent& e);
-    uint8_t point0finger;
     uint8_t points;
+    bool changed;
     TouchPoint point[2];
     TouchPoint getPressPoint();
     TouchButton* buttonFor(TouchPoint& p);
@@ -261,14 +271,17 @@ class touch {
     void delHandlers(TouchButton* button, Gesture* gesture);
     void doEvents();
     bool doGestures(TouchEvent& e);
-    TouchEvent fireEvent(uint8_t finger, uint16_t type, TouchPoint& from, TouchPoint& to, uint16_t duration, TouchButton* button, Gesture* gesture);
+    TouchEvent fireEvent(uint8_t finger, uint16_t type, TouchPoint& from,
+      TouchPoint& to, uint16_t duration, TouchButton* button,
+      Gesture* gesture);
     void registerButton(TouchButton* button);
     void deregisterButton(TouchButton* button);
     void registerGesture(Gesture* gesture);
     void deregisterGesture(Gesture* gesture);
+    uint8_t _interval;
 	uint32_t _lastRead;
-	TouchPoint _previous[2];
 	Finger _finger[2];
+	uint8_t _point0finger;
 	uint8_t _tapId;
 	TouchPoint _tapPoint;
 	uint32_t _tapTime;
