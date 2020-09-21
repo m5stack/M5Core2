@@ -2,102 +2,329 @@
 
 M5Stack Core2 touch library
 
+	This is the library behind the M5.Touch object that you can use to read
+	from the touch sensor on the M5Stack Core2.
+
+	This library also provides ways to describe points and rectangles on
+	the sensor as well as a TouchButton class (Arduino-style buttons for
+	any rectangle) and a Gesture object for recognising touch gestures and
+	a number of supporting data types. You can use the built-in events to
+	trigger your own functions when things happen on the sensor.
+
+
+About the touch sensor in the M5Stack Core2
+
 	Touch is provided by a FocalTech FT6336 chip, which supports two
-	simultaneous touches (see below for limitation).
+	simultaneous touches. However, the M5Stack Core2 touch display is only
+	multi-touch in one dimension. What that means is that it can detect two
+	separate touches only if they occur on different vertical positions.
+	This has to do with the way the touch screen is wired, it's not
+	something that can be changed in software. So you will only ever see
+	two points if they do not occur side-by-side. Touches that do happen
+	side-by-side blend into one touch that is detected somewhere between
+	the actual touches.
 
-	This library is initialised in M5Core2.h. An instance "M5.Touch" exists
-	and can be used after you call "M5.begin()".
+	While this limits multi-touch somewhat, you can still create multiple
+	buttons and see two that are not on the same row simultaneously. You
+	could also use one of the buttons below the screen as a modifier for
+	something touched on the screen.
+	
+	The touch sensor extends to below the screen of the Core2: the sensor
+	is 320x280 pixels, the screen is 320x240. The missing 40 pixels are
+	placed below the screen, where the printed circles are. This is meant
+	to simulate the three hardware buttons on the original M5Stack units.
+	Note that on at least some units the touch sensor in this area only
+	operates properly if the USB cable is plugged in or if the unit is
+	placed on a metal surface.
 
 
-Two-touch API
+Describing points and areas
 
-	TouchPoint_t
-		Variable type to hold a touchpoint. Has members x and y that hold
-		the coordinates of a touch.
+	TouchPoint and TouchArea allow you to create variables of the types
+	TouchPoint and TouchZone to hold a point or an area on the screen.
+
+	TouchPoint
+		Holds a point on the screen. Has members x and y that hold the
+		coordinates of a touch. Values -1 for x and y indicate an invalid
+		touch value.
+	
+	TouchZone
+		Holds a rectangular area on the screen. Members x, y, w and h are
+		for the x and y coordinate of the top-left corner and the width and
+		height of the rectangle.
+		
+	The 'valid' method tests if a point is valid. Using the 'in' or
+	'contains' method you can test if a point is in a zone. Here are some
+	examples to make things clear.
+		
+		TouchPoint a;
+		TouchPoint b(20, 120);
+		Serial.println(a);				// (-1, -1)
+		a.set(10, 30);
+		Serial.println(a.valid());		// 1    
+		Serial.println(b.y);			// 120
+		TouchZone z(0,0,100, 100);
+		Serial.println(z.w);			// 100
+		Serial.println(z.contains(a));	// 1
+		Serial.println(b.in(z));		// 0
+		
+
+Basic API
+
+	The basic API provides a way to rad the data from the touch sensor.
+	While you may want to use this directly. But you may want to skip using
+	this API as even for simple applications the more advanced ways of
+	using the touch sensor are easier.
 
 	M5.update()
 		In the loop() part of your sketch, call "M5.update()". This is the
 		only part that talks to the touch interface. It updates the data
 		used by the rest of the two-touch API.
 
-	uint8_t M5.Touch.points
+	M5.Touch.changed
+		Is true if M5.update() detected any changes since the last time it
+		was called.
+
+	M5.Touch.points
 		Contains the number of touches detected: 0, 1 or 2.
 
-	TouchPoint_t M5.Touch.point[0], M5.Touch.point[1]
-		M5.Touch.point[0] and M5.Touch.point[1] hold the detected touches.
+	M5.Touch.point[0], M5.Touch.point[1]
+		M5.Touch.point[0] and M5.Touch.point[1] are TouchPoints that hold
+		the detected touches.
 		
-	bool M5.Touch.inBox(x0, y0, x1, y1)
-		true if any valid touch is found in the supplied rectangle. Can be
-		used directly, but you'll be happier with the TouchButton library.
-
-	bool M5.Touch.hasChanged()
-		true if anything has moved on the touch screen since the last time
-		this function was called.
+	So the simplest sketch to print the location where the screen is
+	touched would be:
 		
-	uint8_t id0
-		(Advanced uses only.) The touch sensor will keep track of a touch
-		between reads. For that purpose each touch has an id, either 1 or
-		0. If there are two touches and one is released, the remaining
-		touch is always in point[0], but id0 will show which of the two it
-		was. If there are two touches, they are always returned in the
-		order of id. You will likely not need id0 unless you want to track
-		gestures or some other advanced use.
+		#include <M5Core2.h>
+
+		void setup() {
+		  M5.begin();
+		}
+
+		void loop() {
+		  M5.update();
+		  if (M5.Touch.changed && M5.Touch.points == 1) {
+		    Serial.println( M5.Touch.point[0] );
+		  }
+		}
 
 
-Note about multi-touch
+Buttons
 
-	The M5Stack Core2 touch display is only multi-touch in one dimension.
-	What that means is that it can detect two separate touches only if they
-	occur on different vertical positions. This has to do with the way the
-	touch screen is wired, it's not something that can be changed in
-	software. So you will only ever see two points if they do not occur
-	side-by-side. Touches that do happen side-by-side blend into one touch
-	that is detected somewhere between the actual touches.
+	You can create virtual buttons for any given rectangle on the screen by
+	creating a global variable to hold the TouchButton object and providing
+	the coordinates (x, y, width and height). These buttons can be used in
+	two ways. You can either use them the way you would a normal Arduino
+	button, or you can provide handler functions to process various events
+	for the button. We'll talk about the events later, but here's a simple
+	sketch that defines a button and then does something when it's pressed.
 
-	While this limits multi-touch somewhat, you can still create multiple
-	buttons and see two that are not on the same row simultaneously. You
-	could also use one of the buttons below the screen as a modifier for
-	something touched on the screen.
+		#include <M5Core2.h>
+
+		TouchButton b(0,0,100,100);
+
+		void setup() {
+		  M5.begin();
+		}
+
+		void loop() {
+		  M5.update();
+		  if (b.wasPressed()) Serial.print("* ");
+		}
+		
+	wasPressed() will only be true once after you release the button. You
+	can also use the other Arduino button functions such as isPressed()
+	that is true as soon as and as long as the button is touched. Note that
+	the TouchButtons only become pressed if the touch starts within the
+	button, not if you swipe over it, and that it will stay pressed as long
+	as the finger touches, even if it leaves the button area. You may want
+	read about the events further down to distinguish between different
+	kinds of touches.
+
+	The three buttons BtnA, BtnB and BtnC from the older M5Stack units come
+	already implemented as buttons that lie just below the screen where the
+	three circles are. If you want them to be a little bigger and also
+	cover the area of the screen where you may be showing labels for the
+	buttons, simply raise the top of the buttons like this:
+	
+		 M5.BtnA.y0 = M5.BtnB.y0 = M5.BtnC.y0 = 220;
+
+	Buttons are only active when their variables exist, meaning that if you
+	define button variables in a function that has its own loop that calls
+	M5.update(), they will not be detected anywhere else.
 
 
-Legacy single touch API
+Gestures
 
-	TouchPoint_t
-		Variable type to hold a touchpoint. Has members x and y that hold
-		the coordinates of a touch.
+	When you create a gesture you can specify two TouchZones. Whenever a
+	swipe on the sensor starts in the first zone and ends in the second,
+	that gesture is counted detected. Like in the following simple example
+	sketch:
 
-	bool M5.Touch.ispressed()
-		true when the touch screen is pressed.
+		#include <M5Core2.h>
 
-	TouchPoint_t M5.Touch.getPressedPoint()
-		Returns the point that is being pressed, or (-1,-1) is nothing is
-		pressed. In case two points are pressed, this will return one of
-		them.
+		TouchZone topHalf(0,0,320,120);
+		TouchZone bottomHalf(0,120,320,160);
+		Gesture swipeDown(topHalf, bottomHalf);
 
-	HotZone_t
-		Defines a zone on the screen, comes with built-in functions to test
-		if a given point is within that zone. Similar but more enhanced
-		functionality is provided by the TouchButton library, see below.
+		void setup() {
+		  M5.begin();
+		}
+
+		void loop() {
+		  M5.update();
+		  if (swipeDown.wasDetected()) Serial.println("Swiped down!");
+		}
+
+	After the start and end zones, you can also optionally specify a name,
+	a maximum time for the gesture (default 500 ms) and minimum distance
+	the swipe must cover on the screen (default 75 pixels). Only the first
+	gesture for which a swipe meets the criteria will be detected. 
 
 
-TouchButton library
+Events
 
-	The TouchButton library is initialised together with the touch library,
-	and offers a higher level way to interact with the touch screen. Using
-	this library you can create virtual buttons for any given rectangle of
-	the screen. These buttons then have the same API as the standard
-	Arduino buttons, except you can define optional handler functions that
-	get called whenever the button is pressed or released.
+	The most powerful way to react to things happening with buttons,
+	gestures or just touches and swipes on random parts of the screen is by
+	using events. For this you need to define one or more event handler
+	functions. This is done like this:
 
-	The library is called M5TouchButton and the documentation is in the
-	header file that lives at src/utility/M5TouchButton.h in this library.
+		void myHandler(TouchEvent& e) { ... }
+
+	It's important to do it exactly this way, only changing the name of the
+	function. You can then set things up so that this function receives
+	events. Note that the function name is provided without the brackets. 
+
+		M5.Touch.addHandler(myHandler);
+
+		- or -
+
+		testbutton.addHandler(myHandler);
+
+	With the first line the function gets all events, with the second line
+	only those that pertain to a specific button or gesture. Events have
+	the following members:
+	
+		e.type
+			The type of event, such as TE_TOUCH or TE_TAP, see below.
+			
+		e.finger
+			0 or 1, whether this is the first or second finger detected
+			
+		e.from and e.to
+			TouchPoints that say from where to where this event happened
+			
+		e.duration
+			Duration of the event in ms
+			
+		e.button and e.gesture
+			Pointers to the event or gesture attached to the event
+				
+	Here's a list of possible event types and when they're fired:
+	
+		TE_TOUCH
+			A finger comes on the screen. If that is within the area of a
+			button, a pointer to that button will be in e.button.
+			
+		TE_MOVE
+			A finger has moved. e.from and e.to contain the coordinates. If
+			this swipe started within a button, that button will be in
+			e.button for all subsequent TE_MOVE and the eventual TE_RELEASE
+			event, even if the finger is not on the button anymore. This
+			allows buttons to be swiped.
+			
+		TE_RELEASE
+			The e.from and e.to will hold the beginning and ending
+			positions for this entire swipe, e.duration holds the time
+			since the finger was placed on the screen.
+			
+		TE_GESTURE
+			After TE_RELEASE, the first gesture that matches a swipe fires
+			a TE_GESTURE, with a pointer to the gesture in e.gesture. None
+			of the further events below are then generated, even if the
+			gesture started on a button.
+			
+		TE_TAP
+			Fired when a short tap on the screen is detected. Will come
+			with the associated button in e.button if applicable.
+			
+		TE_DBLTAP
+			Like TE_TAP but for a quick double tap. Note that no TE_TAP will
+			be fired in this case.
+			
+		TE_DRAGGED
+			Fired when the finger has left the button before it is lifted.
+			
+		TE_PRESSED
+			Fired after the button is released and it wasn't a TE_TAP,
+			TE_DBLTAP or TE_SWIPE. 
+
+	When you add a handler function you can also specify what events it
+	should receive by supplying it as the second argument after the handler
+	function. If you want to register multiple events for the same
+	function, don't register the handler twice, but simply add (or bitwise
+	or) the event values. The default value there is the pseudo-event
+	TE_ALL, which is simply a value with all the event bits turned on. You
+	can also subtract event type values from TE_ALL to exclude them.
+
+	If you add the pseudo-event value TE_BTNONLY to the value supplied to
+	addHandler, it indicates that you only want the function to receive
+	events that have a button attached. (This only makes sense if you
+	register your handler with M5.touch, where it could also see event that
+	were not tied to a button.)
+	
+	Here are some examples of ways to add a handler function:
+	
+		button1.addHandler(b1Function, TE_TOUCH _ TE_RELEASE);
+			b1Function only get these two events for button1
+			
+		M5.Touch.addHandler(btnHandle, TE_ALL + TE_BTNONLY - TE_MOVE);
+			btnHandle gets all events (except TE_MOVE) tied to buttons 
+			
+		swipeUp.addHandler(nextPage);
+			Handler nextPage is called when swipeUp gesture detected.
+			Note that nextpage must still be in the handler format,
+			accepting the event as an argument, even when it can
+			completely ignore it.
+			
+	If your event calls functions in e.button or e.gesture, remember that
+	these are pointers. Without going into too much detail, it means it
+	must do so with the -> notation, so to read the button x position, you
+	would say "e.button->x".
+
+	If you registered a function with M5.Touch and do this on an event that
+	has no button attached, your program will crash. So make sure you only
+	get details about buttons if you know your event has a button pointer.
+	You can either test that with "if (e.button) ..." or make sure with
+	TE_BTNONLY.
+
+	Please have a look at the example sketch (see below) to understand how
+	this all works and run the sketch to see all the events printed to the
+	serial port. 
+
+
+Legacy API
+
+	There was a previous version of this library, and it provided a number
+	of functions that were single touch only. The older version did not
+	have M5.update(). Instead it used ispressed() and getPressedPoint()
+	functions as well as HotZones, which provided something that worked a
+	little bit like TouchButtons. This older API is still supported (the
+	M5Core2 Factory Test sketch still works), but you should not use it
+	for new programs. The ispressed() function specifically does not mix
+	well with code that uses M5.update().
 
 
 Example
 
-	The examples/Basics directory has an example sketch called "touch" that
-	shows both the touch library and the TouchButton library in action.
-	Should be pretty self-explanatory.
+	It may sound complicated when you read it all in this document, but
+	it's all made to be easy to use.
+	
+	Under File/Examples/M5Core2/Basics/touch in your Arduino environment is
+	 an example sketch called "touch" that shows this library in action.
+	Please have a look at it to understand how this all works and run the
+	sketch to see all the events printed to the serial port. It shows
+	buttons, gestures and events and should be pretty self-explanatory.
 
 */
 
