@@ -93,9 +93,9 @@
         AXP192 Axp;
 
         touch Touch;
-        TouchButton BtnA = TouchButton(10,241,120,280);
-        TouchButton BtnB = TouchButton(130,241,200,280);
-        TouchButton BtnC = TouchButton(230,241,310,280);
+        TouchButton BtnA = TouchButton(10,241,110,40);
+        TouchButton BtnB = TouchButton(130,241,70,40);
+        TouchButton BtnC = TouchButton(230,241,80,40);
 
         MPU6886 IMU = MPU6886();
 
