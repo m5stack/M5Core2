@@ -257,6 +257,7 @@ uint8_t touch::interval(int16_t ivl) {
 	} else {
 		ft6336(0x88, (uint8_t)ivl);
 		_interval = ivl;
+		return 0;
 	}
 }
 
