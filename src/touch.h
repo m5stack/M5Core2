@@ -343,7 +343,7 @@ Example
 #define DEFAULT_INTERVAL	13
 
 #define MAX_TAP				100
-#define MAX_BETWEEN_TAP		150
+#define MAX_BETWEEN_TAP		200
 #define GESTURE_MAXTIME		500
 #define GESTURE_MINDIST		75
 
