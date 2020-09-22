@@ -85,7 +85,7 @@
         M5Core2();
         void begin(bool LCDEnable = true, bool SDEnable = true, bool SerialEnable = true, bool I2CEnable = false);
         void update();
-    
+
         // LCD
         M5Display Lcd = M5Display();
 
@@ -93,6 +93,9 @@
         AXP192 Axp;
 
         touch Touch;
+        TouchButton BtnA = TouchButton(10,241,110,40);
+        TouchButton BtnB = TouchButton(130,241,70,40);
+        TouchButton BtnC = TouchButton(230,241,80,40);
 
         MPU6886 IMU = MPU6886();
 

@@ -1,57 +1,43 @@
 #include <M5Core2.h>
-#include <Fonts/EVA_20px.h>
-#include <stdio.h>
 
-void showNum(short int X, short int Y)
-{
-  char Str[10];
-  M5.Lcd.clear(WHITE);
-  M5.Lcd.setCursor(10, 10);
-  M5.Lcd.printf("DISPPLAY Test!");
-  M5.Lcd.setCursor(10, 26);
-  sprintf(Str,"X:%d", X);
-  M5.Lcd.printf(Str);
-  M5.Lcd.setCursor(10, 42);
-  sprintf(Str,"Y:%d", Y);
-  M5.Lcd.printf(Str);
-}
+TouchZone topHalf(0,0,320,120);
+TouchZone bottomHalf(0,120,320,160);
+Gesture swipeDown(topHalf, bottomHalf, "Swipe Down");
 
-void touchsetup()
-{
-    showNum(0,0);
-}
-
-void touchflush()
-{
-    char X[4];
-    char Y[4];
-    M5.Lcd.setCursor(10, 10);
-    TouchPoint_t pos= M5.Touch.getPressPoint();
-    bool touchStateNow = ( pos.x == -1 ) ? false : true;
-    if( touchStateNow )
-    {
-        showNum(pos.x,pos.y);
-    }
-}
+TouchButton lt = TouchButton(0, 0, 160, 120, "left-top");
+TouchButton lb = TouchButton(0, 120, 160, 120, "left-bottom");
+TouchButton rt = TouchButton(160, 0, 160, 120, "right-top");
+TouchButton rb = TouchButton(160, 120, 160, 120, "right-bottom");
 
 void setup() {
-  M5.begin(true, true, true, true);
-  Serial.begin(115200);
-  M5.Lcd.fillScreen(WHITE);
-  M5.Lcd.setTextColor(BLACK);
-  M5.Lcd.setTextSize(2);
-  touchsetup();
+  M5.begin();
+  M5.Touch.addHandler(eventDisplay);
+  M5.Touch.addHandler(colorButtons, TE_BTNONLY + TE_TOUCH + TE_RELEASE);
+  swipeDown.addHandler(yayWeSwiped);
+  rt.addHandler(dblTapped, TE_DBLTAP);
 }
 
 void loop() {
-  TouchPoint_t pos= M5.Touch.getPressPoint();
-  if(pos.y > 240)
-    if(pos.x < 109)
-      M5.Lcd.setTextColor(RED);
-    else if(pos.x > 218)
-      M5.Lcd.setTextColor(BLUE);
-    else if(pos.x >= 109 && pos.x <= 218)
-      M5.Lcd.setTextColor(GREEN);
-  touchflush();
-  delay(10);
+  M5.update();
+}
+
+void eventDisplay(TouchEvent& e) {
+  Serial.printf("%-12s finger%d  %-18s (%3d, %3d)", M5.Touch.eventTypeName(e), e.finger, M5.Touch.eventObjName(e),  e.from.x, e.from.y);
+  if (e.type != TE_TOUCH && e.type != TE_TAP && e.type != TE_DBLTAP) {
+    Serial.printf("--> (%3d, %3d)  %5d ms", e.to.x, e.to.y, e.duration);
+  }
+  Serial.println();
+}
+
+void colorButtons(TouchEvent& e) {
+  TouchButton& b = *e.button;
+  M5.Lcd.fillRect(b.x, b.y, b.w, b.h, b.isPressed() ? WHITE : BLACK);
+}
+
+void yayWeSwiped(TouchEvent& e) {
+  Serial.println("--- SWIPE DOWN DETECTED ---");
+}
+
+void dblTapped(TouchEvent& e) {
+  Serial.println("--- TOP RIGHT BUTTON WAS DOUBLETAPPED ---");
 }
