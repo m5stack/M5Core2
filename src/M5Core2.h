@@ -72,6 +72,7 @@
 
     #include "M5Display.h"
     #include "utility/Config.h"
+    #include "utility/Button.h"
     #include "utility/CommUtil.h"
     #include "utility/MPU6886.h"
     #include "touch.h"
