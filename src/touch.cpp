@@ -336,7 +336,7 @@ void touch::doEvents() {
 			fi.startTime = millis();
 			fi.startPoint = now;
 			fi.button = buttonFor(now);
-			fireEvent(i, TE_TOUCH, now, invalid, 0, fi.button, nullptr);
+			fireEvent(i, TE_TOUCH, now, now, 0, fi.button, nullptr);
 		} else if (prev.valid() && !now.valid()) {
 			TouchEvent e = fireEvent(i, TE_RELEASE, fi.startPoint, prev, millis() - fi.startTime, fi.button, nullptr);
 			if (!doGestures(e)) {
