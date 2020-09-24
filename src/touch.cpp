@@ -125,7 +125,7 @@ TouchButton::TouchButton(
 	datum = datum_;
 	dx = dx_;
 	dy = dy_;
-	drawFn = TouchButton::drawFunction;
+	drawFn = nullptr;
 	drawZone = this;
 	strncpy(label, name_, 16);
 	draw(off);
@@ -199,7 +199,13 @@ void TouchButton::draw() {
 } 
 
 void TouchButton::draw(ButtonColors bc) {
-	if (drawFn) drawFn(drawZone, bc, label, _textFont, _freeFont, textSize, datum, dx, dy);
+	if (drawFn) {
+		drawFn(drawZone, bc, label, _textFont, _freeFont, textSize, datum, dx, dy);
+		return;
+	}
+	if (touch::instance->drawFn) {
+		touch::instance->drawFn(drawZone, bc, label, _textFont, _freeFont, textSize, datum, dx, dy);
+	}
 }
 
 void TouchButton::drawFunction(TouchZone* z, ButtonColors bc, char* lbl, uint8_t textFont, const GFXfont* freeFont, uint8_t textSize, uint8_t datum, int16_t dx, int16_t dy) {
@@ -319,6 +325,7 @@ touch* touch::instance = nullptr;
 
 touch::touch() {
 	instance = this;
+	drawFn = TouchButton::drawFunction;
 }
 
 touch::~touch() {}

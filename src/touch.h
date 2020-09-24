@@ -551,6 +551,7 @@ class touch {
     TouchPoint point[2];
     TouchPoint getPressPoint();
     TouchButton* buttonFor(TouchPoint& p);
+    void (*drawFn)(TouchZone* z, ButtonColors bc, char* lbl, uint8_t textFont, const GFXfont* freeFont, uint8_t textSize, uint8_t datum, int16_t dx, int16_t dy);
   private:
 	friend class TouchButton;
 	friend class Gesture;
