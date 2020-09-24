@@ -4,17 +4,16 @@ TouchZone topHalf(0,0,320,120);
 TouchZone bottomHalf(0,120,320,160);
 Gesture swipeDown(topHalf, bottomHalf, "Swipe Down");
 
-TouchButton lt = TouchButton(0, 0, 160, 120, "left-top");
-TouchButton lb = TouchButton(0, 120, 160, 120, "left-bottom");
-TouchButton rt = TouchButton(160, 0, 160, 120, "right-top");
-TouchButton rb = TouchButton(160, 120, 160, 120, "right-bottom");
+TouchButton tl(5, 5, 150, 110, "top-left", {BLACK, WHITE, WHITE}, {RED, WHITE, WHITE}, TL_DATUM);
+TouchButton bl(5, 125, 150, 110, "bottom-left", {BLACK, WHITE, WHITE}, {RED, WHITE, WHITE}, BL_DATUM);
+TouchButton tr(165, 5, 150, 110, "top-right", {BLACK, WHITE, WHITE}, {RED, WHITE, WHITE}, TR_DATUM);
+TouchButton br(165, 125, 150, 110, "bottom-right", {BLACK, WHITE, WHITE}, {RED, WHITE, WHITE}, BR_DATUM);
 
 void setup() {
   M5.begin();
   M5.Touch.addHandler(eventDisplay);
-  M5.Touch.addHandler(colorButtons, TE_BTNONLY + TE_TOUCH + TE_RELEASE);
+  M5.Touch.addHandler(dblTapped, TE_DBLTAP + TE_BTNONLY);
   swipeDown.addHandler(yayWeSwiped);
-  rt.addHandler(dblTapped, TE_DBLTAP);
 }
 
 void loop() {
@@ -29,15 +28,16 @@ void eventDisplay(TouchEvent& e) {
   Serial.println();
 }
 
-void colorButtons(TouchEvent& e) {
-  TouchButton& b = *e.button;
-  M5.Lcd.fillRect(b.x, b.y, b.w, b.h, b.isPressed() ? WHITE : BLACK);
-}
-
 void yayWeSwiped(TouchEvent& e) {
   Serial.println("--- SWIPE DOWN DETECTED ---");
 }
 
 void dblTapped(TouchEvent& e) {
-  Serial.println("--- TOP RIGHT BUTTON WAS DOUBLETAPPED ---");
+  // This creates shorthand "b" for the button in the event, so "e.button->" becomes "b."
+  // (Warning: only if you're SURE there's a button with the event, otherwise will crash)
+  TouchButton& b = *e.button;
+  
+  // Toggles the background between black and blue
+  if (b.off.bg == BLACK) b.off.bg = BLUE; else b.off.bg = BLACK;
+  b.draw();
 }
