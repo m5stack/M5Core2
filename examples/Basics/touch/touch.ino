@@ -4,10 +4,12 @@ TouchZone topHalf(0,0,320,120);
 TouchZone bottomHalf(0,120,320,160);
 Gesture swipeDown(topHalf, bottomHalf, "Swipe Down");
 
-TouchButton tl(5, 5, 150, 110, "top-left", {BLACK, WHITE, WHITE}, {RED, WHITE, WHITE}, TL_DATUM);
-TouchButton bl(5, 125, 150, 110, "bottom-left", {BLACK, WHITE, WHITE}, {RED, WHITE, WHITE}, BL_DATUM);
-TouchButton tr(165, 5, 150, 110, "top-right", {BLACK, WHITE, WHITE}, {RED, WHITE, WHITE}, TR_DATUM);
-TouchButton br(165, 125, 150, 110, "bottom-right", {BLACK, WHITE, WHITE}, {RED, WHITE, WHITE}, BR_DATUM);
+ButtonColors on = {RED, WHITE, WHITE};
+ButtonColors off = {BLACK, WHITE, WHITE};
+TouchButton tl(5, 5, 150, 110, "top-left", off, on, TL_DATUM);
+TouchButton bl(5, 125, 150, 110, "bottom-left", off, on, BL_DATUM);
+TouchButton tr(165, 5, 150, 110, "top-right", off, on, TR_DATUM);
+TouchButton br(165, 125, 150, 110, "bottom-right", off, on, BR_DATUM);
 
 void setup() {
   M5.begin();
