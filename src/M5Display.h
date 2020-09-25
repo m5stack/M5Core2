@@ -1,7 +1,7 @@
 #ifndef _M5DISPLAY_H_
   #define _M5DISPLAY_H_
 
-  #define ARDUINO_M5STACK_Core2
+  #define TFT_eSPI_TOUCH_EMULATION
 
   #include <Arduino.h>
   #include <FS.h>
@@ -109,7 +109,7 @@
         std::vector<DisplayState> _displayStateStack;
         
         
-	#ifdef ARDUINO_M5STACK_Core2
+	#ifdef TFT_eSPI_TOUCH_EMULATION
       
 	// Emulates the TFT_eSPI touch interface using M5.Touch
 	  public:

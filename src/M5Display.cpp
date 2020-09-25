@@ -1,7 +1,7 @@
 #include "M5Display.h"
 
-#ifdef ARDUINO_M5STACK_Core2
-	#include <M5Core2.h>	// We need the M5.Touch
+#ifdef TFT_eSPI_TOUCH_EMULATION
+	#include <M5Core2.h>	// We need M5.Touch
 #endif
 
 #define BLK_PWM_CHANNEL 7 // LEDC_CHANNEL_7
@@ -643,7 +643,7 @@ void M5Display::popState() {
 }
 	
 
-#ifdef ARDUINO_M5STACK_Core2
+#ifdef TFT_eSPI_TOUCH_EMULATION
 
 // Emulates the TFT_eSPI touch interface using M5.Touch
 
