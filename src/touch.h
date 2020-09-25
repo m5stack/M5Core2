@@ -399,6 +399,7 @@ class TouchZone {
 	bool operator ==(const TouchPoint& p);
 	void set(int16_t x_, int16_t y_, int16_t w_, int16_t h_);
     bool contains(const TouchPoint &p);
+    bool contains(int16_t x, int16_t y);
     void rotate(uint8_t m);
     int16_t x, y, w, h;
 };
@@ -470,7 +471,8 @@ class TouchButton : public TouchZone {
 	  uint8_t datum,
 	  int16_t dx,
 	  int16_t dy,
-	  uint8_t r
+	  uint8_t r,
+	  bool compat
 	);
 	void draw(ButtonColors bc);
 	void draw();
@@ -492,9 +494,11 @@ class TouchButton : public TouchZone {
 	  uint8_t datum,
 	  int16_t dx,
 	  int16_t dy,
-	  uint8_t r
+	  uint8_t r,
+	  bool compat
 	);
-	char label[51];		
+	char label[51];
+	bool compat; // For TFT_eSPI_Button emulation		
   private:
 	uint8_t _textFont;
 	const GFXfont* _freeFont;
@@ -570,7 +574,6 @@ class touch {
   public:
     touch();
     ~touch();
-    static touch* instance;
     void begin();
     bool ispressed();
 	uint8_t ft6336(uint8_t reg, int16_t value = -1);
@@ -608,7 +611,8 @@ class touch {
 	  uint8_t datum,
 	  int16_t dx,
 	  int16_t dy,
-	  uint8_t r
+	  uint8_t r,
+	  bool compat
 	);
 	void setFont(const GFXfont* freeFont_);
 	void setFont(uint8_t textFont_);
@@ -644,7 +648,36 @@ class touch {
 	uint8_t _textFont;
 	const GFXfont* _freeFont;
 	uint8_t _textSize;
-	 
 };
+
+
+// TFT_eSPI_Button compatibility mode
+
+class TFT_eSPI_Button : public TouchButton {
+  public:
+	TFT_eSPI_Button();
+	void initButton(
+	  TFT_eSPI *gfx, 
+	  int16_t x, int16_t y, uint16_t w, uint16_t h, 
+	  uint16_t outline, uint16_t fill, uint16_t textcolor,
+	  char *label,
+	  uint8_t textsize_
+	);
+	void initButtonUL(
+	  TFT_eSPI *gfx,
+	  int16_t x_, int16_t y_, uint16_t w_, uint16_t h_, 
+	  uint16_t outline, uint16_t fill, uint16_t textcolor, 
+	  char *label,
+	  uint8_t textsize_
+	);
+	void     setLabelDatum(int16_t x_delta, int16_t y_delta, uint8_t datum = MC_DATUM);
+	void     drawButton(bool inverted = false, String long_name = "");
+	bool     contains(int16_t x, int16_t y);
+	void     press(bool p);
+	bool     isPressed();
+	bool     justPressed();
+	bool     justReleased();
+};
+
 
 #endif

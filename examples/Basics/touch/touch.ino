@@ -27,7 +27,7 @@ void loop() {
 void eventDisplay(TouchEvent& e) {
   Serial.printf("%-12s finger%d  %-18s (%3d, %3d)", e.typeName(), e.finger, e.objName(), e.from.x, e.from.y);
   if (e.type != TE_TOUCH && e.type != TE_TAP && e.type != TE_DBLTAP) {
-    Serial.printf("--> (%3d, %3d)  %5d ms", e.to.x, e.to.y, e.duration);
+    Serial.printf(" --> (%3d, %3d)  %5d ms", e.to.x, e.to.y, e.duration);
   }
   Serial.println();
 }

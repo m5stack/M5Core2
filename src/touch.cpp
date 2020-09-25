@@ -1,5 +1,5 @@
 #include "touch.h"
-#include "M5Core2.h"		// We're using the display in here
+#include "M5Core2.h"		// We're using M5.Lcd and M5.Touch in here
 
 
 
@@ -111,6 +111,10 @@ bool TouchZone::contains(const TouchPoint &p) {
 	return (p.y >= y && p.y <= y + h && p.x >= x && p.x <= x + w);
 }
 
+bool TouchZone::contains(int16_t x_, int16_t y_) {
+	return (y_ >= y && y_ <= y + h && x_ >= x && x_ <= x + w);
+}
+
 
 // HotZone class (for compatibility with older M5Core2 code)
 
@@ -196,7 +200,7 @@ TouchButton::TouchButton(
 	_hold_time = -1;
 	_lastChange = _time;
 	_pressTime = _time;
-	touch::instance->registerButton(this);
+	M5.Touch.registerButton(this);
 	// visual stuff
 	off = off_;
 	on = on_;
@@ -207,11 +211,10 @@ TouchButton::TouchButton(
 	drawFn = nullptr;
 	drawZone = this;
 	strncpy(label, name_, 16);
-	draw(off);
 }
 
 TouchButton::~TouchButton() {
-	touch::instance->deregisterButton(this);
+	M5.Touch.deregisterButton(this);
 }
 
 bool TouchButton::setState(bool newState) {
@@ -264,11 +267,11 @@ bool TouchButton::releasedFor(uint32_t ms) {
 uint32_t TouchButton::lastChange() { return (_lastChange); }
 
 void TouchButton::addHandler(void (*fn)(TouchEvent&), uint16_t eventMask /* = TE_ALL */) {
-	touch::instance->addHandler(fn, eventMask, this, nullptr);
+	M5.Touch.addHandler(fn, eventMask, this, nullptr);
 }
 
 void TouchButton::delHandlers(void (*fn)(TouchEvent&) /* = nullptr */) {
-	touch::instance->delHandlers(fn, this, nullptr);
+	M5.Touch.delHandlers(fn, this, nullptr);
 }
 
 // visual things for TouchButton
@@ -280,9 +283,9 @@ void TouchButton::draw() {
 void TouchButton::draw(ButtonColors bc) {
 
 	// global font and size, override if locally set
-	uint8_t ts = touch::instance->_textSize;
-	const GFXfont* ff = touch::instance->_freeFont;
-	uint8_t tf = touch::instance->_textFont;
+	uint8_t ts = M5.Touch._textSize;
+	const GFXfont* ff = M5.Touch._freeFont;
+	uint8_t tf = M5.Touch._textFont;
 	if (_textFont) {
 		ff = _freeFont;
 		tf = _textFont;
@@ -291,11 +294,11 @@ void TouchButton::draw(ButtonColors bc) {
 	
 	// use locally set draw function if aplicable, global one otherwise
 	if (drawFn) {
-		drawFn(drawZone, bc, label, tf, ff, ts, datum, dx, dy, r);
+		drawFn(drawZone, bc, label, tf, ff, ts, datum, dx, dy, r, compat);
 		return;
 	}
-	if (touch::instance->drawFn) {
-		touch::instance->drawFn(drawZone, bc, label, tf, ff, ts, datum, dx, dy, r);
+	if (M5.Touch.drawFn) {
+		M5.Touch.drawFn(drawZone, bc, label, tf, ff, ts, datum, dx, dy, r, compat);
 	}
 }
 
@@ -309,11 +312,15 @@ void TouchButton::drawFunction(
   uint8_t datum,
   int16_t dx,
   int16_t dy,
-  uint8_t r
+  uint8_t r,
+  bool compat
 ) {
 	if (bc.bg == NODRAW && bc.outline == NODRAW && bc.text == NODRAW) return;
-	
-	M5.Lcd.pushState();
+
+	uint8_t tempdatum = M5.Lcd.getTextDatum();
+	uint16_t tempPadding = M5.Lcd.padX;	
+
+	if (!compat) M5.Lcd.pushState();
 	
 	if (bc.bg != NODRAW) {
 		if (r >= 2) {
@@ -334,38 +341,37 @@ void TouchButton::drawFunction(
 	if (bc.text != NODRAW && bc.text != bc.bg && lbl != "") {
 	
 		// So much code, only to figure out where to put the text
-		uint8_t margin = max(r / 2, 6);
 		uint16_t tx, ty;
-		switch (datum) {
-		  case TL_DATUM:
-		  case ML_DATUM:
-		  case BL_DATUM:
-			tx = z->x + margin;
-			break;
-		  case TR_DATUM:
-		  case MR_DATUM:
-		  case BR_DATUM:
-			tx = z->x + z->w - margin;
-			break;
-		  default:
-			tx = z->x + (z->w / 2);
-			break;
-		}
-		switch (datum) {
-		  case TL_DATUM:
-		  case TC_DATUM:
-		  case TR_DATUM:
-			ty = z->y + margin;
-			break;
-		  case BL_DATUM:
-		  case BC_DATUM:
-		  case BR_DATUM:
-			ty = z->y + z->h - margin;
-			break;
-		  default:
-			ty = z->y + (z->h / 2);
-			break;
-		}		
+		tx = z->x + (z->w / 2);
+		ty = z->y + (z->h / 2);
+		
+		if (!compat) {
+			uint8_t margin = max(r / 2, 6);
+			switch (datum) {
+			  case TL_DATUM:
+			  case ML_DATUM:
+			  case BL_DATUM:
+				tx = z->x + margin;
+				break;
+			  case TR_DATUM:
+			  case MR_DATUM:
+			  case BR_DATUM:
+				tx = z->x + z->w - margin;
+				break;
+			}
+			switch (datum) {
+			  case TL_DATUM:
+			  case TC_DATUM:
+			  case TR_DATUM:
+				ty = z->y + margin;
+				break;
+			  case BL_DATUM:
+			  case BC_DATUM:
+			  case BR_DATUM:
+				ty = z->y + z->h - margin;
+				break;
+			}
+		}	
 	
 		// Actual drawing of text
 		M5.Lcd.setTextColor(bc.text, bc.bg);
@@ -376,7 +382,12 @@ void TouchButton::drawFunction(
 		M5.Lcd.drawString(lbl, tx + dx, ty + dy);
 	}
 	
-	M5.Lcd.popState();
+	if (!compat) {
+		M5.Lcd.popState();
+	} else {
+		M5.Lcd.setTextDatum(tempdatum);
+		M5.Lcd.setTextPadding(tempPadding);
+	}
 }
 
 void TouchButton::setLabel(const char* label_) {
@@ -414,11 +425,11 @@ Gesture::Gesture(
 	maxTime = maxTime_;
 	minDistance = minDistance_;
 	detected = false;
-	touch::instance->registerGesture(this);
+	M5.Touch.registerGesture(this);
 }
 
 Gesture::~Gesture() {
-	touch::instance->deregisterGesture(this);
+	M5.Touch.deregisterGesture(this);
 }
 
 bool Gesture::test(TouchEvent& e) {
@@ -432,21 +443,18 @@ bool Gesture::test(TouchEvent& e) {
 bool Gesture::wasDetected() { return detected; }
 
 void Gesture::addHandler(void (*fn)(TouchEvent&), uint16_t eventMask /* = TE_ALL */) {
-	touch::instance->addHandler(fn, eventMask, nullptr, this);
+	M5.Touch.addHandler(fn, eventMask, nullptr, this);
 }
 
 void Gesture::delHandlers(void (*fn)(TouchEvent&) /* = nullptr */) {
-	touch::instance->delHandlers(fn, nullptr, this);
+	M5.Touch.delHandlers(fn, nullptr, this);
 }
 
 
 
 // touch class
 
-touch* touch::instance = nullptr;
-
 touch::touch() {
-	instance = this;
 	drawFn = TouchButton::drawFunction;
 	setFont(BUTTON_FONT);
 	setTextSize(BUTTON_TEXTSIZE);
@@ -590,6 +598,7 @@ void touch::doEvents() {
 	_finger[1 - _point0finger].current = point[1];
 	for (uint8_t i = 0; i < 2; i++) {
 		Finger& fi = _finger[i];
+		if (fi.button && fi.button->compat) continue;
 		TouchPoint& now = fi.current;
 		TouchPoint& prev = fi.previous;
 		
@@ -605,6 +614,7 @@ void touch::doEvents() {
 			fi.startTime = millis();
 			fi.startPoint = now;
 			fi.button = buttonFor(now);
+			if (fi.button && fi.button->compat) continue;
 			fireEvent(i, TE_TOUCH, now, now, 0, fi.button, nullptr);
 		} else if (prev.valid() && !now.valid()) {
 			TouchEvent e = fireEvent(i, TE_RELEASE, fi.startPoint, prev, millis() - fi.startTime, fi.button, nullptr);
@@ -757,3 +767,63 @@ void touch::setFont(uint8_t textFont_) {
 void touch::setTextSize(uint8_t textSize_) {
 	_textSize = textSize_;
 }
+
+
+
+// TFT_eSPI_Button compatibility mode
+
+TFT_eSPI_Button::TFT_eSPI_Button() : TouchButton(0,0,0,0) {
+	compat = true;
+}
+
+void TFT_eSPI_Button::initButton(
+  TFT_eSPI *gfx, 
+  int16_t x, int16_t y, uint16_t w, uint16_t h, 
+  uint16_t outline, uint16_t fill, uint16_t textcolor,
+  char *label,
+  uint8_t textsize
+) {
+	initButtonUL(gfx, x - (w / 2), y - (h / 2), w, h, outline, fill, 
+	  textcolor, label, textsize);
+}
+
+void TFT_eSPI_Button::initButtonUL(
+  TFT_eSPI *gfx,
+  int16_t x_, int16_t y_, uint16_t w_, uint16_t h_, 
+  uint16_t outline, uint16_t fill, uint16_t textcolor, 
+  char *label_,
+  uint8_t textsize_
+) {
+	x = x_;
+	y = y_;
+	w = w_;
+	h = h_;
+	off = {fill, textcolor, outline};
+	on = {textcolor, fill, outline};
+	setTextSize(textsize_);
+	strncpy(label, label_, 9);
+}
+
+void TFT_eSPI_Button::setLabelDatum(int16_t dx_, int16_t dy_, uint8_t datum_ /* = MC_DATUM */) {
+	dx = dx_;
+	dy = dy_;
+	datum = datum_;
+}
+
+void TFT_eSPI_Button::drawButton(bool inverted /* = false */, String long_name /* = "" */) {
+	char oldLabel[51];
+	if (long_name != "") {
+		strncpy(oldLabel, label, 50);
+		strncpy(label, long_name.c_str(), 50);
+	}
+	draw(inverted ? on : off);
+	if (long_name != "") strncpy(label, oldLabel, 50);
+}
+
+bool TFT_eSPI_Button::contains(int16_t x, int16_t y) { return TouchButton::contains(x, y); }
+
+void TFT_eSPI_Button::press(bool p) { setState(p); }
+
+bool TFT_eSPI_Button::justPressed() { return wasPressed(); }
+
+bool TFT_eSPI_Button::justReleased() { return wasReleased(); }

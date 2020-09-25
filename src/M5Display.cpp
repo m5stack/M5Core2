@@ -1,5 +1,9 @@
 #include "M5Display.h"
 
+#ifdef ARDUINO_M5STACK_Core2
+	#include <M5Core2.h>	// We need the M5.Touch
+#endif
+
 #define BLK_PWM_CHANNEL 7 // LEDC_CHANNEL_7
 
 M5Display::M5Display() : TFT_eSPI() {}
@@ -608,6 +612,9 @@ void M5Display::drawPngUrl(const char *url, uint16_t x, uint16_t y,
   http.end();
 }
 
+
+// Saves and restores font properties, datum, cursor, colors
+
 void M5Display::pushState() {
 	DisplayState s;
 	s.textfont = textfont;
@@ -622,6 +629,7 @@ void M5Display::pushState() {
 }
 
 void M5Display::popState() {
+	if (_displayStateStack.empty()) return;
 	DisplayState s = _displayStateStack.back();
 	_displayStateStack.pop_back();
 	textfont = s.textfont;
@@ -635,4 +643,28 @@ void M5Display::popState() {
 }
 	
 
+#ifdef ARDUINO_M5STACK_Core2
 
+// Emulates the TFT_eSPI touch interface using M5.Touch
+
+uint8_t M5Display::getTouchRaw(uint16_t *x, uint16_t *y) { return getTouch(x, y); }
+
+uint16_t M5Display::getTouchRawZ(void) { return (M5.Touch.ispressed()) ? 1000 : 0; }
+
+void M5Display::convertRawXY(uint16_t *x, uint16_t *y)  { return; }
+
+uint8_t M5Display::getTouch(uint16_t *x, uint16_t *y, uint16_t threshold /* = 600 */) {
+	M5.Touch.read();
+	if (M5.Touch.points) {
+		*x = M5.Touch.point[0].x;
+		*y = M5.Touch.point[0].y;
+		return true;
+	}
+	return false;
+}
+
+void M5Display::calibrateTouch(uint16_t *data, uint32_t color_fg, uint32_t color_bg, uint8_t size) { return; }
+
+void M5Display::setTouch(uint16_t *data) { return; }
+
+#endif
