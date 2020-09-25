@@ -13,7 +13,6 @@ TouchButton br(165, 125, 155, 115, "bottom-right", off, on, BR_DATUM);
 
 void setup() {
   M5.begin();
-  M5.Touch.setRotation(2);
   M5.Touch.addHandler(eventDisplay);
   M5.Touch.addHandler(dblTapped, TE_DBLTAP + TE_BTNONLY);
   swipeDown.addHandler(yayWeSwiped);

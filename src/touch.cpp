@@ -572,9 +572,7 @@ void touch::setRotation(uint8_t m) {
 	M5.BtnC.set(230,240,80,40);	
 	
 	// Then rotate them
-	Serial.printf("%d %d %d %d\n", M5.BtnA.x, M5.BtnA.y, M5.BtnA.w, M5.BtnA.h);
 	M5.BtnA.rotate(m);
-	Serial.printf("%d %d %d %d\n", M5.BtnA.x, M5.BtnA.y, M5.BtnA.w, M5.BtnA.h);
 	M5.BtnB.rotate(m);
 	M5.BtnC.rotate(m);
 }
