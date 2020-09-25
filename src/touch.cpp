@@ -42,7 +42,7 @@ bool TouchPoint::in(const TouchZone& z) {
 }
 
 bool TouchPoint::valid() {
-	return (x != -1);
+	return !(x == -1 && y == -1);
 }
 
 uint16_t TouchPoint::distanceTo(const TouchPoint& p) {
@@ -51,17 +51,56 @@ uint16_t TouchPoint::distanceTo(const TouchPoint& p) {
 	return sqrt(dx*dx + dy*dy);
 }
 
+void TouchPoint::rotate(uint8_t m) {
+	int16_t normal_x = x;
+	int16_t normal_y = y;
+	int16_t inv_x = 319 - x;
+	int16_t inv_y = 239 - y;	// negative for area outside of screen
+	switch (m) {
+	  case 0:
+		x = inv_y;
+		y = normal_x;
+		break;
+	  case 2:
+	    x = normal_y;
+	    y = inv_x;
+	    break;
+	  case 3:
+	  	x = inv_x;
+	  	y = inv_y;
+	  	break;
+	  // rotations 4-7 are mirrored
+	  case 4:
+	  	x = inv_y;
+	  	y = inv_x;
+	  	break;
+	  case 5:
+	  	x = normal_x;
+	  	y = inv_y;
+	  	break;
+	  case 6:
+	  	x = normal_y;
+	  	y = normal_x;
+	  	break;
+	  case 7:
+		x = inv_x;
+		y = normal_y;
+		break;
+	}
+}
+
+
 
 // TouchZone class
 
-TouchZone::TouchZone(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_) {
+TouchZone::TouchZone(int16_t x_, int16_t y_, int16_t w_, int16_t h_) {
 	set(x_, y_, w_, h_);
 }
 
 // constructor without arguments for descendant classes
 TouchZone::TouchZone() {};
 
-void TouchZone::set(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_) {
+void TouchZone::set(int16_t x_, int16_t y_, int16_t w_, int16_t h_) {
 	x = x_;
 	y = y_;
 	w = w_;
@@ -75,12 +114,12 @@ bool TouchZone::contains(const TouchPoint &p) {
 
 // HotZone class (for compatibility with older M5Core2 code)
 
-HotZone::HotZone(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, void (*fun_)() /* = nullptr */) {
+HotZone::HotZone(int16_t x0_, int16_t y0_, int16_t x1_, int16_t y1_, void (*fun_)() /* = nullptr */) {
 	set(x0_, y0_, x1_ - x0_, y1_ - y0_);
 	fun = fun_;
 }
 
-void HotZone::setZone(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, void (*fun_)() /*= nullptr */){
+void HotZone::setZone(int16_t x0_, int16_t y0_, int16_t x1_, int16_t y1_, void (*fun_)() /*= nullptr */){
 	set(x0_, y0_, x1_ - x0_, y1_ - y0_);
 	fun = fun_;
 }
@@ -96,17 +135,58 @@ bool HotZone::inHotZoneDoFun(TouchPoint &p) {
 	}
 }
 
+void TouchZone::rotate(uint8_t m) {
+	int16_t normal_x = x;
+	int16_t normal_y = y;
+	int16_t inv_x = 319 - x - w;
+	int16_t inv_y = 239 - y - h;	// negative for area outside of screen
+	switch (m) {
+	  case 0:
+		x = inv_y;
+		y = normal_x;
+		break;
+	  case 2:
+	    x = normal_y;
+	    y = inv_x;
+	    break;
+	  case 3:
+	  	x = inv_x;
+	  	y = inv_y;
+	  	break;
+	  // rotations 4-7 are mirrored
+	  case 4:
+	  	x = inv_y;
+	  	y = inv_x;
+	  	break;
+	  case 5:
+	  	x = normal_x;
+	  	y = inv_y;
+	  	break;
+	  case 6:
+	  	x = normal_y;
+	  	y = normal_x;
+	  	break;
+	  case 7:
+		x = inv_x;
+		y = normal_y;
+		break;
+	}
+	if (!(m % 2)) std::swap(w, h);
+}
+
+
 
 // TouchButton class
 
 TouchButton::TouchButton(
-  uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_,
+  int16_t x_, int16_t y_, int16_t w_, int16_t h_,
   const char* name_ /* = "" */,
   ButtonColors off_ /*= {NODRAW, NODRAW, NODRAW} */,
   ButtonColors on_ /* = {NODRAW, NODRAW, NODRAW} */,
   uint8_t datum_ /* = BUTTON_DATUM */,
-  uint8_t dx_ /* = 0 */,
-  uint8_t dy_ /* = 0 */
+  int16_t dx_ /* = 0 */,
+  int16_t dy_ /* = 0 */,
+  uint8_t r_ /* = 0xFF */
 ) {
 	set(x_, y_, w_, h_);
 	strncpy(name, name_, 15);
@@ -120,11 +200,10 @@ TouchButton::TouchButton(
 	// visual stuff
 	off = off_;
 	on = on_;
-	setFont(FSS9);
-	textSize = 1;
 	datum = datum_;
 	dx = dx_;
 	dy = dy_;
+	r = (r_ == 0xFF) ? min(w, h) / 4 : r_;
 	drawFn = nullptr;
 	drawZone = this;
 	strncpy(label, name_, 16);
@@ -199,62 +278,90 @@ void TouchButton::draw() {
 } 
 
 void TouchButton::draw(ButtonColors bc) {
+
+	// global font and size, override if locally set
+	uint8_t ts = touch::instance->_textSize;
+	const GFXfont* ff = touch::instance->_freeFont;
+	uint8_t tf = touch::instance->_textFont;
+	if (_textFont) {
+		ff = _freeFont;
+		tf = _textFont;
+	}
+	if (_textSize) ts = _textSize;
+	
+	// use locally set draw function if aplicable, global one otherwise
 	if (drawFn) {
-		drawFn(drawZone, bc, label, _textFont, _freeFont, textSize, datum, dx, dy);
+		drawFn(drawZone, bc, label, tf, ff, ts, datum, dx, dy, r);
 		return;
 	}
 	if (touch::instance->drawFn) {
-		touch::instance->drawFn(drawZone, bc, label, _textFont, _freeFont, textSize, datum, dx, dy);
+		touch::instance->drawFn(drawZone, bc, label, tf, ff, ts, datum, dx, dy, r);
 	}
 }
 
-void TouchButton::drawFunction(TouchZone* z, ButtonColors bc, char* lbl, uint8_t textFont, const GFXfont* freeFont, uint8_t textSize, uint8_t datum, int16_t dx, int16_t dy) {
+void TouchButton::drawFunction(
+  TouchZone* z,
+  ButtonColors bc,
+  char* lbl,
+  uint8_t textFont,
+  const GFXfont* freeFont,
+  uint8_t textSize,
+  uint8_t datum,
+  int16_t dx,
+  int16_t dy,
+  uint8_t r
+) {
 	if (!z || !lbl) return;
-
-	uint8_t r = min(z->w, z->h) / 4; // Corner radius
 	
-	if (bc.bg != NODRAW)
-		M5.Lcd.fillRoundRect(z->x, z->y, z->w, z->h, r, bc.bg);
+	if (bc.bg != NODRAW) {
+		if (r >= 2) {
+			M5.Lcd.fillRoundRect(z->x, z->y, z->w, z->h, r, bc.bg);
+		} else {
+			M5.Lcd.fillRect(z->x, z->y, z->w, z->h, bc.bg);
+		}
+	}
 
-	if (bc.outline != NODRAW)
-		M5.Lcd.drawRoundRect(z->x, z->y, z->w, z->h, r, bc.outline);
+	if (bc.outline != NODRAW) {
+		if (r >= 2) {
+			M5.Lcd.drawRoundRect(z->x, z->y, z->w, z->h, r, bc.outline);
+		} else {
+			M5.Lcd.drawRect(z->x, z->y, z->w, z->h, bc.outline);
+		}
+	}
 
 	if (bc.text != NODRAW && bc.text != bc.bg && lbl != "") {
 	
 		// So much code, only to figure out where to put the text
+		uint8_t margin = max(r / 2, 6);
 		uint16_t tx, ty;
 		switch (datum) {
 		  case TL_DATUM:
 		  case ML_DATUM:
 		  case BL_DATUM:
-			tx = z->x + (r / 2);
-			break;
-		  case TC_DATUM:
-		  case MC_DATUM:
-		  case BC_DATUM:
-			tx = z->x + (z->w / 2);
+			tx = z->x + margin;
 			break;
 		  case TR_DATUM:
 		  case MR_DATUM:
 		  case BR_DATUM:
-			tx = z->x + z->w - (r / 2);
+			tx = z->x + z->w - margin;
+			break;
+		  default:
+			tx = z->x + (z->w / 2);
 			break;
 		}
 		switch (datum) {
 		  case TL_DATUM:
 		  case TC_DATUM:
 		  case TR_DATUM:
-			ty = z->y + (r / 2);
-			break;
-		  case ML_DATUM:
-		  case MC_DATUM:
-		  case MR_DATUM:
-			ty = z->y + (z->h / 2);
+			ty = z->y + margin;
 			break;
 		  case BL_DATUM:
 		  case BC_DATUM:
 		  case BR_DATUM:
-			ty = z->y + z->h - (r / 2);
+			ty = z->y + z->h - margin;
+			break;
+		  default:
+			ty = z->y + (z->h / 2);
 			break;
 		}		
 	
@@ -278,16 +385,29 @@ void TouchButton::setLabel(const char* label_) {
 
 void TouchButton::setFont(const GFXfont* freeFont_) {
 	_freeFont = freeFont_;
+	_textFont = 1;
 }
 
-void TouchButton::setFont(uint8_t textFont_) {
+void TouchButton::setFont(uint8_t textFont_ /* = 0 */) {
 	_freeFont = nullptr;
 	_textFont = textFont_;
 }
 
+void TouchButton::setTextSize(uint8_t textSize_ /* = 0 */) {
+	_textSize = textSize_;
+}
+
+
+
 // Gesture class
 
-Gesture::Gesture(TouchZone fromZone_, TouchZone toZone_, const char* name_ /* = "" */, uint16_t maxTime_ /* = 500 */, uint16_t minDistance_ /* = 50 */) {
+Gesture::Gesture(
+  TouchZone fromZone_,
+  TouchZone toZone_,
+  const char* name_ /* = "" */,
+  uint16_t maxTime_ /* = 500 */,
+  uint16_t minDistance_ /* = 50 */
+) {
 	fromZone = fromZone_;
 	toZone = toZone_;
 	strncpy(name, name_, 15);
@@ -319,6 +439,8 @@ void Gesture::delHandlers(void (*fn)(TouchEvent&) /* = nullptr */) {
 	touch::instance->delHandlers(fn, nullptr, this);
 }
 
+
+
 // touch class
 
 touch* touch::instance = nullptr;
@@ -326,6 +448,8 @@ touch* touch::instance = nullptr;
 touch::touch() {
 	instance = this;
 	drawFn = TouchButton::drawFunction;
+	setFont(BUTTON_FONT);
+	setTextSize(BUTTON_TEXTSIZE);
 }
 
 touch::~touch() {}
@@ -342,11 +466,6 @@ void touch::begin() {
     ft6336(0xA4, 0x00);
     
     interval(DEFAULT_INTERVAL);
-    
-    // Draw any registered buttons
-    // (Also in constructor, but globals get constructed before M5.begin()
-	drawButtons();
-    
 }
 
 bool touch::ispressed() {
@@ -427,6 +546,13 @@ void touch::read() {
 			}
 		}
 	}
+	
+	if (M5.Lcd.rotation != 1) {
+		for (uint8_t i = 0; i < 2; i++) {
+			if (p[i].valid()) p[i].rotate(M5.Lcd.rotation);
+		}
+	}
+	
 	if (p[0] != point[0] || p[1] != point[1]) {
 		changed = true;
 		point[0] = p[0];
@@ -437,11 +563,26 @@ void touch::read() {
 	doEvents();
 }
 
+void touch::setRotation(uint8_t m) {
+	M5.Lcd.setRotation(m);
+
+	// Put these buttons in their original place
+    M5.BtnA.set(10,240,110,40);
+	M5.BtnB.set(130,240,70,40);
+	M5.BtnC.set(230,240,80,40);	
+	
+	// Then rotate them
+	Serial.printf("%d %d %d %d\n", M5.BtnA.x, M5.BtnA.y, M5.BtnA.w, M5.BtnA.h);
+	M5.BtnA.rotate(m);
+	Serial.printf("%d %d %d %d\n", M5.BtnA.x, M5.BtnA.y, M5.BtnA.w, M5.BtnA.h);
+	M5.BtnB.rotate(m);
+	M5.BtnC.rotate(m);
+}
+
 TouchPoint touch::getPressPoint() {
 	read();
 	return point[0];
 }
-
 
 // Events processing
 
@@ -519,36 +660,20 @@ TouchEvent touch::fireEvent(uint8_t finger, uint16_t type, TouchPoint& from,
 	return e;
 }
 
-const char* touch::eventTypeName(TouchEvent& e) {
-	const char *unknown = "TE_UNKNOWN";
-	const char *eventNames[NUM_EVENTS] = {
-		"TE_TOUCH", 
-		"TE_RELEASE",
-		"TE_MOVE",
-		"TE_GESTURE",
-		"TE_TAP",
-		"TE_DBLTAP",
-		"TE_DRAGGED",
-		"TE_PRESSED"
-	};
-	for (uint8_t i = 0; i < NUM_EVENTS; i++) {
-		if ((e.type >> i) & 1) return eventNames[i];
-	}
-	return unknown;
-}
-
-const char* touch::eventObjName(TouchEvent& e) {
-	const char *empty = "";
-	if (e.button) return e.button->name;
-	if (e.gesture) return e.gesture->name;
-	return empty;
-}
+// Deprecated: use e.typeName() and e.objName()
+const char* touch::eventTypeName(TouchEvent& e) { return e.typeName(); }
+const char* touch::eventObjName(TouchEvent& e) { return e.objName(); }
 
 void touch::drawButtons() {
 	for ( auto button : _buttons ) button->draw();
 }
 
-void touch::addHandler(void (*fn)(TouchEvent&), uint16_t eventMask /* = TE_ALL */, TouchButton* button /* = nullptr */, Gesture* gesture /* = nullptr */) {
+void touch::addHandler(
+  void (*fn)(TouchEvent&),
+  uint16_t eventMask /* = TE_ALL */,
+  TouchButton* button /* = nullptr */,
+  Gesture* gesture /* = nullptr */
+) {
 	EventHandler handler;
 	handler.fn = fn;
 	handler.eventMask = eventMask;
@@ -557,7 +682,11 @@ void touch::addHandler(void (*fn)(TouchEvent&), uint16_t eventMask /* = TE_ALL *
 	_eventHandlers.push_back(handler);
 }
 
-void touch::delHandlers(void (*fn)(TouchEvent&) /* = nullptr */, TouchButton* button /* = nullptr */, Gesture* gesture /* = nullptr */) {
+void touch::delHandlers(
+  void (*fn)(TouchEvent&) /* = nullptr */,
+  TouchButton* button /* = nullptr */,
+  Gesture* gesture /* = nullptr */
+) {
 	for(int i = _eventHandlers.size() - 1; i >= 0 ; --i) {
 		if (fn && fn != _eventHandlers[i].fn) continue;
 		if (button && _eventHandlers[i].button != button) continue;
@@ -613,4 +742,20 @@ void touch::deregisterGesture(Gesture* gesture) {
 			return;
 		}
 	}
+}
+
+// Visual
+
+void touch::setFont(const GFXfont* freeFont_) {
+	_freeFont = freeFont_;
+	_textFont = 1;
+}
+
+void touch::setFont(uint8_t textFont_) {
+	_freeFont = nullptr;
+	_textFont = textFont_;
+}
+
+void touch::setTextSize(uint8_t textSize_) {
+	_textSize = textSize_;
 }

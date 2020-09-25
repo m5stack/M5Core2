@@ -6,16 +6,19 @@ Gesture swipeDown(topHalf, bottomHalf, "Swipe Down");
 
 ButtonColors on = {RED, WHITE, WHITE};
 ButtonColors off = {BLACK, WHITE, WHITE};
-TouchButton tl(5, 5, 150, 110, "top-left", off, on, TL_DATUM);
-TouchButton bl(5, 125, 150, 110, "bottom-left", off, on, BL_DATUM);
-TouchButton tr(165, 5, 150, 110, "top-right", off, on, TR_DATUM);
-TouchButton br(165, 125, 150, 110, "bottom-right", off, on, BR_DATUM);
+TouchButton tl(0, 0, 155, 115, "top-left", off, on, TL_DATUM);
+TouchButton bl(0, 125, 155, 115, "bottom-left", off, on, BL_DATUM);
+TouchButton tr(165, 0, 155, 115, "top-right", off, on, TR_DATUM);
+TouchButton br(165, 125, 155, 115, "bottom-right", off, on, BR_DATUM);
 
 void setup() {
   M5.begin();
+  M5.Touch.setRotation(2);
   M5.Touch.addHandler(eventDisplay);
   M5.Touch.addHandler(dblTapped, TE_DBLTAP + TE_BTNONLY);
   swipeDown.addHandler(yayWeSwiped);
+  M5.Touch.setFont(FSS12);
+  M5.Touch.drawButtons();
 }
 
 void loop() {
@@ -23,7 +26,7 @@ void loop() {
 }
 
 void eventDisplay(TouchEvent& e) {
-  Serial.printf("%-12s finger%d  %-18s (%3d, %3d)", M5.Touch.eventTypeName(e), e.finger, M5.Touch.eventObjName(e),  e.from.x, e.from.y);
+  Serial.printf("%-12s finger%d  %-18s (%3d, %3d)", e.typeName(), e.finger, e.objName(), e.from.x, e.from.y);
   if (e.type != TE_TOUCH && e.type != TE_TAP && e.type != TE_DBLTAP) {
     Serial.printf("--> (%3d, %3d)  %5d ms", e.to.x, e.to.y, e.duration);
   }
