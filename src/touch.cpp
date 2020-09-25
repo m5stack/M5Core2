@@ -311,7 +311,9 @@ void TouchButton::drawFunction(
   int16_t dy,
   uint8_t r
 ) {
-	if (!z || !lbl) return;
+	if (bc.bg == NODRAW && bc.outline == NODRAW && bc.text == NODRAW) return;
+	
+	M5.Lcd.pushState();
 	
 	if (bc.bg != NODRAW) {
 		if (r >= 2) {
@@ -369,14 +371,12 @@ void TouchButton::drawFunction(
 		M5.Lcd.setTextColor(bc.text, bc.bg);
 		M5.Lcd.setTextSize(textSize);
 		if (freeFont) M5.Lcd.setFreeFont(freeFont); else M5.Lcd.setTextFont(textFont);
-		uint8_t tempdatum = M5.Lcd.getTextDatum();
 		M5.Lcd.setTextDatum(datum);
-		uint16_t tempPadding = M5.Lcd.padX;
 		M5.Lcd.setTextPadding(0);
 		M5.Lcd.drawString(lbl, tx + dx, ty + dy);
-		M5.Lcd.setTextDatum(tempdatum);
-		M5.Lcd.setTextPadding(tempPadding);
 	}
+	
+	M5.Lcd.popState();
 }
 
 void TouchButton::setLabel(const char* label_) {

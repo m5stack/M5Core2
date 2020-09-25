@@ -607,3 +607,32 @@ void M5Display::drawPngUrl(const char *url, uint16_t x, uint16_t y,
   pngle_destroy(pngle);
   http.end();
 }
+
+void M5Display::pushState() {
+	DisplayState s;
+	s.textfont = textfont;
+	s.textsize = textsize;
+	s.textcolor = textcolor;
+	s.textbgcolor = textbgcolor;
+	s.cursor_x = cursor_x;
+	s.cursor_y = cursor_y;
+	s.padX = padX;
+	s.gfxFont = gfxFont;
+	_displayStateStack.push_back(s);
+}
+
+void M5Display::popState() {
+	DisplayState s = _displayStateStack.back();
+	_displayStateStack.pop_back();
+	textfont = s.textfont;
+	textsize = s.textsize;
+	textcolor = s.textcolor;
+	textbgcolor = s.textbgcolor;
+	cursor_x = s.cursor_x;
+	cursor_y = s.cursor_y;
+	padX = s.padX;
+	if (s.gfxFont) setFreeFont(s.gfxFont);
+}
+	
+
+

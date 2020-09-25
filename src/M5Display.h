@@ -14,6 +14,13 @@
     JPEG_DIV_8,
     JPEG_DIV_MAX
   } jpeg_div_t;
+  
+  struct DisplayState {
+  	uint8_t textfont, textsize, datum;
+	const GFXfont* gfxFont;
+	uint32_t textcolor, textbgcolor;
+	int32_t  cursor_x, cursor_y, padX;
+  };
 
   class M5Display : public TFT_eSPI {
     public:
@@ -91,7 +98,11 @@
                     uint16_t maxWidth = 0, uint16_t maxHeight = 0,
                     uint16_t offX = 0, uint16_t offY = 0,
                     double scale = 1.0, uint8_t alphaThreshold = 127);
+                    
+      void pushState();		// Saves font properties, datum, cursor, colors
+      void popState();
 
     private:
+      std::vector<DisplayState> _displayStateStack;
   };
 #endif
