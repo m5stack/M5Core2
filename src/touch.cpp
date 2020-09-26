@@ -374,7 +374,7 @@ void TouchButton::drawFunction(
 		}	
 	
 		// Actual drawing of text
-		M5.Lcd.setTextColor(bc.text, bc.bg);
+		M5.Lcd.setTextColor(bc.text);
 		M5.Lcd.setTextSize(textSize);
 		if (freeFont) M5.Lcd.setFreeFont(freeFont); else M5.Lcd.setTextFont(textFont);
 		M5.Lcd.setTextDatum(datum);
