@@ -33,7 +33,6 @@ void setup() {
 
 void loop() {
   M5.update();
-  delay(20);
 }
 
 // Positions the buttons and draws them. (Only because height and width
