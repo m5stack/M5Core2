@@ -15,7 +15,7 @@ Button::Button(
   int16_t dx_ /* = 0 */,
   int16_t dy_ /* = 0 */,
   uint8_t r_ /* = 0xFF */
-) : Zone(x_, y_, w_, h_) {
+) : Zone(x_, y_, w_, h_, rot1_) {
 	instances.push_back(this);
 	strncpy(name, name_, 15);
 	_pin = -1;
