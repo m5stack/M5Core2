@@ -71,10 +71,11 @@
     #include "SD.h"
 
     #include "M5Display.h"
+    #include "utility/M5Button.h"	// M5Buttons, M5Events, Button, Gesture
+    #include "M5Touch.h"			// M5Touch
     #include "utility/Config.h"
     #include "utility/CommUtil.h"
     #include "utility/MPU6886.h"
-    #include "touch.h"
     #include "AXP192.h"
     #include "RTC.h"
 
@@ -87,20 +88,29 @@
         void update();
 
         // LCD
-        M5Display Lcd = M5Display();
+        M5Display Lcd;
 
-        //Power
+        // Power
         AXP192 Axp;
 
-        touch Touch;
-        TouchButton BtnA = TouchButton(10,240,110,40, "BtnA");
-        TouchButton BtnB = TouchButton(130,240,70,40, "BtnB");
-        TouchButton BtnC = TouchButton(230,240,80,40, "BtnC");
+		// Touch
+        M5Touch Touch;
+        
+        // Buttons (for things that involve all buttons)
+        M5Buttons Buttons;
+        
+        // Touch version of the buttons on older M5stack cores, below screen
+        Button BtnA = Button(10,240,110,40, true ,"BtnA");
+        Button BtnB = Button(130,240,70,40, true, "BtnB");
+        Button BtnC = Button(230,240,80,40, true, "BtnC");
+        
+        // Events
+        M5Events Events;
 
-        MPU6886 IMU = MPU6886();
+        MPU6886 IMU;
 
         // I2C
-        CommUtil I2C = CommUtil();
+        CommUtil I2C;
         
         RTC  Rtc;
         /**
