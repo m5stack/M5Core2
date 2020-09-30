@@ -13,12 +13,12 @@ class Gesture;
 #define BUTTONS	M5Buttons::instance
 
 
-#define MAX_TAP				100
+#define MAX_TAP				150
 #define MAX_BETWEEN_TAP		200
 #define GESTURE_MAXTIME		500
 #define GESTURE_MINDIST		75
 
-#define NUM_EVENTS			8
+#define NUM_EVENTS			9
 #define E_TOUCH				0x0001
 #define E_RELEASE			0x0002
 #define E_MOVE  			0x0004
@@ -27,6 +27,7 @@ class Gesture;
 #define E_DBLTAP			0x0020
 #define E_DRAGGED			0x0040
 #define E_PRESSED			0x0080
+#define E_PRESSING			0x0100
 
 #define E_ALL				0x0FFF
 #define E_BTNONLY			0x1000
@@ -43,8 +44,27 @@ struct ButtonColors {
 	uint16_t text;
 	uint16_t outline;
 };
+
+enum ExtState {
+	S_WAIT,
+	S_DOWN,
+	S_TAP_WAIT,
+	S_PRESSING
+};
 	
-struct Event; 	// Button needs Event and Event needs button
+class Button;
+	
+class Event {
+  public:
+	const char* typeName();
+	const char* objName();
+	uint8_t finger;
+	uint16_t type;
+	Point from, to;
+	uint16_t duration;
+	Button* button;
+	Gesture* gesture;
+};
 
 class Button : public Zone {
   public:
@@ -60,10 +80,20 @@ class Button : public Zone {
 	  int16_t dy_ = 0,
 	  uint8_t r_ = 0xFF
 	);
-	Button(uint8_t pin, uint8_t invert, uint32_t dbTime);
+	Button(
+	  uint8_t pin, uint8_t invert, uint32_t dbTime, String hw = "hw",
+	  int16_t x_ = 0, int16_t y_ = 0, int16_t w_ = 0, int16_t h_ = 0,
+	  bool rot1_ = false,
+	  const char* name_ = "",
+	  ButtonColors off_ = {NODRAW, NODRAW, NODRAW},
+	  ButtonColors on_ = {NODRAW, NODRAW, NODRAW},
+	  uint8_t datum_ = BUTTON_DATUM,
+	  int16_t dx_ = 0,
+	  int16_t dy_ = 0,
+	  uint8_t r_ = 0xFF
+	);
 	~Button();
 	int16_t instanceIndex();
-	void hardware(uint8_t pin, uint8_t invert, uint32_t dbTime);
 	bool read();
 	bool setState(bool);
 	bool isPressed();
@@ -80,13 +110,17 @@ class Button : public Zone {
 	uint8_t finger;
 	bool changed;
 	char name[16];
+	Event event;
+	uint8_t pin;
+	uint32_t dbTime;
+	bool invert;
   private:
   	friend class M5Buttons;
-	bool _state, _invert;
-	uint8_t _pin;
-	uint32_t _dbTime;
+	bool _state;
 	uint32_t _time;
 	uint32_t _lastChange, _lastLongPress, _pressTime, _hold_time;
+	ExtState _extState;
+	bool _process;
 	
   // visual stuff
   public:
@@ -147,18 +181,6 @@ class Gesture {
   	uint16_t maxTime, minDistance;
   	char name[16];
 	bool detected;
-};
-
-class Event {
-  public:
-	const char* typeName();
-	const char* objName();
-	uint8_t finger;
-	uint16_t type;
-	Point from, to;
-	uint16_t duration;
-	Button* button;
-	Gesture* gesture;
 };
 
 struct EventHandler {

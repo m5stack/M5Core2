@@ -18,10 +18,9 @@ Button::Button(
 ) : Zone(x_, y_, w_, h_, rot1_) {
 	instances.push_back(this);
 	strncpy(name, name_, 15);
-	_pin = -1;
+	pin = -1;
 	_state = false;
 	_time = millis();
-	changed = false;
 	_hold_time = -1;
 	_lastChange = _time;
 	_pressTime = _time;
@@ -32,20 +31,48 @@ Button::Button(
 	dx = dx_;
 	dy = dy_;
 	r =  r_;
+	_textFont = _textSize = 0;
+	compat = 0;
 	drawZone = this;
 	strncpy(label, name_, 16);
+	draw();
 }
 
-Button::Button(uint8_t pin, uint8_t invert, uint32_t dbTime) : Zone(0, 0, 0, 0) {
+Button::Button(
+  uint8_t pin_, uint8_t invert_, uint32_t dbTime_, String hw /* = "hw" */,
+  int16_t x_ /* = 0 */, int16_t y_ /* = 0 */, int16_t w_ /* = 0 */, int16_t h_ /* = 0 */,
+  bool rot1_ /* = false */,
+  const char* name_ /* = "" */,
+  ButtonColors off_ /*= {NODRAW, NODRAW, NODRAW} */,
+  ButtonColors on_ /* = {NODRAW, NODRAW, NODRAW} */,
+  uint8_t datum_ /* = BUTTON_DATUM */,
+  int16_t dx_ /* = 0 */,
+  int16_t dy_ /* = 0 */,
+  uint8_t r_ /* = 0xFF */
+) : Zone(x_, y_, w_, h_, rot1_) {
 	instances.push_back(this);
-	hardware(pin, invert, dbTime);
-	strncpy(name, "", 15);
+	pin = pin_;
+	pinMode(pin, INPUT_PULLUP);
+	invert = invert_;
+	dbTime = dbTime_;
+	strncpy(name, name_, 15);
+	_state = false;
+	_time = millis();
+	_hold_time = -1;
+	_lastChange = _time;
+	_pressTime = _time;
 	// visual stuff
-	off = on = {NODRAW, NODRAW, NODRAW};
-	datum = BUTTON_DATUM;
-	r =  0xFF;
+	off = off_;
+	on = on_;
+	datum = datum_;
+	dx = dx_;
+	dy = dy_;
+	r =  r_;
+	_textFont = _textSize = 0;
+	compat = 0;
 	drawZone = this;
-	strncpy(label, "", 16);
+	strncpy(label, name_, 16);
+	draw();
 }
 
 Button::~Button() {
@@ -65,37 +92,68 @@ int16_t Button::instanceIndex() {
 	return -1;
 }	
 
-void Button::hardware(uint8_t pin, uint8_t invert, uint32_t dbTime) {
-	_pin = pin;
-	_invert = invert;
-	_dbTime = dbTime;
-	pinMode(_pin, INPUT_PULLUP);
-	_state = digitalRead(_pin);
-	_state = _invert ? !_state : _state;
-	_time = millis();
-	changed = false;
-	_hold_time = -1;
-	_lastChange = _time;
-	_pressTime = _time;
-}
-
 bool Button::read() {
-	if (_pin == 0xFF) return _state;
-	changed = false;
+	if (pin == 0xFF) return false;
+	event = Event();
+	uint16_t duration = _time - _lastChange;
+	Point invalid;
+	if (changed) {
+		// Identify deeper meaning, if any, of state change last time
+		changed = false;
+		_lastChange = _time;
+		if (!_state && duration <= MAX_TAP) {
+			if (_extState == S_TAP_WAIT) {
+				EVENTS->fireEvent(0, E_DBLTAP, invalid, invalid, 0, this, nullptr);
+				_extState = S_WAIT;
+				return _state;
+			}
+			if (_extState == S_DOWN) {
+				_extState = S_TAP_WAIT;
+			}
+		} else if (_extState == S_PRESSING) {
+			EVENTS->fireEvent(0, E_PRESSED, invalid, invalid, 0, this, nullptr);
+			_extState = S_WAIT;
+			return _state;
+		}
+	} else {
+		// See if anything has timed out 
+		if (_extState == S_TAP_WAIT && duration >= MAX_BETWEEN_TAP) {
+			EVENTS->fireEvent(0, E_TAP, invalid, invalid, 0, this, nullptr);
+			_extState = _state ? S_DOWN : S_WAIT;
+			return _state;
+		}
+		if (_extState == S_DOWN && duration > MAX_TAP) {
+			EVENTS->fireEvent(0, E_PRESSING, invalid, invalid, 0, this, nullptr);
+			_extState = S_PRESSING;
+			return _state;
+		}
+	}
+	// Do an actual read from the pin
 	_time = millis();
-	uint8_t pinVal = digitalRead(_pin);
-	pinVal = _invert ? !pinVal: pinVal;
-	if (_time - _lastChange >= _dbTime) setState(pinVal);
+	pinMode(pin, INPUT_PULLUP);
+	uint8_t pinVal = digitalRead(pin);
+	pinVal = invert ? !pinVal : pinVal;
+	if (_time - _lastChange >= dbTime && pinVal != _state){
+		_state = pinVal;
+		if (_state) {
+			EVENTS->fireEvent(0, E_TOUCH, invalid, invalid, 0, this, nullptr);
+			if (_extState != S_TAP_WAIT) _extState = S_DOWN;
+			_pressTime = _time;		
+		} else {
+			EVENTS->fireEvent(0, E_RELEASE, invalid, invalid, duration, this, nullptr);
+		}
+		changed = true;
+	}
 	return _state;
 }
 
 bool Button::setState(bool newState) {
-	if (_state != newState) {
+	if (newState != _state) {
 		_state = newState;
 		_lastChange = _time;
 		changed = true;
-		if (_state) draw(on); else draw(off);
 		if (_state) _pressTime = _time;
+		draw();
 	}
 	return _state;
 }
@@ -145,7 +203,7 @@ void Button::delHandlers(void (*fn)(Event&) /* = nullptr */) {
 // visual things for Button
 
 void Button::draw() {
-	if (isPressed()) draw(on); else draw(off);
+	if (_state) draw(on); else draw(off);
 } 
 
 void Button::draw(ButtonColors bc) {
@@ -245,6 +303,7 @@ void Button::setTextSize(uint8_t textSize_ /* = 0 */) {
 		uint16_t tempPadding = TFT->padX;
 		if (!b.compat) TFT->pushState();
 	
+	
 		// Actual drawing of text
 		TFT->setTextColor(bc.text);
 		if (b._textSize) TFT->setTextSize(b._textSize);
@@ -259,7 +318,6 @@ void Button::setTextSize(uint8_t textSize_ /* = 0 */) {
 		TFT->setTextDatum(b.datum);
 		TFT->setTextPadding(0);
 		TFT->drawString(b.label, tx + b.dx, ty + b.dy);
-	
 		// Set state back
 		if (!b.compat) {
 			TFT->popState();
@@ -280,16 +338,17 @@ M5Buttons::M5Buttons() {
 
 void M5Buttons::setUnchanged() {
 	for ( auto button : Button::instances) {
-		if (button->_pin == 0xFF) {
+		if (button->pin == 0xFF) {
 			button->changed = false;
 			button->_time = millis();
+			button->event = Event();
 		}
 	}
 }
 
 Button* M5Buttons::which(Point& p) {
 	for ( auto b : Button::instances ) {
-		if (b->_pin == 0xFF && b->contains(p)) return b;
+		if (b->pin == 0xFF && b->contains(p)) return b;
 	}
 	return nullptr;
 }
@@ -383,7 +442,8 @@ const char* Event::typeName() {
 		"E_TAP",
 		"E_DBLTAP",
 		"E_DRAGGED",
-		"E_PRESSED"
+		"E_PRESSED",
+		"E_PRESSING"
 	};
 	for (uint8_t i = 0; i < NUM_EVENTS; i++) {
 		if ((type >> i) & 1) return eventNames[i];
@@ -418,8 +478,10 @@ Event M5Events::fireEvent(uint8_t finger, uint16_t type, Point& from,
 	e.duration = duration;
 	e.button = button;
 	e.gesture = gesture;
-	if (e.button && e.type == E_TOUCH) e.button->setState(true);
-	if (e.button && e.type == E_RELEASE) e.button->setState(false);
+	if (button) {
+		button->event = e;
+		if (type == E_TOUCH || type == E_RELEASE) button->draw();
+	}
 	for ( auto h : _eventHandlers ) {
 		if (!(h.eventMask & e.type)) continue;
 		if (h.button && h.button != e.button) continue;

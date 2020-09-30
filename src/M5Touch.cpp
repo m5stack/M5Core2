@@ -66,10 +66,7 @@ uint8_t M5Touch::interval(int16_t ivl) {
 
 // This is normally called from update()
 bool M5Touch::read() {
-
 	changed = false;
-	BUTTONS->setUnchanged();
-	for ( auto gesture : Gesture::instances) gesture->detected = false;
 	
 	// Return immediately if read() is called more frequently than the
 	// touch sensor updates. This prevents unnecessary I2C reads, and the
@@ -131,60 +128,77 @@ Point M5Touch::getPressPoint() {
 #else
 
 	void M5Touch::update() {
-		if (read()) doEvents();
+		doEvents();
 	}
 
 	// Events processing
 
 	void M5Touch::doEvents() {
 		Point invalid;
-		_finger[point0finger].current = point[0];
-		_finger[1 - point0finger].current = point[1];
+		BUTTONS->setUnchanged();
+		for ( auto gesture : Gesture::instances) gesture->detected = false;
+
 		for (uint8_t i = 0; i < 2; i++) {
 			Finger& fi = _finger[i];
-			Point& now = fi.current;
-			Point& prev = fi.previous;
-		
-			// fire any taps that didn't become doubletaps.
-			if (fi.tapPoint.valid() && millis() - fi.tapTime > MAX_BETWEEN_TAP) {
-				M5.Events.fireEvent(i, E_TAP, fi.tapPoint, invalid, 0, fi.button, nullptr);
-				fi.tapPoint.set();
-			}
-		
-			if (now == prev) {
-				continue;
-			} else if (!prev.valid() && now.valid()) {
-				fi.startTime = millis();
-				fi.startPoint = now;
-				fi.button = BUTTONS->which(now);
-				M5.Events.fireEvent(i, E_TOUCH, now, now, 0, fi.button, nullptr);
-			} else if (prev.valid() && !now.valid()) {
-				Event e = M5.Events.fireEvent(i, E_RELEASE, fi.startPoint, prev, millis() - fi.startTime, fi.button, nullptr);
-				if (!doGestures(e)) {
-					if (e.duration < MAX_TAP) {
-						if (fi.tapPoint.valid()) {
-							// there was a stored tap, so it's a doubletap now
-							M5.Events.fireEvent(i, E_DBLTAP, fi.startPoint, invalid, 0, fi.button, nullptr);
-							fi.tapPoint.set();
-						} else {
-							// Store tap to be fired later if it times out
-							fi.tapPoint = fi.startPoint;
-							fi.tapTime = millis();
-						}
+			Event e = fi.process;
+			fi.process = Event();
+			if (e.type) {
+				if (doGestures(e)) return;
+				if (e.duration < MAX_TAP) {
+					if (fi.tapPoint.valid()) {
+						// there was a stored tap, so it's a doubletap now
+						EVENTS->fireEvent(i, E_DBLTAP, fi.startPoint, invalid, 0, fi.button, nullptr);
+						fi.tapPoint.set();
+						return;
 					} else {
-						if ( fi.button) {
-							if ( !(fi.button->contains(prev)) ) {
-								M5.Events.fireEvent(i, E_DRAGGED, fi.startPoint, prev, millis() - fi.startTime, fi.button, nullptr);
-							} else {
-								M5.Events.fireEvent(i, E_PRESSED, fi.startPoint, prev, millis() - fi.startTime, fi.button, nullptr);
-							}
+						// Store tap to be fired later if it times out
+						fi.tapPoint = fi.startPoint;
+						fi.tapTime = millis();
+					}
+				} else {
+					if (fi.button) {
+						if ( !(fi.button->contains(e.to)) ) {
+							EVENTS->fireEvent(i, E_DRAGGED, fi.startPoint, e.to, millis() - fi.startTime, fi.button, nullptr);
+						} else {
+							EVENTS->fireEvent(i, E_PRESSED, fi.startPoint, e.to, millis() - fi.startTime, fi.button, nullptr);
 						}
+						return;
 					}
 				}
 			} else {
-				M5.Events.fireEvent(i, E_MOVE, prev, now, millis() - fi.startTime, fi.button, nullptr);
+				// Timeouts
+				if (fi.tapPoint.valid() && millis() - fi.tapTime > MAX_BETWEEN_TAP) {
+					EVENTS->fireEvent(i, E_TAP, fi.tapPoint, invalid, 0, fi.button, nullptr);
+					fi.tapPoint.set();
+					return;
+				}
 			}
-			prev = now;
+		}
+
+		if (!read()) return;
+		_finger[point0finger].current = point[0];
+		_finger[1 - point0finger].current = point[1];
+		
+		for (uint8_t i = 0; i < 2; i++) {
+			Finger& fi = _finger[i];
+			Point& curr = fi.current;
+			Point& prev = fi.previous;
+		
+			if (curr == prev) continue;
+			if (!prev.valid() && curr.valid()) {
+				fi.startTime = millis();
+				fi.startPoint = curr;
+				fi.button = BUTTONS->which(curr);
+				if (fi.button) fi.button->setState(true);
+				EVENTS->fireEvent(i, E_TOUCH, curr, curr, 0, fi.button, nullptr);
+			} else if (prev.valid() && !curr.valid()) {
+				if (fi.button) fi.button->setState(false);
+				fi.process = EVENTS->fireEvent(i, E_RELEASE, fi.startPoint, prev, millis() - fi.startTime, fi.button, nullptr);
+			} else {
+				EVENTS->fireEvent(i, E_MOVE, prev, curr, millis() - fi.startTime, fi.button, nullptr);
+			}
+			prev = curr;
+			return;
 		}
 	}
 
@@ -193,7 +207,7 @@ Point M5Touch::getPressPoint() {
 	bool M5Touch::doGestures(Event& e) {
 		for ( auto gesture : Gesture::instances) {
 			if (gesture->test(e)) {
-				M5.Events.fireEvent(e.finger, E_GESTURE, e.from, e.to, e.duration, nullptr, gesture);
+				EVENTS->fireEvent(e.finger, E_GESTURE, e.from, e.to, e.duration, nullptr, gesture);
 				return true;
 			}
 		}

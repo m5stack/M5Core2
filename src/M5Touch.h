@@ -3,6 +3,8 @@
 
 #include "utility/PointAndZone.h"
 
+#define EVENTS M5Events::instance
+
 #define CST_DEVICE_ADDR		0x38
 #define CST_INT 			39
 
@@ -15,6 +17,7 @@
 		Point current, previous, startPoint, tapPoint;
 		uint32_t startTime, tapTime;
 		Button* button;
+		Event process;
 	};
 #endif
 
