@@ -74,7 +74,6 @@
     #include "utility/M5Button.h"	// M5Buttons, M5Events, Button, Gesture
     #include "M5Touch.h"			// M5Touch
     #include "utility/Config.h"
-    #include "utility/Button.h"
     #include "utility/CommUtil.h"
     #include "utility/MPU6886.h"
     #include "AXP192.h"
