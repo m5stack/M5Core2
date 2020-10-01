@@ -15,5 +15,9 @@
 
   // UART
   #define USE_SERIAL Serial
+  
+  // Core2 defines for M5Diplay
+  #define M5Stack_M5Core2
+  #define TFT_eSPI_TOUCH_EMULATION
 
-#endif /* SETTINGS_C */
+#endif /* CONFIG_H */
