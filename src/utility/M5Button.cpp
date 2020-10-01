@@ -16,26 +16,17 @@ Button::Button(
   int16_t dy_ /* = 0 */,
   uint8_t r_ /* = 0xFF */
 ) : Zone(x_, y_, w_, h_, rot1_) {
-	instances.push_back(this);
+	pin = 0xFF;
+	invert = false;
+	dbTime = 0;
 	strncpy(name, name_, 15);
-	pin = -1;
-	_state = false;
-	_time = millis();
-	_hold_time = -1;
-	_lastChange = _time;
-	_pressTime = _time;
-	// visual stuff
 	off = off_;
 	on = on_;
 	datum = datum_;
 	dx = dx_;
 	dy = dy_;
 	r =  r_;
-	_textFont = _textSize = 0;
-	compat = 0;
-	drawZone = this;
-	strncpy(label, name_, 16);
-	draw();
+	init();
 }
 
 Button::Button(
@@ -50,29 +41,17 @@ Button::Button(
   int16_t dy_ /* = 0 */,
   uint8_t r_ /* = 0xFF */
 ) : Zone(x_, y_, w_, h_, rot1_) {
-	instances.push_back(this);
 	pin = pin_;
-	pinMode(pin, INPUT_PULLUP);
 	invert = invert_;
 	dbTime = dbTime_;
 	strncpy(name, name_, 15);
-	_state = false;
-	_time = millis();
-	_hold_time = -1;
-	_lastChange = _time;
-	_pressTime = _time;
-	// visual stuff
 	off = off_;
 	on = on_;
 	datum = datum_;
 	dx = dx_;
 	dy = dy_;
 	r =  r_;
-	_textFont = _textSize = 0;
-	compat = 0;
-	drawZone = this;
-	strncpy(label, name_, 16);
-	draw();
+	init();
 }
 
 Button::~Button() {
@@ -83,6 +62,24 @@ Button::~Button() {
 			return;
 		}
 	}
+}
+
+Button::operator bool() {
+	return _state;
+}
+
+void Button::init() {
+	_state = _tapWait = _pressing = false;
+	_time = _lastChange = _pressTime = millis();
+	_hold_time = -1;
+	_textFont = _textSize = 0;
+	_freeFont = nullptr;
+	drawFn = nullptr;
+	compat = 0;
+	drawZone = this;
+	strncpy(label, name, 16);
+	instances.push_back(this);
+	draw();
 }
 
 int16_t Button::instanceIndex() {
@@ -101,30 +98,33 @@ bool Button::read() {
 		// Identify deeper meaning, if any, of state change last time
 		changed = false;
 		_lastChange = _time;
-		if (!_state && duration <= MAX_TAP) {
-			if (_extState == S_TAP_WAIT) {
-				EVENTS->fireEvent(0, E_DBLTAP, invalid, invalid, 0, this, nullptr);
-				_extState = S_WAIT;
+		if (!_state) {
+			if (duration <= MAX_TAP) {
+				if (_tapWait) {
+					EVENTS->fireEvent(0, E_DBLTAP, invalid, invalid, 0, this, nullptr);
+					_tapWait = false;
+					_pressing = false;
+					return _state;
+				} else {
+					_tapWait = true;
+				}
+			} else if (_pressing) {
+				EVENTS->fireEvent(0, E_PRESSED, invalid, invalid, duration, this, nullptr);
+				_pressing = false;
 				return _state;
 			}
-			if (_extState == S_DOWN) {
-				_extState = S_TAP_WAIT;
-			}
-		} else if (_extState == S_PRESSING) {
-			EVENTS->fireEvent(0, E_PRESSED, invalid, invalid, 0, this, nullptr);
-			_extState = S_WAIT;
-			return _state;
 		}
 	} else {
-		// See if anything has timed out 
-		if (_extState == S_TAP_WAIT && duration >= MAX_BETWEEN_TAP) {
+		// Timeouts
+		if (_tapWait && duration >= MAX_BETWEEN_TAP) {
 			EVENTS->fireEvent(0, E_TAP, invalid, invalid, 0, this, nullptr);
-			_extState = _state ? S_DOWN : S_WAIT;
+			_tapWait = false;
+			_pressing = false;
 			return _state;
 		}
-		if (_extState == S_DOWN && duration > MAX_TAP) {
+		if (_state && !_pressing && duration > MAX_TAP) {
 			EVENTS->fireEvent(0, E_PRESSING, invalid, invalid, 0, this, nullptr);
-			_extState = S_PRESSING;
+			_pressing = true;
 			return _state;
 		}
 	}
@@ -137,7 +137,6 @@ bool Button::read() {
 		_state = pinVal;
 		if (_state) {
 			EVENTS->fireEvent(0, E_TOUCH, invalid, invalid, 0, this, nullptr);
-			if (_extState != S_TAP_WAIT) _extState = S_DOWN;
 			_pressTime = _time;		
 		} else {
 			EVENTS->fireEvent(0, E_RELEASE, invalid, invalid, duration, this, nullptr);
@@ -307,13 +306,13 @@ void Button::setTextSize(uint8_t textSize_ /* = 0 */) {
 		// Actual drawing of text
 		TFT->setTextColor(bc.text);
 		if (b._textSize) TFT->setTextSize(b._textSize);
-		  else TFT->setTextSize(BUTTONS->textSize);
+		  else TFT->setTextSize(BUTTONS->_textSize);
 		if (b._textFont) {
 			if (b._freeFont) TFT->setFreeFont(b._freeFont); 
 			  else TFT->setTextFont(b._textFont);
 		} else {
-			if (BUTTONS->freeFont) TFT->setFreeFont(BUTTONS->freeFont);
-			  else TFT->setTextFont(BUTTONS->textFont);
+			if (BUTTONS->_freeFont) TFT->setFreeFont(BUTTONS->_freeFont);
+			  else TFT->setTextFont(BUTTONS->_textFont);
 		}
 		TFT->setTextDatum(b.datum);
 		TFT->setTextPadding(0);
@@ -331,9 +330,9 @@ void Button::setTextSize(uint8_t textSize_ /* = 0 */) {
 M5Buttons::M5Buttons() {
 	if (!instance) instance = this;
 	drawFn = drawFunction;
-	freeFont = BUTTON_FREEFONT;
-	textFont = BUTTON_TEXTFONT;
-	textSize = BUTTON_TEXTSIZE;
+	_freeFont = BUTTON_FREEFONT;
+	_textFont = BUTTON_TEXTFONT;
+	_textSize = BUTTON_TEXTSIZE;
 }
 
 void M5Buttons::setUnchanged() {
@@ -358,17 +357,17 @@ void M5Buttons::draw() {
 }
 
 void M5Buttons::setFont(const GFXfont* freeFont_) {
-	freeFont = freeFont_;
-	textFont = 1;
+	_freeFont = freeFont_;
+	_textFont = 1;
 }
 
 void M5Buttons::setFont(uint8_t textFont_) {
-	freeFont = nullptr;
-	textFont = textFont_;
+	_freeFont = nullptr;
+	_textFont = textFont_;
 }
 
 void M5Buttons::setTextSize(uint8_t textSize_) {
-	textSize = textSize_;
+	_textSize = textSize_;
 }
 
 
@@ -431,6 +430,14 @@ void Gesture::delHandlers(void (*fn)(Event&) /* = nullptr */) {
 
 
 // Event class
+
+Event::Event() {
+	finger = type = duration = 0;
+	button = nullptr;
+	gesture = nullptr;
+}
+
+Event::operator bool() { return (type); }
 
 const char* Event::typeName() {
 	const char *unknown = "E_UNKNOWN";

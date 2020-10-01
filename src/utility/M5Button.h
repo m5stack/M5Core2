@@ -12,7 +12,6 @@ class Gesture;
 #define EVENTS	M5Events::instance
 #define BUTTONS	M5Buttons::instance
 
-
 #define MAX_TAP				150
 #define MAX_BETWEEN_TAP		200
 #define GESTURE_MAXTIME		500
@@ -45,17 +44,12 @@ struct ButtonColors {
 	uint16_t outline;
 };
 
-enum ExtState {
-	S_WAIT,
-	S_DOWN,
-	S_TAP_WAIT,
-	S_PRESSING
-};
-	
 class Button;
 	
 class Event {
   public:
+  	Event();
+  	operator bool();
 	const char* typeName();
 	const char* objName();
 	uint8_t finger;
@@ -93,6 +87,7 @@ class Button : public Zone {
 	  uint8_t r_ = 0xFF
 	);
 	~Button();
+	operator bool();
 	int16_t instanceIndex();
 	bool read();
 	bool setState(bool);
@@ -116,11 +111,10 @@ class Button : public Zone {
 	bool invert;
   private:
   	friend class M5Buttons;
-	bool _state;
+  	void init();
+	bool _state, _tapWait, _pressing;
 	uint32_t _time;
 	uint32_t _lastChange, _lastLongPress, _pressTime, _hold_time;
-	ExtState _extState;
-	bool _process;
 	
   // visual stuff
   public:
@@ -132,7 +126,7 @@ class Button : public Zone {
 	void setTextSize(uint8_t textSize_ = 0);
 	ButtonColors off, on;
 	Zone* drawZone;
-	uint8_t textSize, datum, r;
+	uint8_t datum, r;
 	int16_t dx, dy;
 	void (*drawFn)(Button* b, ButtonColors bc);
 	char label[51];
@@ -155,9 +149,10 @@ class M5Buttons {
 	void setFont(uint8_t textFont_);
 	void setTextSize(uint8_t textSize_);
 	void (*drawFn)(Button* button, ButtonColors bc);
-	uint8_t textFont;
-	const GFXfont* freeFont;
-	uint8_t textSize;
+  private:
+	uint8_t _textFont;
+	const GFXfont* _freeFont;
+	uint8_t _textSize;
 };
 
 class Gesture {
