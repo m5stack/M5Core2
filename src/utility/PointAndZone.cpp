@@ -41,7 +41,7 @@ bool Point::valid() {
 uint16_t Point::distanceTo(const Point& p) {
 	int16_t dx = x - p.x;
 	int16_t dy = y - p.y;
-	return sqrt(dx*dx + dy*dy);
+	return sqrt(dx*dx + dy*dy) + 0.5;
 }
 
 void Point::rotate(uint8_t m) {
