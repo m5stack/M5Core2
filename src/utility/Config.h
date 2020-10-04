@@ -1,6 +1,11 @@
 #ifndef _CONFIG_H_
   #define _CONFIG_H_
 
+  #define TFT		M5Display::instance
+  #define EVENTS	M5Events::instance
+  #define BUTTONS	M5Buttons::instance
+  #define TOUCH		M5Touch::instance
+
   // Screen
   #define TFT_LED_PIN 32
   #define TFT_DC_PIN 27

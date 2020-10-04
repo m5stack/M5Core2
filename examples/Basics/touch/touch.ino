@@ -22,17 +22,23 @@ Button bl(0, 0, 0, 0, false, "bottom-left", off, on, BL_DATUM);
 Button tr(0, 0, 0, 0, false, "top-right", off, on, TR_DATUM);
 Button br(0, 0, 0, 0, false, "bottom-right", off, on, BR_DATUM);
 
+// For performance measurement (Single tap on bottom-right button)
+uint32_t startTime;
+uint32_t times = 0;
+
 void setup() {
   M5.begin();
   M5.Events.addHandler(rotate, E_GESTURE);  
-  M5.Events.addHandler(toggleColor, E_DBLTAP + E_BTNONLY);
+  M5.Events.addHandler(toggleColor, E_DBLTAP);
   M5.Events.addHandler(eventDisplay);
-  br.addHandler(tappedBottomRight, E_TAP);
+  br.addHandler(showPerformance, E_TAP);
   doButtons();
+  startTime = millis();
 }
 
 void loop() {
   M5.update();
+  times++;
 }
 
 // Positions the buttons and draws them. (Only because height and width
@@ -55,30 +61,30 @@ void rotate(Event& e) {
   uint8_t new_rotation = e.gesture->instanceIndex();
   if (new_rotation != M5.Lcd.rotation) {
     M5.Lcd.setRotation(new_rotation);
-  	M5.Lcd.clearDisplay();
+    M5.Lcd.clearDisplay();
     doButtons();
   }
 }
 
 void toggleColor(Event& e) {
-  // This just creates shorthand "b" for the button in the event, so we
-  // can type "b." instead of "e.button->"
+  // Just so we can type "b." instead of "e.button->"
   Button& b = *e.button;
   
-  // Toggles the background between black and blue
-  if (b.off.bg == BLACK) b.off.bg = BLUE; else b.off.bg = BLACK;
-  
-  b.draw();
+  if (b != M5.background) {
+    // Toggles the button color between black and blue
+    b.off.bg = (b.off.bg == BLACK) ? BLUE : BLACK;
+    b.draw();
+  }
 }
 
-void tappedBottomRight(Event& e) {
-  Serial.println("You tapped the bottom right!");
+void showPerformance(Event& e) {
+  Serial.printf("%d in %d ms, average M5.update() took %.2f microseconds\n", 
+   times, millis() - startTime, (float)((millis() - startTime) * 1000) / times);
+  startTime = millis();
+  times = 0;
 }
   
 void eventDisplay(Event& e) {
-  Serial.printf("%-12s finger%d  %-18s (%3d, %3d)", e.typeName(), e.finger, e.objName(), e.from.x, e.from.y);
-  if (e.type != E_TOUCH && e.type != E_TAP && e.type != E_DBLTAP) {
-    Serial.printf(" --> (%3d, %3d)  %5d ms", e.to.x, e.to.y, e.duration);
-  }
-  Serial.println();
+  Serial.printf("%-12s finger%d  %-18s (%3d, %3d) --> (%3d, %3d)  %5d ms\n", 
+   e.typeName(), e.finger, e.objName(), e.from.x, e.from.y, e.to.x, e.to.y, e.duration);
 }

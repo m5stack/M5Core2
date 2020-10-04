@@ -2,9 +2,10 @@
 #define _M5TOUCH_H_
 
 #include "utility/PointAndZone.h"
+#include "utility/Config.h"
 
-#define EVENTS M5Events::instance
-
+#define TOUCH_W				320
+#define TOUCH_H				280
 #define CST_DEVICE_ADDR		0x38
 #define CST_INT 			39
 
@@ -12,42 +13,31 @@
 // (Still not every 13 ms, often more like 15 to 20)
 #define DEFAULT_INTERVAL	13
 
-#ifdef _M5BUTTON_H_
-	struct Finger {
-		Point current, previous, startPoint, tapPoint;
-		uint32_t startTime, tapTime;
-		Button* button;
-		Event process;
-	};
-#endif
-
 class M5Touch {
   public:
 	static M5Touch* instance;
     M5Touch();
     void begin();
-    bool ispressed();
-	uint8_t ft6336(uint8_t reg, int16_t value = -1);
-	uint8_t ft6336(uint8_t reg, uint8_t size, uint8_t* data);
-	uint8_t interval(int16_t ivl);
+    uint8_t ft6336(uint8_t reg);
+	void ft6336(uint8_t reg, uint8_t value);
+	void ft6336(uint8_t reg, uint8_t size, uint8_t* data);
+	uint8_t interval(uint8_t ivl);
+	uint8_t interval();
 	void update();
     bool read();
+    bool ispressed();
+    void dump();
+    Point stale();
     Point getPressPoint();
     uint8_t rotation;
     uint8_t points;
-    bool changed;
+    bool changed, wasRead;
     Point point[2];
     uint8_t point0finger;
   private:
     uint8_t _interval;
 	uint32_t _lastRead;
-    #ifdef _M5BUTTON_H_
-		bool doGestures(Event& e);
-		void doEvents();
-		Finger _finger[2];
-	#endif
 };
-
 
 // For compatibility with older M5Core2 code
 class HotZone : public Zone {
@@ -65,6 +55,7 @@ class HotZone : public Zone {
     void (*fun)();
 };
 #define HotZone_t HotZone
+#define TouchPoint Point
 #define TouchPoint_t Point
 
 #endif /* _M5TOUCH_H_ */

@@ -55,6 +55,7 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
 
 void M5Core2::update() {
   Touch.update();
+  Buttons.update();
   yield();
 }
 

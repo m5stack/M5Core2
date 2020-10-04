@@ -71,8 +71,8 @@
     #include "SD.h"
 
     #include "M5Display.h"
-    #include "utility/M5Button.h"	// M5Buttons, M5Events, Button, Gesture
     #include "M5Touch.h"			// M5Touch
+    #include "utility/M5Button.h"	// M5Buttons, M5Events, Button, Gesture
     #include "utility/Config.h"
     #include "utility/CommUtil.h"
     #include "utility/MPU6886.h"
@@ -98,6 +98,7 @@
         
         // Buttons (for things that involve all buttons)
         M5Buttons Buttons;
+        Button background = Button(0, 0, TOUCH_W, TOUCH_H, true, "background");
         
         // Touch version of the buttons on older M5stack cores, below screen
         Button BtnA = Button(10,240,110,40, true ,"BtnA");

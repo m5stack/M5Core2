@@ -7,17 +7,18 @@ class Gesture;
 #include "PointAndZone.h"
 #include <M5Display.h>
 #include <Free_Fonts.h>
+#include "utility/Config.h"
+#ifdef M5Stack_M5Core2
+	#include <M5Touch.h>
+#endif
 
-#define TFT		M5Display::instance
-#define EVENTS	M5Events::instance
-#define BUTTONS	M5Buttons::instance
-
-#define MAX_TAP				150
-#define MAX_BETWEEN_TAP		200
+#define TAP_TIME			150
+#define DBLTAP_TIME			200
+#define LONGPRESS_TIME		0
 #define GESTURE_MAXTIME		500
 #define GESTURE_MINDIST		75
 
-#define NUM_EVENTS			9
+#define NUM_EVENTS			11
 #define E_TOUCH				0x0001
 #define E_RELEASE			0x0002
 #define E_MOVE  			0x0004
@@ -27,11 +28,12 @@ class Gesture;
 #define E_DRAGGED			0x0040
 #define E_PRESSED			0x0080
 #define E_PRESSING			0x0100
+#define E_LONGPRESSED		0x0200
+#define E_LONGPRESSING		0x0400
 
 #define E_ALL				0x0FFF
-#define E_BTNONLY			0x1000
 
-#define NODRAW				0x0120	// Special color value: transparent
+#define NONE				0x0120	// Special color value: transparent
 
 #define BUTTON_FREEFONT		FSS9
 #define BUTTON_TEXTFONT		1
@@ -45,11 +47,20 @@ struct ButtonColors {
 };
 
 class Button;
+class Event;
+
+#ifdef _M5TOUCH_H_
+	struct Finger {
+		Point current, previous, startPoint, tapPoint;
+		uint32_t startTime, tapTime;
+		Button* button;
+	};
+#endif
 	
 class Event {
   public:
   	Event();
-  	operator bool();
+  	operator uint16_t();
 	const char* typeName();
 	const char* objName();
 	uint8_t finger;
@@ -67,20 +78,20 @@ class Button : public Zone {
 	  int16_t x_, int16_t y_, int16_t w_, int16_t h_,
 	  bool rot1_ = false,
 	  const char* name_ = "",
-	  ButtonColors off_ = {NODRAW, NODRAW, NODRAW},
-	  ButtonColors on_ = {NODRAW, NODRAW, NODRAW},
+	  ButtonColors off_ = {NONE, NONE, NONE},
+	  ButtonColors on_ = {NONE, NONE, NONE},
 	  uint8_t datum_ = BUTTON_DATUM,
 	  int16_t dx_ = 0,
 	  int16_t dy_ = 0,
 	  uint8_t r_ = 0xFF
 	);
 	Button(
-	  uint8_t pin, uint8_t invert, uint32_t dbTime, String hw = "hw",
+	  uint8_t pin_, uint8_t invert_, uint32_t dbTime_, String hw = "hw",
 	  int16_t x_ = 0, int16_t y_ = 0, int16_t w_ = 0, int16_t h_ = 0,
 	  bool rot1_ = false,
 	  const char* name_ = "",
-	  ButtonColors off_ = {NODRAW, NODRAW, NODRAW},
-	  ButtonColors on_ = {NODRAW, NODRAW, NODRAW},
+	  ButtonColors off_ = {NONE, NONE, NONE},
+	  ButtonColors on_ = {NONE, NONE, NONE},
 	  uint8_t datum_ = BUTTON_DATUM,
 	  int16_t dx_ = 0,
 	  int16_t dy_ = 0,
@@ -88,9 +99,16 @@ class Button : public Zone {
 	);
 	~Button();
 	operator bool();
+	bool operator==(const Button& b);
+	bool operator!=(const Button& b);
+	bool operator==(Button* b);
+	bool operator!=(Button* b);
 	int16_t instanceIndex();
-	bool read();
-	bool setState(bool);
+	bool read(bool manualRead = true);
+	void setState(bool newState);
+	void setState(bool newState, Point& currentPt, uint8_t finger); 
+	void freeState();
+	void cancel();
 	bool isPressed();
 	bool isReleased();
 	bool wasPressed();
@@ -101,20 +119,23 @@ class Button : public Zone {
 	bool wasReleasefor(uint32_t ms);
 	void addHandler(void (*fn)(Event&), uint16_t eventMask = E_ALL);
 	void delHandlers(void (*fn)(Event&) = nullptr);
+	char* name();
 	uint32_t lastChange();
-	uint8_t finger;
-	bool changed;
-	char name[16];
 	Event event;
-	uint8_t pin;
-	uint32_t dbTime;
-	bool invert;
-  private:
+	uint16_t tapTime, dbltapTime, longPressTime;
+  protected:
   	friend class M5Buttons;
   	void init();
-	bool _state, _tapWait, _pressing;
+	char _name[16];
+	uint8_t _pin;
+	uint16_t _dbTime;
+	bool _invert;
+	bool _changed, _state, _tapWait, _pressing, _longPressing, _cancelled, _manuallyRead;
+	uint8_t _setState;
 	uint32_t _time;
 	uint32_t _lastChange, _lastLongPress, _pressTime, _hold_time;
+	uint8_t _finger;
+	Point _fromPt, _toPt, _currentPt;
 	
   // visual stuff
   public:
@@ -124,14 +145,15 @@ class Button : public Zone {
 	void setFont(const GFXfont* freeFont_);
 	void setFont(uint8_t textFont_ = 0);
 	void setTextSize(uint8_t textSize_ = 0);
+	char* label();
 	ButtonColors off, on;
 	Zone* drawZone;
 	uint8_t datum, r;
 	int16_t dx, dy;
 	void (*drawFn)(Button* b, ButtonColors bc);
-	char label[51];
-	bool compat; // For TFT_eSPI_Button emulation		
-  private:
+  protected:
+	bool _compat; // For TFT_eSPI_Button emulation		
+	char _label[51];
 	uint8_t _textFont;
 	const GFXfont* _freeFont;
 	uint8_t _textSize;
@@ -142,9 +164,9 @@ class M5Buttons {
     static M5Buttons* instance;
     static void drawFunction(Button* button, ButtonColors bc);
 	M5Buttons();
-    void setUnchanged();
 	Button* which(Point& p);
 	void draw();
+	void update();
 	void setFont(const GFXfont* freeFont_);
 	void setFont(uint8_t textFont_);
 	void setTextSize(uint8_t textSize_);
@@ -153,6 +175,14 @@ class M5Buttons {
 	uint8_t _textFont;
 	const GFXfont* _freeFont;
 	uint8_t _textSize;
+	
+	#ifdef _M5TOUCH_H_
+	  public:
+        // This "button" receives events when press starts outside any buttons
+        // static Button background;
+	  private:
+		Finger _finger[2];
+	#endif
 };
 
 class Gesture {
@@ -166,16 +196,21 @@ class Gesture {
   	  uint16_t minDistance_ = GESTURE_MINDIST
   	);
   	~Gesture();
+  	operator bool();
   	int16_t instanceIndex();
-  	bool test(Event& e);
+  	bool test(Point& from, Point& to, uint16_t duration);
   	bool wasDetected();
   	void addHandler(void (*fn)(Event&), uint16_t eventMask = E_ALL);
   	void delHandlers(void (*fn)(Event&) = nullptr);
+  	char* name();
 	Zone* fromZone;
 	Zone* toZone;
+	Event event;
   	uint16_t maxTime, minDistance;
-  	char name[16];
-	bool detected;
+  private:
+	friend class M5Buttons;
+	bool _detected;
+  	char _name[16];
 };
 
 struct EventHandler {
@@ -220,14 +255,14 @@ class TFT_eSPI_Button : public Button {
 	  TFT_eSPI *gfx, 
 	  int16_t x, int16_t y, uint16_t w, uint16_t h, 
 	  uint16_t outline, uint16_t fill, uint16_t textcolor,
-	  char *label,
+	  char *label_,
 	  uint8_t textsize_
 	);
 	void initButtonUL(
 	  TFT_eSPI *gfx,
 	  int16_t x_, int16_t y_, uint16_t w_, uint16_t h_, 
 	  uint16_t outline, uint16_t fill, uint16_t textcolor, 
-	  char *label,
+	  char *label_,
 	  uint8_t textsize_
 	);
 	void     setLabelDatum(int16_t x_delta, int16_t y_delta, uint8_t datum = MC_DATUM);
