@@ -75,7 +75,6 @@ bool Button::operator!=(Button* b) { return (this != b); }
 
 void Button::init() {
 	_state = _tapWait = _pressing = _manuallyRead = false;
-	_setState = 0xFF;
 	_time = _lastChange = _pressTime = millis();
 	_hold_time = -1;
 	_textFont = _textSize = 0;
@@ -88,7 +87,7 @@ void Button::init() {
 	longPressTime = LONGPRESS_TIME;
 	strncpy(_label, _name, 16);
 	instances.push_back(this);
-	_fromPt = _toPt = _currentPt = Point();
+	if (_pin != 0xFF) pinMode(_pin, INPUT_PULLUP);
 	draw();
 }
 
@@ -103,95 +102,98 @@ bool Button::read(bool manualRead /* = true */) {
 	if (manualRead) _manuallyRead = true;
 	uint32_t duration = _time - _pressTime;
 	if (_changed) {
-		// Identify deeper meaning, if any, of state change last time around
 		_changed = false;
 		_lastChange = _time;
-		if (!_state) {
-			if (!_cancelled) {
-				if (duration <= tapTime) {
-					if (_tapWait) {
-						EVENTS->fireEvent(_finger, E_DBLTAP, _fromPt, _currentPt, duration, this, nullptr);
-						_tapWait = false;
-						_pressing = false;
-						_longPressing = false;
-						return _state;
-					} else {
-						_tapWait = true;
-					}
-				} else if (_pressing) {
-					EVENTS->fireEvent(_finger, _longPressing ? E_LONGPRESSED : E_PRESSED, _fromPt, _currentPt, duration, this, nullptr);
-					_pressing = false;
-					_longPressing = false;
-					return _state;
-				}
-			}
-		}
+		if (!_state && !_cancelled && postReleaseEvents()) return _state;
 	} else {
-		if (_cancelled) {
-			if (!_state) _cancelled = false;
-		} else {
-			// Timeouts
-			if (_tapWait && duration >= dbltapTime) {
-				EVENTS->fireEvent(_finger, E_TAP, _fromPt, _currentPt, duration, this, nullptr);
-				_tapWait = false;
-				_pressing = false;
-				return _state;
-			}
-			if (_state && !_pressing && duration > tapTime) {
-				if (tapTime) EVENTS->fireEvent(_finger, E_PRESSING, _fromPt, _currentPt, duration, this, nullptr);
-				_pressing = true;
-				return _state;
-			}
-			if (longPressTime && _state && !_longPressing && duration > longPressTime) {
-				EVENTS->fireEvent(_finger, E_LONGPRESSING, _fromPt, _currentPt, duration, this, nullptr);
-				_longPressing = true;
-				return _state;
-			}
-		}
+		if (!_cancelled && timeoutEvents()) return _state;
+		if (!_state) _cancelled = false;
 	}
-	// Do an actual read from the pin (or _setState)
+	// Do actual read from the pin if this is a hardware button
 	_time = millis();
 	uint8_t newState = false;
-	if (_setState == 0xFF) {
-		if (_pin != 0xFF) {
-			pinMode(_pin, INPUT_PULLUP);
-			newState = (digitalRead(_pin));
-			newState = _invert ? !newState : newState;
+	if (_pin != 0xFF) {
+		newState = (digitalRead(_pin));
+		newState = _invert ? !newState : newState;
+		if (newState != _state && _time - _lastChange >= _dbTime) {
+			if (newState)  fingerDown();
+			if (!newState) fingerUp();
 		}
-	} else {
-		newState = _setState;	
-	}
-	if (_time - _lastChange >= _dbTime && newState != _state){
-		_state = newState;
-		if (_state) {
-			_fromPt = _currentPt;
-			EVENTS->fireEvent(_finger, E_TOUCH, _currentPt, _currentPt, 0, this, nullptr);
-			_pressTime = _time;		
-		} else {
-			_toPt = _currentPt;
-			EVENTS->fireEvent(_finger, E_RELEASE, _fromPt, _toPt, duration, this, nullptr);
-		}
-		_changed = true;
 	}
 	return _state;
 }
 
-void Button::setState(bool newState, Point& currentPt, uint8_t finger) {
-	if (newState == _state && currentPt != _currentPt) {
-		EVENTS->fireEvent(finger, E_MOVE, _currentPt, currentPt, millis() - _lastChange, this, nullptr);
-	}
-	if (_state && finger != _finger) return;
-	_setState = newState;
-	_currentPt = currentPt;
+void Button::fingerDown(Point pos /* = Point(1,1) */, uint8_t finger /* = 0 */) {
 	_finger = finger;
+	_currentPt[finger] = _fromPt[finger] = pos;
+	EVENTS->fireEvent(finger, E_TOUCH, pos, pos, 0, this, nullptr);
+	if (!_state && !_currentPt[1 - finger].valid()) {		// other finger not here?
+		_state = true;
+		_changed = true;
+		_pressTime = _time;
+		draw();
+	}
 }
 
-void Button::setState(bool newState) { 
-	Point invalid;
-	setState(newState, invalid, 0);
+void Button::fingerUp(uint8_t finger /* = 0 */) {
+	uint32_t duration = _time - _pressTime;
+	_finger = finger;
+	_toPt[finger] = _currentPt[finger];
+	EVENTS->fireEvent(finger, E_RELEASE, _fromPt[finger], _toPt[finger], duration, this, nullptr);
+	_currentPt[finger] = Point();
+	if (_state && !_currentPt[1 - finger].valid()) {		// other finger not here?
+		_state = false;
+		_changed = true;
+		draw();
+	}
 }
 
-void Button::freeState() { _setState = 0xFF; }
+void Button::fingerMove(Point pos, uint8_t finger) {
+	EVENTS->fireEvent(finger, E_MOVE, _currentPt[finger], pos, _time - _lastChange, this, nullptr);
+	_currentPt[finger] = pos;
+}
+
+bool Button::postReleaseEvents() {
+	uint32_t duration = _time - _pressTime;
+	if (duration <= tapTime) {
+		if (_tapWait) {
+			EVENTS->fireEvent(_finger, E_DBLTAP, _fromPt[_finger], _currentPt[_finger], duration, this, nullptr);
+			_tapWait = false;
+			_pressing = false;
+			_longPressing = false;
+			return true;
+		} else {
+			_tapWait = true;
+		}
+	} else if (_pressing) {
+		EVENTS->fireEvent(_finger, _longPressing ? E_LONGPRESSED : E_PRESSED, _fromPt[_finger], _currentPt[_finger], duration, this, nullptr);
+		_pressing = false;
+		_longPressing = false;
+		return true;
+	}
+	return false;
+}
+
+bool Button::timeoutEvents() {
+	uint32_t duration = _time - _pressTime;
+	if (_tapWait && duration >= dbltapTime) {
+		EVENTS->fireEvent(_finger, E_TAP, _fromPt[_finger], _currentPt[_finger], duration, this, nullptr);
+		_tapWait = false;
+		_pressing = false;
+		return true;
+	}
+	if (_state && !_pressing && duration > tapTime) {
+		if (tapTime) EVENTS->fireEvent(_finger, E_PRESSING, _fromPt[_finger], _currentPt[_finger], duration, this, nullptr);
+		_pressing = true;
+		return true;
+	}
+	if (longPressTime && _state && !_longPressing && duration > longPressTime) {
+		EVENTS->fireEvent(_finger, E_LONGPRESSING, _fromPt[_finger], _currentPt[_finger], duration, this, nullptr);
+		_longPressing = true;
+		return true;
+	}
+	return false;
+}
 
 void Button::cancel() {
 	_cancelled = true;
@@ -410,7 +412,7 @@ void M5Buttons::update() {
 					fi.startTime = millis();
 					fi.startPoint = curr;
 					fi.button = BUTTONS->which(curr);
-					if (fi.button) fi.button->setState(true, curr, i);
+					if (fi.button) fi.button->fingerDown(curr, i);
 				} else if (prev.valid() && !curr.valid()) {
 					// Finger removed
 					uint16_t duration = millis() - fi.startTime;
@@ -421,10 +423,10 @@ void M5Buttons::update() {
 							break;
 						}
 					}
-					if (fi.button) fi.button->setState(false, prev, i);
+					if (fi.button) fi.button->fingerUp(i);
 				} else {
 					// Finger moved
-					if (fi.button) fi.button->setState(true, prev, i);
+					if (fi.button) fi.button->fingerMove(curr, i);
 				}
 				prev = curr;
 			}
@@ -575,10 +577,7 @@ Event M5Events::fireEvent(uint8_t finger, uint16_t type, Point& from,
 	e.duration = duration;
 	e.button = button;
 	e.gesture = gesture;
-	if (button) {
-		button->event = e;
-		if (type == E_TOUCH || type == E_RELEASE) button->draw();
-	}
+	if (button) button->event = e;
 	for ( auto h : _eventHandlers ) {
 		if (!(h.eventMask & e.type)) continue;
 		if (h.button && h.button != e.button) continue;
@@ -669,7 +668,9 @@ void TFT_eSPI_Button::drawButton(bool inverted /* = false */, String long_name /
 
 bool TFT_eSPI_Button::contains(int16_t x, int16_t y) { return Button::contains(x, y); }
 
-void TFT_eSPI_Button::press(bool p) { setState(p); }
+void TFT_eSPI_Button::press(bool p) {
+	if (p) fingerDown(); else fingerUp();
+}
 
 bool TFT_eSPI_Button::justPressed() { return wasPressed(); }
 

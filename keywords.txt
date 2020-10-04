@@ -31,10 +31,6 @@ Power	KEYWORD2
 
 # Zone
 Zone	KEYWORD1
-x	KEYWORD2
-y	KEYWORD2
-w	KEYWORD2
-h	KEYWORD2
 rot1	KEYWORD2
 set	KEYWORD2
 contains	KEYWORD2
@@ -96,8 +92,9 @@ addHandler	KEYWORD2
 delHandlers	KEYWORD2
 lastChange	KEYWORD2
 cancel	KEYWORD2
-setState	KEYWORD2
-freeState	KEYWORD2
+fingerDown	KEYWORD2
+fingerUp	KEYWORD2
+fingerMove	KEYWORD2
 name	KEYWORD2
 setLabel	KEYWORD2
 event	KEYWORD2
@@ -108,7 +105,6 @@ instanceIndex	KEYWORD2
 drawFn	KEYWORD2
 on	KEYWORD2
 off	KEYWORD2
-r	KEYWORD2
 dx	KEYWORD2
 dy	KEYWORD2
 

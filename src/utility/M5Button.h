@@ -105,9 +105,9 @@ class Button : public Zone {
 	bool operator!=(Button* b);
 	int16_t instanceIndex();
 	bool read(bool manualRead = true);
-	void setState(bool newState);
-	void setState(bool newState, Point& currentPt, uint8_t finger); 
-	void freeState();
+	void fingerDown(Point pos = Point(1,1), uint8_t finger = 0);
+	void fingerUp(uint8_t finger = 0);
+	void fingerMove(Point pos, uint8_t finger);
 	void cancel();
 	bool isPressed();
 	bool isReleased();
@@ -123,9 +123,12 @@ class Button : public Zone {
 	uint32_t lastChange();
 	Event event;
 	uint16_t tapTime, dbltapTime, longPressTime;
+  private:
+  	void init();
+	bool postReleaseEvents();
+	bool timeoutEvents();
   protected:
   	friend class M5Buttons;
-  	void init();
 	char _name[16];
 	uint8_t _pin;
 	uint16_t _dbTime;
@@ -135,7 +138,7 @@ class Button : public Zone {
 	uint32_t _time;
 	uint32_t _lastChange, _lastLongPress, _pressTime, _hold_time;
 	uint8_t _finger;
-	Point _fromPt, _toPt, _currentPt;
+	Point _fromPt[2], _toPt[2], _currentPt[2];
 	
   // visual stuff
   public:
