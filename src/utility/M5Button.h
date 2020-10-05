@@ -133,7 +133,8 @@ class Button : public Zone {
 	uint8_t _pin;
 	uint16_t _dbTime;
 	bool _invert;
-	bool _changed, _state, _tapWait, _pressing, _longPressing, _cancelled, _manuallyRead;
+	bool _changed, _state, _tapWait, _pressing;
+	bool _longPressing, _cancelled, _manuallyRead;
 	uint8_t _setState;
 	uint32_t _time;
 	uint32_t _lastChange, _lastLongPress, _pressTime, _hold_time;
@@ -178,6 +179,7 @@ class M5Buttons {
 	uint8_t _textFont;
 	const GFXfont* _freeFont;
 	uint8_t _textSize;
+	bool _leftovers;
 	
 	#ifdef _M5TOUCH_H_
 	  public:
