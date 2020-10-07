@@ -41,6 +41,8 @@ Point	KEYWORD1
 in	KEYWORD2
 Equals	KEYWORD2
 distanceTo	KEYWORD2
+directionTo	KEYWORD2
+isDirectionTo	KEYWORD2
 valid	KEYWORD2
 
 ButtonColors	KEYWORD1
@@ -55,7 +57,6 @@ instance	KEYWORD2
 instances	KEYWORD2
 
 #Events
-Events	KEYWORD1
 fireEvent	KEYWORD2
 typeName	KEYWORD2
 objName	KEYWORD2
@@ -64,6 +65,9 @@ type	KEYWORD2
 from	KEYWORD2
 to	KEYWORD2
 duration	KEYWORD2
+distance	KEYWORD2
+direction	KEYWORD2
+isDirection KEYWORD2
 button	KEYWORD2
 gesture	KEYWORD2
 
@@ -78,6 +82,11 @@ E_PRESSED	LITERAL1
 E_PRESSING	LITERAL1
 E_LONGPRESSED	LITERAL1
 E_LONGPRESSING	LITERAL1
+
+UP	LITERAL1
+DOWN	LITERAL1
+LEFT	LITERAL1
+RIGHT	LITERAL1
 
 # Button
 Button	KEYWORD1
@@ -103,6 +112,8 @@ dbltapTime	KEYWORD2
 longpressTime	KEYWORD2
 instanceIndex	KEYWORD2
 drawFn	KEYWORD2
+repeatDelay	KEYWORD2
+repeatinterval	KEYWORD2
 on	KEYWORD2
 off	KEYWORD2
 dx	KEYWORD2
@@ -113,6 +124,7 @@ dy	KEYWORD2
 Buttons	KEYWORD1
 draw	KEYWORD2
 which	KEYWORD2
+fireEvent	KEYWORD2
 
 held	KEYWORD2
 repeat	KEYWORD2

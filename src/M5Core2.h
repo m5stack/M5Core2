@@ -61,7 +61,7 @@
 
 #ifndef _M5Core2_H_
   #define _M5Core2_H_
-  
+
   #if defined(ESP32)
 
     #include <Arduino.h>
@@ -71,7 +71,7 @@
     #include "SD.h"
 
     #include "M5Display.h"
-    #include "M5Touch.h"			// M5Touch
+    #include "M5Touch.h"			    // M5Touch
     #include "utility/M5Button.h"	// M5Buttons, M5Events, Button, Gesture
     #include "utility/Config.h"
     #include "utility/CommUtil.h"
@@ -93,39 +93,39 @@
         // Power
         AXP192 Axp;
 
-		// Touch
+		    // Touch
         M5Touch Touch;
-        
-        // Buttons (for things that involve all buttons)
+
+        // Buttons (global button and gesture functions)
         M5Buttons Buttons;
+
+        // Default "button" that gets events where there is no button.
         Button background = Button(0, 0, TOUCH_W, TOUCH_H, true, "background");
-        
+
         // Touch version of the buttons on older M5stack cores, below screen
         Button BtnA = Button(10,240,110,40, true ,"BtnA");
         Button BtnB = Button(130,240,70,40, true, "BtnB");
         Button BtnC = Button(230,240,80,40, true, "BtnC");
-        
-        // Events
-        M5Events Events;
 
         MPU6886 IMU;
 
         // I2C
         CommUtil I2C;
-        
+
         RTC  Rtc;
+
         /**
-        * Function has been move to Power class.(for compatibility)
-        * This name will be removed in a future release.
-        */
+         * Functions have been moved to Power class for compatibility.
+         * These will be removed in a future release.
+         */
         void setPowerBoostKeepOn(bool en) __attribute__((deprecated));
         void setWakeupButton(uint8_t button) __attribute__((deprecated));
         void powerOFF() __attribute__((deprecated));
-        
+
       private:
           bool isInited;
     };
-    
+
     extern M5Core2 M5;
     #define m5 M5
     #define lcd Lcd
@@ -133,3 +133,5 @@
     #error “This library only supports boards with ESP32 processor.”
   #endif
 #endif
+
+

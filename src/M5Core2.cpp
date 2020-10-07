@@ -22,7 +22,7 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
     Serial.print("M5Core2 initializing...");
   }
 
-// I2C init
+  // I2C init
   if (I2CEnable == true) {
     Wire.begin(32, 33);
   }
@@ -35,7 +35,7 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
   }
 
   // Touch init
-  Touch.begin(); // Touch begin after AXP begin. (Reset at the start of AXP)
+  Touch.begin();  // Touch begin after AXP begin. (Reset at the start of AXP)
 
   // TF Card
   if (SDEnable == true) {
@@ -50,7 +50,6 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
   }
 
   Rtc.begin();
-
 }
 
 void M5Core2::update() {
