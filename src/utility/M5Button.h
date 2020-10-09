@@ -54,39 +54,76 @@
 
   The 'set' method allows you to change the properties of an existing Point
   or Zone. Using the 'in' or 'contains' method you can test if a point lies
-  in a zone. There is also a 'distanceTo' method to see how far two points
-  are apart and 'directionTo' will tell you compass direction from one point
-  to another. See the PointAndZone.h file for more detailed information.
+  in a zone.
 
-  The 'directionTo' method allows you to see what the compass course from one
-  point to another would be. So if point A were (0, 0) and B were (10, 10),
-  "A.directionTo(B)" would return 45. With two extra arguments you can test
-  whether a course matches within a certain range. For instance
-  "A.directionTo(B, 0, 30)" would return 'false' because 45 is not within 30
-  degrees of 0 (due north). This is useful for directions of gestures, for
-  example.
+  There is also a 'distanceTo' method to see how far two points are apart and
+  'directionTo' will tell you compass direction from one point to another.
+  Both are used for example in the gesture recognition of the M5Button
+  library.
 
-  Here are some examples to make things clear:
+  The PointAndZone library also provides the low-level support for screen
+  rotation translations. The 'Zone' object actually has a fifth argument
+  called 'rot1'.
 
-    Point a;
-    Point b(50, 120);
-    Serial.println(a.valid());          // 0
-    Serial.println(a);                  // (invalid)
-    a.set(10, 30);
-    Serial.println(a);					// (10,30)
-    Serial.println(a.valid());          // 1
-    Serial.println(b.y);                // 120
-    Serial.println(a.distanceTo(b));    // 98
-    Zone z(0,0,100, 100);
-    Serial.println(z.w);                // 100
-    Serial.println(z.contains(a));      // 1
-    Serial.println(b.in(z));            // 0
+  The documentation in src/utility/PointAndZone.h provides more details about
+  rotation and examples covering most of the above.
 
 
 == Buttons ==
 
-  You can create virtual buttons for any given rectangle on the screen by
-  creating a global variable to hold the Button object and providing the
+  You can create classic Arduino buttons that act on the voltage on a pin on
+  the controller. On the M5Stack Core2, you can also create buttons that act
+  on touch within a given rectangle on the screen. If you want, that same
+  rectangle will also be used for a graphical representation of the button
+  that will show a text label in a colored background with a colored outline.
+  The colors of background, text, and outline can be configured, both for the
+  'off' and the 'on' state of the button.
+
+  Whether on the M5Stack with hardware buttons or on the Core2 with a touch
+  screen, buttons are special forms of the 'Zone' object, meaning that all
+  functions that apply to 'Zone' objects also work on buttons. On the M5Stack
+  with buttons, while this zone cannot be used for touch input, it can still
+  be used to display a button that responds to the button state.
+
+
+== Hardware Buttons ==
+
+  For hardware buttons, use the classic Arduino way of setting up the button,
+  by providing the pin, whether the pin is inverted and the debounce time.
+
+    Button myButton(39, true, 10);
+
+    #include <M5Stack.h>
+
+    Button myButton(39, true, 10);
+
+    void setup() {
+      M5.begin();
+    }
+
+    void loop() {
+      M5.update();
+      if (myButton.wasPressed()) Serial.print("* ");
+    }
+
+  This would set up 'myButton' with the inverse state of pin 39, and a
+  debounce time of 10 milliseconds. Because pin 39 is the left button on an
+  M5Stack with buttons, this sketch will output a star to the serial port
+  every time you release the button.
+
+    Note that the sketch uses 'M5.update()' instead of 'myButton.read()'. You
+    don't need to read() your buttons explicitly anymore. All buttons created
+    with M5Button are automatically read by 'M5.update()'. (Unless you read
+    them with 'myButton.read()', in which case 'M5.update()' stops doing that
+    to avoid you missing things.)
+
+  The next sections will describe buttons on gestures on the touch screen, but if you have an M5Stack device without a touch screen, make sure you pick up at "Events", because many events work on hardware buttons too. Hardware buttons can have responsive labels on the screen, we'll get to that also.
+
+
+== Buttons Using the Touch Screen ==
+
+
+  All you need to do is creating a variable to hold the Button object and providing the
   coordinates (x, y, width and height). These buttons can be used in two
   ways. You can either use them the way you would a normal Arduino button, or
   you can provide handler functions to process various events for the button.
@@ -127,7 +164,7 @@
   M5.update(), they will not be detected anywhere else.
 
 
-== Gestures ==
+== Gestures on the Touch Screen ==
 
   When you create a gesture you can specify two Zones. Whenever a swipe on
   the sensor starts in the first zone and ends in the second, that gesture is
@@ -273,6 +310,24 @@
   all works and run the sketch to see all the events printed to the serial
   port.
 
+
+== Visual Buttons/Labels with Hardware Buttons ==
+
+  If you want to display a button on the screen for your hardware button,
+  just set your hardware up as usual, but then follow the parameter list with
+  "hw" (in quotes), followed by the parameters of the touch button below. the
+  hardware buttons in the older M5Stack devices are ready to display labels
+  for the buttons that respond to the state: all you need is supply colors.
+  their initialisation (in M5Stack.h in this library) looks like this:
+
+    Button BtnA = Button(BUTTON_A_PIN, true, DEBOUNCE_MS, "hw", 3, 218, 102, 21, true, "BtnA");
+    Button BtnB = Button(BUTTON_B_PIN, true, DEBOUNCE_MS, "hw", 109, 218, 102, 21, true, "BtnB");
+    Button BtnC = Button(BUTTON_C_PIN, true, DEBOUNCE_MS, "hw", 215, 218, 102, 21, true, "BtnC");
+
+
+
+
+
 */
 
 #ifndef _M5BUTTON_H_
@@ -305,11 +360,6 @@ class Gesture;
 #define GESTURE_MAXTIME 500
 #define GESTURE_MINDIST 75
 #define ANYWHERE Zone()
-
-#define UP 0
-#define RIGHT 90
-#define DOWN 180
-#define LEFT 270
 
 #define NUM_EVENTS 11
 #define E_TOUCH 0x0001

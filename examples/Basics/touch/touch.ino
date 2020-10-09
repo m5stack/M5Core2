@@ -78,6 +78,9 @@ void showPerformance(Event& e) {
 }
 
 void eventDisplay(Event& e) {
-  Serial.printf("%-12s finger%d  %-18s (%3d, %3d) --> (%3d, %3d)   ( dist %d, %d ms )\n",
-   e.typeName(), e.finger, e.objName(), e.from.x, e.from.y, e.to.x, e.to.y, /* e.direction(), */ e.distance(), e.duration);
+  Serial.printf("%-12s finger%d  %-18s (%3d, %3d) --> (%3d, %3d)   ",
+                e.typeName(), e.finger, e.objName(), e.from.x, e.from.y,
+                e.to.x, e.to.y);
+  Serial.printf("( dir %d deg, dist %d, %d ms )\n", e.direction(),
+                e.distance(), e.duration);
 }

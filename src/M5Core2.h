@@ -48,7 +48,10 @@
         M5.Lcd.drawJpg(const uint8_t *jpg_data, size_t jpg_len, uint16_t x, uint16_t y);
         M5.Lcd.drawJpgFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y);
         M5.Lcd.drawBmpFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y);
-
+    Touch:
+        See M5Touch.h for documentation
+    Buttons:
+        See utility/M5Button.h for documentation
  *
  * \par History:
  * <pre>

@@ -78,33 +78,16 @@
 
   The 'set' method allows you to change the properties of an existing Point
   or Zone. Using the 'in' or 'contains' method you can test if a point lies
-  in a zone. There is also a 'distanceTo' method to see how far two points
-  are apart and 'directionTo' will tell you compass direction from one point
-  to another. See the PointAndZone.h file for more detailed information.
+  in a zone.
 
-  The 'directionTo' method allows you to see what the compass course from one
-  point to another would be. So if point A were (0, 0) and B were (10, 10),
-  "A.directionTo(B)" would return 45. With two extra arguments you can test
-  whether a course matches within a certain range. For instance
-  "A.directionTo(B, 0, 30)" would return 'false' because 45 is not within 30
-  degrees of 0 (due north). This is useful for directions of gestures, for
-  example.
+  There is also a 'distanceTo' method to see how far two points are apart and
+  'directionTo' will tell you compass direction from one point to another.
+  Both are used for example in the Gesture recognition of the M5Button
+  library. The PointAndZone library also provides the low-level support for
+  screen rotation translations.
 
-  Here are some examples to make things clear:
-
-    Point a;
-    Point b(50, 120);
-    Serial.println(a.valid());      // 0
-    Serial.println(a);          // (invalid)
-    a.set(10, 30);
-    Serial.println(a);      // (10,30)
-    Serial.println(a.valid());      // 1
-    Serial.println(b.y);        // 120
-    Serial.println(a.distanceTo(b));  // 98
-    Zone z(0,0,100, 100);
-    Serial.println(z.w);        // 100
-    Serial.println(z.contains(a));    // 1
-    Serial.println(b.in(z));      // 0
+  The documentation in src/utility/PointAndZone.h provides more details and
+  examples.
 
 
 == Basic Touch API ==
@@ -168,7 +151,7 @@
     coordinates 240 through 279) that was below the screen now becomes above
     the screen and has Y coordinates -40 through -1.
 
-  * See the button library for a feature that allows you to keep some Zone
+  * See the M5Button library for a feature that allows you to keep some Zone
     and Button objects in the same place on the physical screen, regardless
     of rotation.
 
