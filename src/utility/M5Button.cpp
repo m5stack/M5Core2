@@ -6,8 +6,8 @@
 
 Button::Button(int16_t x_, int16_t y_, int16_t w_, int16_t h_,
                bool rot1_ /* = false */, const char* name_ /* = "" */,
-               ButtonColors off_ /*= {NONE, NONE, NONE} */,
-               ButtonColors on_ /* = {NONE, NONE, NONE} */,
+               ButtonColors off_ /*= {NODRAW, NODRAW, NODRAW} */,
+               ButtonColors on_ /* = {NODRAW, NODRAW, NODRAW} */,
                uint8_t datum_ /* = BUTTON_DATUM */, int16_t dx_ /* = 0 */,
                int16_t dy_ /* = 0 */, uint8_t r_ /* = 0xFF */
                )
@@ -29,8 +29,8 @@ Button::Button(uint8_t pin_, uint8_t invert_, uint32_t dbTime_,
                String hw_ /* = "hw" */, int16_t x_ /* = 0 */,
                int16_t y_ /* = 0 */, int16_t w_ /* = 0 */, int16_t h_ /* = 0 */,
                bool rot1_ /* = false */, const char* name_ /* = "" */,
-               ButtonColors off_ /*= {NONE, NONE, NONE} */,
-               ButtonColors on_ /* = {NONE, NONE, NONE} */,
+               ButtonColors off_ /*= {NODRAW, NODRAW, NODRAW} */,
+               ButtonColors on_ /* = {NODRAW, NODRAW, NODRAW} */,
                uint8_t datum_ /* = BUTTON_DATUM */, int16_t dx_ /* = 0 */,
                int16_t dy_ /* = 0 */, uint8_t r_ /* = 0xFF */
                )
@@ -73,7 +73,7 @@ void Button::init() {
   _freeFont = nullptr;
   drawFn = nullptr;
   _compat = 0;
-  drawZone = this;
+  drawZone = Zone();
   tapTime = TAP_TIME;
   dbltapTime = DBLTAP_TIME;
   longPressTime = LONGPRESS_TIME;
@@ -94,7 +94,6 @@ int16_t Button::instanceIndex() {
 
 bool Button::read(bool manualRead /* = true */) {
   if (manualRead) _manuallyRead = true;
-  uint32_t duration = _time - _pressTime;
   if (_changed) {
     _changed = false;
     _lastChange = _time;
@@ -117,7 +116,7 @@ bool Button::read(bool manualRead /* = true */) {
   return _state;
 }
 
-void Button::fingerDown(Point pos /* = Point(1,1) */,
+void Button::fingerDown(Point pos /* = Point() */,
                         uint8_t finger /* = 0 */) {
   _finger = finger;
   _currentPt[finger] = _fromPt[finger] = pos;
@@ -131,13 +130,13 @@ void Button::fingerDown(Point pos /* = Point(1,1) */,
   }
 }
 
-void Button::fingerUp(uint8_t finger /* = 0 */) {
+void Button::fingerUp(uint8_t finger /* = 0  */) {
   uint32_t duration = _time - _pressTime;
   _finger = finger;
   _toPt[finger] = _currentPt[finger];
+  _currentPt[finger] = Point();
   BUTTONS->fireEvent(finger, E_RELEASE, _fromPt[finger], _toPt[finger],
                      duration, this, nullptr);
-  _currentPt[finger] = Point();
   if (_state && !_currentPt[1 - finger]) {
     // other finger not here
     _state = false;
@@ -154,7 +153,7 @@ void Button::fingerMove(Point pos, uint8_t finger) {
 
 bool Button::postReleaseEvents() {
   uint32_t duration = _time - _pressTime;
-  if (!contains(_toPt[_finger])) {
+  if (_toPt[_finger] && !contains(_toPt[_finger])) {
     BUTTONS->fireEvent(_finger, E_DRAGGED, _fromPt[_finger], _toPt[_finger],
                        duration, this, nullptr);
     _tapWait = false;
@@ -196,9 +195,8 @@ bool Button::timeoutEvents() {
   if ((!_pressing && duration > tapTime) ||
       (repeatDelay && duration > repeatDelay &&
        _time - _lastRepeat > repeatInterval)) {
-    if (tapTime)
-      BUTTONS->fireEvent(_finger, E_PRESSING, _fromPt[_finger],
-                         _currentPt[_finger], duration, this, nullptr);
+    BUTTONS->fireEvent(_finger, E_PRESSING, _fromPt[_finger],
+                       _currentPt[_finger], duration, this, nullptr);
     _lastRepeat = _time;
     _pressing = true;
     return true;
@@ -271,12 +269,16 @@ void Button::draw() {
     draw(off);
 }
 
+void Button::erase(uint16_t color /* = BLACK */) {
+  draw({color, NODRAW, NODRAW});
+}
+
 void Button::draw(ButtonColors bc) {
   // use locally set draw function if aplicable, global one otherwise
   if (drawFn) {
-    drawFn(this, bc);
+    drawFn(*this, bc);
   } else if (BUTTONS->drawFn) {
-    BUTTONS->drawFn(this, bc);
+    BUTTONS->drawFn(*this, bc);
   }
 }
 
@@ -300,16 +302,14 @@ void Button::setTextSize(uint8_t textSize_ /* = 0 */) { _textSize = textSize_; }
 
 /* static */ M5Buttons* M5Buttons::instance;
 
-/* static */ void M5Buttons::drawFunction(Button* button, ButtonColors bc) {
-  if (bc.bg == NONE && bc.outline == NONE && bc.text == NONE) return;
-  if (!button || !button->drawZone) return;
-  Button& b = *button;
-  Zone z = *b.drawZone;
+/* static */ void M5Buttons::drawFunction(Button& b, ButtonColors bc) {
+  if (bc.bg == NODRAW && bc.outline == NODRAW && bc.text == NODRAW) return;
+  Zone z = (b.drawZone) ? b.drawZone : b;
   if (z.rot1) z.rotate(TFT->rotation);
 
   uint8_t r = (b.r == 0xFF) ? min(z.w, z.h) / 4 : b.r;
 
-  if (bc.bg != NONE) {
+  if (bc.bg != NODRAW) {
     if (r >= 2) {
       TFT->fillRoundRect(z.x, z.y, z.w, z.h, r, bc.bg);
     } else {
@@ -317,7 +317,7 @@ void Button::setTextSize(uint8_t textSize_ /* = 0 */) { _textSize = textSize_; }
     }
   }
 
-  if (bc.outline != NONE) {
+  if (bc.outline != NODRAW) {
     if (r >= 2) {
       TFT->drawRoundRect(z.x, z.y, z.w, z.h, r, bc.outline);
     } else {
@@ -325,7 +325,7 @@ void Button::setTextSize(uint8_t textSize_ /* = 0 */) { _textSize = textSize_; }
     }
   }
 
-  if (bc.text != NONE && bc.text != bc.bg && b._label != "") {
+  if (bc.text != NODRAW && bc.text != bc.bg && strlen(b._label)) {
     // figure out where to put the text
     uint16_t tx, ty;
     tx = z.x + (z.w / 2);
@@ -482,7 +482,7 @@ void M5Buttons::setFont(uint8_t textFont_) {
 
 void M5Buttons::setTextSize(uint8_t textSize_) { _textSize = textSize_; }
 
-Event M5Buttons::fireEvent(uint8_t finger, uint16_t type, Point& from,
+void M5Buttons::fireEvent(uint8_t finger, uint16_t type, Point& from,
                            Point& to, uint16_t duration, Button* button,
                            Gesture* gesture) {
   Event e;
@@ -501,7 +501,6 @@ Event M5Buttons::fireEvent(uint8_t finger, uint16_t type, Point& from,
     if (h.gesture && h.gesture != e.gesture) continue;
     h.fn(e);
   }
-  return e;
 }
 
 void M5Buttons::addHandler(void (*fn)(Event&), uint16_t eventMask /* = E_ALL */,
@@ -615,6 +614,7 @@ void Gesture::delHandlers(void (*fn)(Event&) /* = nullptr */) {
 
 Event::Event() {
   finger = type = duration = 0;
+  from = to = Point();
   button = nullptr;
   gesture = nullptr;
 }

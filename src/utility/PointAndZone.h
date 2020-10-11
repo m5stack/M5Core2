@@ -31,6 +31,9 @@
   or Zone. Using the 'in' or 'contains' method you can test if a point lies
   in a zone.
 
+  The PointAndZone library also provides the low-level support for direction
+  from one point to another and for screen rotation translations.
+
 
 == Looking for Directions? ==
 

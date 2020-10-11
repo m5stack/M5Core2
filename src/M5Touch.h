@@ -80,11 +80,8 @@
   or Zone. Using the 'in' or 'contains' method you can test if a point lies
   in a zone.
 
-  There is also a 'distanceTo' method to see how far two points are apart and
-  'directionTo' will tell you compass direction from one point to another.
-  Both are used for example in the Gesture recognition of the M5Button
-  library. The PointAndZone library also provides the low-level support for
-  screen rotation translations.
+  The PointAndZone library also provides the low-level support for direction
+  from one point to another and for screen rotation translations.
 
   The documentation in src/utility/PointAndZone.h provides more details and
   examples.
