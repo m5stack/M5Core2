@@ -283,7 +283,7 @@ void Button::draw(ButtonColors bc) {
   }
 }
 
-void hide(uint16_t color /* = NODRAW */) {
+void Button::hide(uint16_t color /* = NODRAW */) {
   _hidden = true;
   if (color != NODRAW) erase(color);
 }
