@@ -120,7 +120,6 @@ void Button::fingerDown(Point pos /* = Point() */,
                         uint8_t finger /* = 0 */) {
   _finger = finger;
   _currentPt[finger] = _fromPt[finger] = pos;
-  BUTTONS->fireEvent(finger, E_TOUCH, pos, pos, 0, this, nullptr);
   if (!_state && !_currentPt[1 - finger]) {
     // other finger not here
     _state = true;
@@ -128,6 +127,7 @@ void Button::fingerDown(Point pos /* = Point() */,
     _pressTime = _time;
     draw();
   }
+  BUTTONS->fireEvent(finger, E_TOUCH, pos, pos, 0, this, nullptr);
 }
 
 void Button::fingerUp(uint8_t finger /* = 0  */) {
@@ -135,14 +135,14 @@ void Button::fingerUp(uint8_t finger /* = 0  */) {
   _finger = finger;
   _toPt[finger] = _currentPt[finger];
   _currentPt[finger] = Point();
-  BUTTONS->fireEvent(finger, E_RELEASE, _fromPt[finger], _toPt[finger],
-                     duration, this, nullptr);
   if (_state && !_currentPt[1 - finger]) {
     // other finger not here
     _state = false;
     _changed = true;
     draw();
   }
+  BUTTONS->fireEvent(finger, E_RELEASE, _fromPt[finger], _toPt[finger],
+                     duration, this, nullptr);
 }
 
 void Button::fingerMove(Point pos, uint8_t finger) {
