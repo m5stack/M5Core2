@@ -20,7 +20,6 @@ uint32_t times = 0;
 
 void setup() {
   M5.begin();
-  M5.Touch.dump();
   M5.Buttons.addHandler(doRotation, E_GESTURE);
   M5.Buttons.addHandler(toggleColor, E_DBLTAP);
   M5.Buttons.addHandler(eventDisplay, E_ALL - E_MOVE);
