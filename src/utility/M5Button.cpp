@@ -94,6 +94,7 @@ int16_t Button::instanceIndex() {
 
 bool Button::read(bool manualRead /* = true */) {
   if (manualRead) _manuallyRead = true;
+  event = Event();
   if (_changed) {
     _changed = false;
     _lastChange = _time;

@@ -1,10 +1,10 @@
 #include <M5Core2.h>
 
 // Defines gestures
-Gesture swipeRight("swipe right", 160, RIGHT, 30, true);
-Gesture swipeDown("swipe down", 120, DOWN, 30, true);
-Gesture swipeLeft("swipe left", 160, LEFT, 30, true);
-Gesture swipeUp("swipe up", 120, UP, 30, true);
+Gesture swipeRight("swipe right", 160, DIR_RIGHT, 30, true);
+Gesture swipeDown("swipe down", 120, DIR_DOWN, 30, true);
+Gesture swipeLeft("swipe left", 160, DIR_LEFT, 30, true);
+Gesture swipeUp("swipe up", 120, DIR_UP, 30, true);
 
 // Defines the buttons. Colors in format {bg, text, outline}
 ButtonColors on_clrs = {RED, WHITE, WHITE};

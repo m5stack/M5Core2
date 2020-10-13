@@ -43,7 +43,7 @@
 
     void loop() {
       M5.update();
-      Event& e = M5.Events.event;
+      Event& e = M5.Buttons.event;
       if (e & (E_MOVE | E_RELEASE)) circle(e & E_MOVE ? e.from : e.to, WHITE);
       if (e & (E_TOUCH | E_MOVE)) circle(e.to, e.finger ? BLUE : RED);
     }
@@ -63,8 +63,9 @@
   or an area on the screen. You can
 
   Point(x, y)
-    Holds a point on the screen. Has members x and y that hold the
-    coordinates of a touch. Values -1 for x and y indicate an invalid value,
+
+    Holds a point on the screen. Has members x and y that hold the coordinates
+    of a touch. Values INVALID_VALUE for x and y indicate an invalid value,
     and that's what a point starts out with if you declare it without
     parameters. The 'valid()' method tests if a point is valid. If you
     explicitly evaluate a Point as a boolean ("if (p) ..."), you also get
@@ -72,6 +73,7 @@
     (p.valid()) ...".
 
   Zone(x, y, w, h)
+
     Holds a rectangular area on the screen. Members x, y, w and h are for the
     x and y coordinate of the top-left corner and the width and height of the
     rectangle.
@@ -89,10 +91,8 @@
 
 == Basic Touch API ==
 
-  The basic API provides a way to read the data from the touch sensor. While
-  you may want to use this directly. But you may want to skip using this API
-  as even for simple applications the more advanced ways of using the touch
-  sensor are easier.
+  The basic touch API provides a way to read the data from the touch sensor.
+
 
   M5.update()
     In the loop() part of your sketch, call "M5.update()". This will in turn
@@ -127,13 +127,13 @@
 
 == Buttons, Gestures, Events ==
 
-  Note tha you may not want to use any of the above directly. The M5Buttons
-  library provides Button, Gesture and Events objects that allow you to
-  quickly create reactive visual buttons on the screen and react differently
-  based on whether a button was clicked, tapped, or double-tapped. Have a
-  look at the documentation for that, which is in the M5Button.h file in the
-  src/utility directory of this repository. The example under File / Examples
-  / M5Core2 / Basics / touch in your Arduino environment should give you an
+  Note that you may not want to use any of the above directly. The M5Buttons
+  library provides button, gestures and events that allow you to quickly
+  create reactive visual buttons on the screen and react differently based on
+  whether a button was clicked, tapped, or double-tapped. Have a look at the
+  documentation for that, which is in the M5Button.h file in the src/utility
+  directory of this repository. The examples under "File / Examples
+  / M5Core2 / Touch" in your Arduino environment should give you an
   idea of what's possible.
 
 
@@ -216,10 +216,10 @@
   It may sound complicated when you read it all in this document, but it's
   all made to be easy to use.
 
-  Under File / Examples / M5Core2 / Basics / touch in your Arduino
-  environment is an example sketch called "touch" that shows both this
-  library and M5Button in action. Please have a look at it to understand how
-  this all works and run the sketch to see all the events printed to the
+  Under File / Examples / M5Core2 / Touch in your Arduino environment is an
+  example sketch called "events_buttons_gestures_rotation" that shows both
+  this library and M5Button in action. Please have a look at it to understand
+  how this all works and run the sketch to see all the events printed to the
   serial port. It shows buttons, gestures and events and should be pretty
   self-explanatory.
 
@@ -256,14 +256,13 @@ class M5Touch {
   bool read();
   bool ispressed();
   void dump();
-  Point stale();
   Point getPressPoint();
   uint8_t points;
   bool changed, wasRead;
   Point point[2];
   uint8_t point0finger;
 
- private:
+ protected:
   uint8_t _interval;
   uint32_t _lastRead;
 };

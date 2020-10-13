@@ -120,15 +120,6 @@ bool M5Touch::read() {
   return true;
 }
 
-Point M5Touch::stale() {
-  Point s;
-  uint8_t data[5];
-  ft6336(0x02, 5, data);
-  s.x = ((data[1] << 8) | data[2]) & 0x0fff;
-  s.y = ((data[3] << 8) | data[4]) & 0x0fff;
-  return s;
-}
-
 Point M5Touch::getPressPoint() {
   read();
   return point[0];
