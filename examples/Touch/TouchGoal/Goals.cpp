@@ -27,7 +27,7 @@ bool  Goal::test() {
 TapAGoal::TapAGoal() { name = "Tap the A Button"; }
 // Set success to true if all the conditions of the goal are met
 void TapAGoal::event_handler(Event& e) {
-  if((E_TAP == e) && (0 == strcmp("A", e.button->name()))) success = true;
+  if((E_TAP == e) && (0 == strcmp("A", e.button->getName()))) success = true;
 }
 
 
@@ -35,14 +35,14 @@ void TapAGoal::event_handler(Event& e) {
 //
 TapBGoal::TapBGoal() { name = "Tap the B Button"; }
 void TapBGoal::event_handler(Event& e) {
-  if((E_TAP == e) && (0 == strcmp("B", e.button->name()))) success = true;
+  if((E_TAP == e) && (0 == strcmp("B", e.button->getName()))) success = true;
 }
 
 // Long Press (LONG_PRESS_TIME mS) on the A Button
 //
 LongPressAGoal::LongPressAGoal() { name = "Long Press the A Button"; }
 void LongPressAGoal::event_handler(Event& e) {
-  if((E_LONGPRESSED == e) && (0 == strcmp("A", e.button->name()))) success = true;
+  if((E_LONGPRESSED == e) && (0 == strcmp("A", e.button->getName()))) success = true;
 }
 
 
@@ -50,7 +50,7 @@ void LongPressAGoal::event_handler(Event& e) {
 //
 LongPressBGoal::LongPressBGoal() { name = "Long Press the B Button"; }
 void LongPressBGoal::event_handler(Event& e) {
-  if((E_LONGPRESSED == e) && (0 == strcmp("B", e.button->name()))) success = true;
+  if((E_LONGPRESSED == e) && (0 == strcmp("B", e.button->getName()))) success = true;
 }
 
 
@@ -58,7 +58,7 @@ void LongPressBGoal::event_handler(Event& e) {
 //
 LongPressBackgroundGoal::LongPressBackgroundGoal() { name = "Long Press the Background"; }
 void LongPressBackgroundGoal::event_handler(Event& e) {
-  if((E_LONGPRESSED == e) && (0 == strcmp("background", e.button->name()))) success = true;
+  if((E_LONGPRESSED == e) && (0 == strcmp("background", e.button->getName()))) success = true;
 }
 
 
@@ -67,7 +67,7 @@ void LongPressBackgroundGoal::event_handler(Event& e) {
 DoubleTapAGoal::DoubleTapAGoal() { name = "Double Tap the A Button"; }
 // Set success to true if all the conditions of the goal are met
 void DoubleTapAGoal::event_handler(Event& e) {
-  if((E_DBLTAP == e) && (0 == strcmp("A", e.button->name()))) success = true;
+  if((E_DBLTAP == e) && (0 == strcmp("A", e.button->getName()))) success = true;
 }
 
 
@@ -75,7 +75,7 @@ void DoubleTapAGoal::event_handler(Event& e) {
 //
 DoubleTapBGoal::DoubleTapBGoal() { name = "Double Tap the B Button"; }
 void DoubleTapBGoal::event_handler(Event& e) {
-  if((E_DBLTAP == e) && (0 == strcmp("B", e.button->name()))) success = true;
+  if((E_DBLTAP == e) && (0 == strcmp("B", e.button->getName()))) success = true;
 }
 
 
@@ -84,7 +84,7 @@ void DoubleTapBGoal::event_handler(Event& e) {
 TapBackgroundGoal::TapBackgroundGoal() { name = "Tap the Background"; }
 // Set success to true if all the conditions of the goal are met
 void TapBackgroundGoal::event_handler(Event& e) {
-  if((E_TAP == e) && (0 == strcmp("background", e.button->name()))) success = true;
+  if((E_TAP == e) && (0 == strcmp("background", e.button->getName()))) success = true;
 }
 
 
@@ -92,7 +92,7 @@ void TapBackgroundGoal::event_handler(Event& e) {
 //
 DoubleTapBackgroundGoal::DoubleTapBackgroundGoal() { name = "Double Tap the Background"; }
 void DoubleTapBackgroundGoal::event_handler(Event& e) {
-  if((E_DBLTAP == e) && (0 == strcmp("background", e.button->name()))) success = true;
+  if((E_DBLTAP == e) && (0 == strcmp("background", e.button->getName()))) success = true;
 }
 
 
@@ -172,26 +172,26 @@ void DragFromBackgroundtoBGoal::event_handler(Event& e) {
 //
 SwipeUpGoal::SwipeUpGoal() { name = "Swipe Up"; }
 void SwipeUpGoal::event_handler(Event& e) {
-  if((E_GESTURE == e) && (0 == strcmp("swipe up", e.gesture->name()))) success = true;
+  if((E_GESTURE == e) && (0 == strcmp("swipe up", e.gesture->getName()))) success = true;
 }
 
 // Swipe down detection
 //
 SwipeDownGoal::SwipeDownGoal() { name = "Swipe Down"; }
 void SwipeDownGoal::event_handler(Event& e) {
-  if((E_GESTURE == e) && (0 == strcmp("swipe down", e.gesture->name()))) success = true;
+  if((E_GESTURE == e) && (0 == strcmp("swipe down", e.gesture->getName()))) success = true;
 }
 
 // Swipe left detection
 //
 SwipeLeftGoal::SwipeLeftGoal() { name = "Swipe Left"; }
 void SwipeLeftGoal::event_handler(Event& e) {
-  if((E_GESTURE == e) && (0 == strcmp("swipe left", e.gesture->name()))) success = true;
+  if((E_GESTURE == e) && (0 == strcmp("swipe left", e.gesture->getName()))) success = true;
 }
 
 // Swipe right detection
 //
 SwipeRightGoal::SwipeRightGoal() { name = "Swipe Right"; }
 void SwipeRightGoal::event_handler(Event& e) {
-  if((E_GESTURE == e) && (0 == strcmp("swipe right", e.gesture->name()))) success = true;
+  if((E_GESTURE == e) && (0 == strcmp("swipe right", e.gesture->getName()))) success = true;
 }

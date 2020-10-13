@@ -70,7 +70,7 @@ void eventHandler(Event& e) {
 }
 
 void gestureHandler(Event& e) {
-  output_info(e.typeName(), e.gesture->name());
+  output_info(e.typeName(), e.gesture->getName());
 }
 
 

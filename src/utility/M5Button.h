@@ -7,7 +7,7 @@
   * Buttons on the screen, either as labels above the original M5Stack's
     hardware buttons or anywhere on the touch screen of the Core2.
 
-  * Zone and Point objects to work with screen locations are areas. Functions
+  * Zone and Point objects to work with screen locations and areas. Functions
     for distance, direction and more.
 
   * Touch gestures that are processed before the buttons, so you can still
@@ -17,8 +17,8 @@
     or poll in a loop. Events include tap, doubletap, pressed, dragged and
     more. Support for key repeat.
 
-  * Extensive rotation support, including support for buttons and gestures
-    that stay referenced to the physical screen regardless of rotation.
+  * Extensive screen rotation support, including support for buttons and
+    gestures that stay referenced to the physical screen regardless of rotation.
 
   * Intuitive, consistent and well-documented API.
 
@@ -36,7 +36,7 @@
 == Point and Zone: Describing Points and Areas on the Screen ==
 
   The Point and Zone classes allow you to create variables that hold a point
-  or an area on the screen. You can
+  or an area on the screen.
 
   Point(x, y)
 
@@ -301,6 +301,16 @@
   src/utility/PointAndZone.h has more details if you want to know more about
   this. You will only ever need rot1 if you need multiple screen rotations
   AND you want objects to stay in the same physical place regardless.
+
+
+== M5.Buttons ==
+
+  Apart from the class "Button" that you use to create buttons of your own,
+  there is an instance called "M5.Buttons" (plural), that is used to talk to
+  the M5Button library for things that involve all buttons. For instance:
+  "M5.Buttons.setFont" sets a font for all buttons, and you can use
+  "M5.Buttons.addHandler" to add a handler that gets events for all buttons
+  (and gestures).
 
 
 == Events ==
@@ -828,9 +838,10 @@ class Button : public Zone {
   bool wasReleasefor(uint32_t ms);
   void addHandler(void (*fn)(Event&), uint16_t eventMask = E_ALL);
   void delHandlers(void (*fn)(Event&) = nullptr);
-  char* name();
+  char* getName();
   uint32_t lastChange();
   Event event;
+  uint16_t userData;
   uint16_t tapTime, dbltapTime, longPressTime;
   uint16_t repeatDelay, repeatInterval;
 
@@ -894,7 +905,7 @@ class Gesture {
   bool wasDetected();
   void addHandler(void (*fn)(Event&), uint16_t eventMask = E_ALL);
   void delHandlers(void (*fn)(Event&) = nullptr);
-  char* name();
+  char* getName();
   Zone fromZone;
   Zone toZone;
   Event event;
