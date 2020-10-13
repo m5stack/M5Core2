@@ -13,10 +13,10 @@ bool long_press   = true;
 bool key_repeat   = false;
 
 // Defines gestures
-Gesture swipeRight("Swipe Right", 80, RIGHT, 30, true);
-Gesture swipeDown( "Swipe Down",  60, DOWN,  30, true);
-Gesture swipeLeft( "Swipe Left",  80, LEFT,  30, true);
-Gesture swipeUp(   "Swipe Up",    60, UP,    30, true);
+Gesture swipeRight("Swipe Right", 80, DIR_RIGHT, 30, true);
+Gesture swipeDown( "Swipe Down",  60, DIR_DOWN,  30, true);
+Gesture swipeLeft( "Swipe Left",  80, DIR_LEFT,  30, true);
+Gesture swipeUp(   "Swipe Up",    60, DIR_UP,    30, true);
 
 
 // Use a scrollable sprite for output. Looks nice!
