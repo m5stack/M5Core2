@@ -68,8 +68,8 @@ void Point::rotate(uint8_t m) {
   if (m == 1 || !valid()) return;
   int16_t normal_x = x;
   int16_t normal_y = y;
-  int16_t inv_x = TFT_WIDTH - 1 - x;
-  int16_t inv_y = TFT_HEIGHT - 1 - y;
+  int16_t inv_x = HIGHEST_X - x;
+  int16_t inv_y = HIGHEST_Y - y;
   // inv_y can be negative for area below screen of M5Core2
   switch (m) {
     case 0:

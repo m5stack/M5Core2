@@ -142,6 +142,9 @@
 #define DOWN    180
 #define LEFT    270
 
+#define HIGHEST_X 319         // Can't trust TFT_WIDTH, driver is portrait
+#define HIGHEST_Y 239
+
 
 class Zone;
 

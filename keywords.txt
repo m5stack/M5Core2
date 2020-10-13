@@ -166,6 +166,7 @@ setTextFont	KEYWORD2
 setFreeFont	KEYWORD2
 setTextColor	KEYWORD2
 setTextSize	KEYWORD2
+setRotation	KEYWORD2
 pushState	KEYWORD2
 popState	KEYWORD2
 
