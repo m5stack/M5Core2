@@ -530,16 +530,16 @@
 
     myButton.tapTime = 0;
 
-      Turns off detection of taps and doubletaps, the button will fire become
-      E_PRESSING immediately. Any other value makes that the maximum time a
-      tap can take in milliseconds, and thus the wait tme before "E_PRESSING"
-      fires.
+      Turns off detection of taps and doubletaps, the button will fire
+      E_PRESSING immediately when pressed. Any other value makes that the
+      maximum time a tap can take in milliseconds, and thus the wait tme
+      before "E_PRESSING" fires.
 
     mybutton.tapWait = 0;
 
       Turns off detection of doubletaps only. Any other value makes that the
       wait before an E_TAP fires, because M5Button is still waiting to see if
-      it's a maybe a doubletap.
+      it's maybe a doubletap.
 
     mybutton.longPressTime = 700;
 
