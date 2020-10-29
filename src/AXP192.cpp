@@ -391,7 +391,7 @@ bool AXP192::isACIN()
 }
 bool AXP192::isCharging()
 {
-    return ( Read8bit(0x00) & 0x02 ) ? true : false;
+    return ( Read8bit(0x00) & 0x04 ) ? true : false;
 }
 bool AXP192::isVBUS()
 {
@@ -405,10 +405,10 @@ void AXP192::SetLDOVoltage(uint8_t number, uint16_t voltage)
     {
     //uint8_t reg, data;
     case 2:
-        Write1Byte(AXP_ADDR, (Read8bit(0x28) & 0X0F) | (voltage << 4));
+        Write1Byte(0x28, (Read8bit(0x28) & 0X0F) | (voltage << 4));
         break;
     case 3:
-        Write1Byte(AXP_ADDR, (Read8bit(0x28) & 0XF0) | voltage);
+        Write1Byte(0x28, (Read8bit(0x28) & 0XF0) | voltage);
         break;
     }
 }

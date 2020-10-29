@@ -49,7 +49,7 @@ private:
   void Bcd2asc(void);
   void DataMask();
   void Str2Time(void);
-
+  void WriteReg(uint8_t reg, uint8_t data);
 
   uint8_t Bcd2ToByte(uint8_t Value);
   uint8_t ByteToBcd2(uint8_t Value);
