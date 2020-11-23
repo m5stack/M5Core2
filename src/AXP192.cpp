@@ -23,7 +23,7 @@ void AXP192::begin(void)
     Serial.printf("axp: gpio2 init\n");
 
     //AXP192 RTC CHG
-    Write1Byte(0x35, (Read8bit(0x35) & 0x1c) | 0xa3);
+    Write1Byte(0x35, (Read8bit(0x35) & 0x1c) | 0xa2);
     Serial.printf("axp: rtc battery charging enabled\n");
 
     SetESPVoltage(3350);
