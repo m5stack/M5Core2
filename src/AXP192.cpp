@@ -39,6 +39,8 @@ void AXP192::begin(void)
     Serial.printf("axp: vibrator voltage preset to 2v\n");
 
     SetLDOEnable(2, true);
+    SetDCDC3(true); // LCD backlight
+    SetLed(true);
 
     SetCHGCurrent(kCHG_100mA);
     //SetAxpPriphPower(1);
@@ -226,14 +228,40 @@ float AXP192::GetCoulombData(void)
     return ccc;
 }
 
-void AXP192::SetSleep(void)
+// Cut all power, except for LDO1 (RTC)
+void AXP192::PowerOff(void)
 {
-    uint8_t buf = Read8bit(0x31);
-    buf = (1 << 3) | buf;
-    Write1Byte(0x31, buf);
-    Write1Byte(0x90, 0x00);
-    Write1Byte(0x12, 0x09);
-    Write1Byte(0x12, 0x00);
+    Write1Byte(0x32, Read8bit(0x32) | 0b10000000);
+}
+
+void AXP192::SetAdcState(bool state)
+{
+    // Enable / Disable all ADCs
+    Write1Byte(0x82, state ? 0xff : 0x00);
+}
+
+void AXP192::PrepareToSleep(void)
+{
+    // Disable ADCs
+    SetAdcState(false);
+
+    // Turn LED off
+    SetLed(false);
+
+    // Turn LCD backlight off
+    SetDCDC3(false);
+}
+
+void AXP192::RestoreFromLightSleep(void)
+{
+    // Turn LCD backlight on
+    SetDCDC3(true);
+
+    // Turn LED on
+    SetLed(true);
+
+    // Enable ADCs
+    SetAdcState(true);
 }
 
 uint8_t AXP192::GetWarningLeve(void)
@@ -249,7 +277,7 @@ uint8_t AXP192::GetWarningLeve(void)
 // -- sleep
 void AXP192::DeepSleep(uint64_t time_in_us)
 {
-    SetSleep();
+    PrepareToSleep();
 
     if (time_in_us > 0)
     {
@@ -260,11 +288,13 @@ void AXP192::DeepSleep(uint64_t time_in_us)
         esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
     }
     (time_in_us == 0) ? esp_deep_sleep_start() : esp_deep_sleep(time_in_us);
+
+    // Never reached - after deep sleep ESP32 restarts
 }
 
 void AXP192::LightSleep(uint64_t time_in_us)
 {
-    SetSleep();
+    PrepareToSleep();
 
     if (time_in_us > 0)
     {
@@ -275,6 +305,8 @@ void AXP192::LightSleep(uint64_t time_in_us)
         esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
     }
     esp_light_sleep_start();
+
+    RestoreFromLightSleep();
 }
 
 uint8_t AXP192::GetWarningLevel(void)
@@ -378,6 +410,16 @@ void AXP192::SetLDO2(bool State)
         buf = (1 << 2) | buf;
     else
         buf = ~(1 << 2) & buf;
+    Write1Byte(0x12, buf);
+}
+
+void AXP192::SetDCDC3(bool State)
+{
+    uint8_t buf = Read8bit(0x12);
+    if (State == true)
+        buf = (1 << 1) | buf;
+    else
+        buf = ~(1 << 1) & buf;
     Write1Byte(0x12, buf);
 }
 
