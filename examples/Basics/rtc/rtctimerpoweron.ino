@@ -76,11 +76,11 @@ void loop()
     data = 5;
     WriteNByte(I2C_ADDR_RTC, 0x0F, 1, &data);
     // Shutdown
-    M5.Axp.SetSleep();
+    M5.Axp.PowerOff();
   }
   else if(M5.BtnC.wasPressed() == true)
   {
     // Shutdown
-    M5.Axp.SetSleep();
+    M5.Axp.PowerOff();
   }
 }

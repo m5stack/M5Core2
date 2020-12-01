@@ -45,8 +45,11 @@ public:
 	uint32_t GetCoulombchargeData(void);
 	uint32_t GetCoulombdischargeData(void);
 	float GetCoulombData(void); 
+	void PowerOff(void);
+	void SetAdcState(bool state);
   	// -- sleep
-	void SetSleep(void);
+	void PrepareToSleep(void);
+	void RestoreFromLightSleep(void);
 	void DeepSleep(uint64_t time_in_us = 0);
 	void LightSleep(uint64_t time_in_us = 0);
   	uint8_t GetWarningLeve(void);
@@ -69,6 +72,7 @@ public:
   	uint8_t GetWarningLevel(void);	
     void SetCoulombClear();
 	void SetLDO2( bool State );
+	void SetDCDC3( bool State );
 
     uint8_t AXPInState();
     bool isACIN();
