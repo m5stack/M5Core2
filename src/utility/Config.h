@@ -1,6 +1,9 @@
 #ifndef _CONFIG_H_
   #define _CONFIG_H_
 
+  #define TFT     M5Display::instance
+  #define BUTTONS	M5Buttons::instance
+
   // Screen
   #define TFT_LED_PIN 32
   #define TFT_DC_PIN 27
@@ -16,4 +19,9 @@
   // UART
   #define USE_SERIAL Serial
 
-#endif /* SETTINGS_C */
+  // Core2 defines
+  #define M5Stack_M5Core2
+  #define TFT_eSPI_TOUCH_EMULATION
+  #define TOUCH		M5Touch::instance
+
+#endif /* CONFIG_H */
