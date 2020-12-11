@@ -852,7 +852,7 @@ class TFT_eSPI : public Print {
   uint8_t  textfont,  // Current selected font
            textsize,  // Current font size multiplier
            textdatum, // Text reference datum
-           rotation;  // Display rotation (0-3)
+           rotation;  // Display rotation (0-7, second four are mirrored)
 
   int16_t _xpivot;   // x pivot point coordinate
   int16_t _ypivot;   // x pivot point coordinate
