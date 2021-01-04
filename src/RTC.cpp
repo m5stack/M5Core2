@@ -20,6 +20,15 @@ void RTC::WriteReg(uint8_t reg, uint8_t data)
     Wire1.endTransmission();
 }
 
+uint8_t RTC::ReadReg(uint8_t reg)
+{
+    Wire1.beginTransmission(0x51);
+    Wire1.write(reg);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x51, 1);
+    return Wire1.read();
+}
+
 void RTC::GetBm8563Time(void)
 {
     Wire1.beginTransmission(0x51);
@@ -147,7 +156,7 @@ void RTC::SetTime(RTC_TimeTypeDef *RTC_TimeStruct)
     Wire1.endTransmission();
 }
 
-void RTC::GetData(RTC_DateTypeDef *RTC_DateStruct)
+void RTC::GetDate(RTC_DateTypeDef *RTC_DateStruct)
 {
 
     uint8_t buf[4] = {0};
@@ -180,7 +189,7 @@ void RTC::GetData(RTC_DateTypeDef *RTC_DateStruct)
     }
 }
 
-void RTC::SetData(RTC_DateTypeDef *RTC_DateStruct)
+void RTC::SetDate(RTC_DateTypeDef *RTC_DateStruct)
 {
 
     if (RTC_DateStruct == NULL)
@@ -204,4 +213,141 @@ void RTC::SetData(RTC_DateTypeDef *RTC_DateStruct)
     }
 
     Wire1.endTransmission();
+}
+
+int RTC::SetAlarmIRQ(int afterSeconds)
+{
+    uint8_t reg_value = 0;
+    reg_value = ReadReg(0x01);
+
+    if (afterSeconds < 0)
+    {
+        reg_value &= ~(1 << 0);
+        WriteReg(0x01, reg_value);
+        reg_value = 0x03;
+        WriteReg(0x0E, reg_value);
+        return -1;
+    }
+
+    uint8_t type_value = 2;
+    uint8_t div = 1;
+    if (afterSeconds > 255)
+    {
+        div = 60;
+        type_value = 0x83;
+    }
+    else
+    {
+        type_value = 0x82;
+    }
+
+    afterSeconds = (afterSeconds / div) & 0xFF;
+    WriteReg(0x0F, afterSeconds);
+    WriteReg(0x0E, type_value);
+
+    reg_value |= (1 << 0);
+    reg_value &= ~(1 << 7);
+    WriteReg(0x01, reg_value);
+    return afterSeconds * div;
+}
+
+int RTC::SetAlarmIRQ(const RTC_TimeTypeDef &RTC_TimeStruct)
+{
+    uint8_t irq_enable = false;
+    uint8_t out_buf[4] = {0x80, 0x80, 0x80, 0x80};
+
+    if (RTC_TimeStruct.Minutes >= 0)
+    {
+        irq_enable = true;
+        out_buf[0] = ByteToBcd2(RTC_TimeStruct.Minutes) & 0x7f;
+    }
+
+    if (RTC_TimeStruct.Hours >= 0)
+    {
+        irq_enable = true;
+        out_buf[1] = ByteToBcd2(RTC_TimeStruct.Hours) & 0x3f;
+    }
+
+    out_buf[2] = 0x00;
+    out_buf[3] = 0x00;
+
+    uint8_t reg_value = ReadReg(0x01);
+
+    if (irq_enable)
+    {
+        reg_value |= (1 << 1);
+    }
+    else
+    {
+        reg_value &= ~(1 << 1);
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        WriteReg(0x09 + i, out_buf[i]);
+    }
+    WriteReg(0x01, reg_value);
+
+    return irq_enable ? 1 : 0;
+}
+
+int RTC::SetAlarmIRQ(const RTC_DateTypeDef &RTC_DateStruct, const RTC_TimeTypeDef &RTC_TimeStruct)
+{
+    uint8_t irq_enable = false;
+    uint8_t out_buf[4] = {0x80, 0x80, 0x80, 0x80};
+
+    if (RTC_TimeStruct.Minutes >= 0)
+    {
+        irq_enable = true;
+        out_buf[0] = ByteToBcd2(RTC_TimeStruct.Minutes) & 0x7f;
+    }
+
+    if (RTC_TimeStruct.Hours >= 0)
+    {
+        irq_enable = true;
+        out_buf[1] = ByteToBcd2(RTC_TimeStruct.Hours) & 0x3f;
+    }
+
+    if (RTC_DateStruct.Date >= 0)
+    {
+        irq_enable = true;
+        out_buf[2] = ByteToBcd2(RTC_DateStruct.Date) & 0x3f;
+    }
+
+    if (RTC_DateStruct.WeekDay >= 0)
+    {
+        irq_enable = true;
+        out_buf[3] = ByteToBcd2(RTC_DateStruct.WeekDay) & 0x07;
+    }
+
+    uint8_t reg_value = ReadReg(0x01);
+
+    if (irq_enable)
+    {
+        reg_value |= (1 << 1);
+    }
+    else
+    {
+        reg_value &= ~(1 << 1);
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        WriteReg(0x09 + i, out_buf[i]);
+    }
+    WriteReg(0x01, reg_value);
+
+    return irq_enable ? 1 : 0;
+}
+
+void RTC::clearIRQ()
+{
+    uint8_t data = ReadReg(0x01);
+    WriteReg(0x01, data & 0xf3);
+}
+void RTC::disableIRQ()
+{
+    clearIRQ();
+    uint8_t data = ReadReg(0x01);
+    WriteReg(0x01, data & 0xfC);
 }

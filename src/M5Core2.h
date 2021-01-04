@@ -48,7 +48,10 @@
         M5.Lcd.drawJpg(const uint8_t *jpg_data, size_t jpg_len, uint16_t x, uint16_t y);
         M5.Lcd.drawJpgFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y);
         M5.Lcd.drawBmpFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y);
-
+    Touch:
+        See M5Touch.h for documentation
+    Buttons:
+        See utility/M5Button.h for documentation
  *
  * \par History:
  * <pre>
@@ -61,7 +64,7 @@
 
 #ifndef _M5Core2_H_
   #define _M5Core2_H_
-  
+
   #if defined(ESP32)
 
     #include <Arduino.h>
@@ -71,10 +74,11 @@
     #include "SD.h"
 
     #include "M5Display.h"
+    #include "M5Touch.h"			    // M5Touch
+    #include "utility/M5Button.h"	// M5Buttons, M5Events, Button, Gesture
     #include "utility/Config.h"
     #include "utility/CommUtil.h"
     #include "utility/MPU6886.h"
-    #include "touch.h"
     #include "AXP192.h"
     #include "RTC.h"
 
@@ -86,35 +90,51 @@
         void begin(bool LCDEnable = true, bool SDEnable = true, bool SerialEnable = true, bool I2CEnable = false);
         void update();
 
-        // LCD
-        M5Display Lcd = M5Display();
 
-        //Power
+        void shutdown();
+        int shutdown( int seconds );
+        int shutdown( const RTC_TimeTypeDef &RTC_TimeStruct);
+        int shutdown( const RTC_DateTypeDef &RTC_DateStruct, const RTC_TimeTypeDef &RTC_TimeStruct);
+
+        // LCD
+        M5Display Lcd;
+
+        // Power
         AXP192 Axp;
 
-        touch Touch;
-        TouchButton BtnA = TouchButton(10,241,110,40);
-        TouchButton BtnB = TouchButton(130,241,70,40);
-        TouchButton BtnC = TouchButton(230,241,80,40);
+		    // Touch
+        M5Touch Touch;
 
-        MPU6886 IMU = MPU6886();
+        // Buttons (global button and gesture functions)
+        M5Buttons Buttons;
+
+        // Default "button" that gets events where there is no button.
+        Button background = Button(0, 0, TOUCH_W, TOUCH_H, true, "background");
+
+        // Touch version of the buttons on older M5stack cores, below screen
+        Button BtnA = Button(10,240,110,40, true ,"BtnA");
+        Button BtnB = Button(130,240,70,40, true, "BtnB");
+        Button BtnC = Button(230,240,80,40, true, "BtnC");
+
+        MPU6886 IMU;
 
         // I2C
-        CommUtil I2C = CommUtil();
-        
+        CommUtil I2C;
+
         RTC  Rtc;
+
         /**
-        * Function has been move to Power class.(for compatibility)
-        * This name will be removed in a future release.
-        */
+         * Functions have been moved to Power class for compatibility.
+         * These will be removed in a future release.
+         */
         void setPowerBoostKeepOn(bool en) __attribute__((deprecated));
         void setWakeupButton(uint8_t button) __attribute__((deprecated));
         void powerOFF() __attribute__((deprecated));
-        
+
       private:
           bool isInited;
     };
-    
+
     extern M5Core2 M5;
     #define m5 M5
     #define lcd Lcd
@@ -122,3 +142,5 @@
     #error “This library only supports boards with ESP32 processor.”
   #endif
 #endif
+
+

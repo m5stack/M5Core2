@@ -11,6 +11,8 @@
 
 #define AXP_ADDR 0X34
 
+#define PowerOff(x) SetSleep(x)
+
 class AXP192 {
 public:
 

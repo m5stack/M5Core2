@@ -22,7 +22,7 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
     Serial.print("M5Core2 initializing...");
   }
 
-// I2C init
+  // I2C init
   if (I2CEnable == true) {
     Wire.begin(32, 33);
   }
@@ -35,7 +35,7 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
   }
 
   // Touch init
-  Touch.begin(); // Touch begin after AXP begin. (Reset at the start of AXP)
+  Touch.begin();  // Touch begin after AXP begin. (Reset at the start of AXP)
 
   // TF Card
   if (SDEnable == true) {
@@ -50,12 +50,41 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
   }
 
   Rtc.begin();
-
 }
 
 void M5Core2::update() {
-  Touch.read();
+  Touch.update();
+  Buttons.update();
   yield();
+}
+
+void M5Core2::shutdown()
+{
+    Axp.PowerOff();
+}
+int M5Core2::shutdown(int seconds)
+{
+    Rtc.clearIRQ();
+    Rtc.SetAlarmIRQ(seconds);
+    delay(10);
+    Axp.PowerOff();
+    return 0;
+}
+int M5Core2::shutdown(const RTC_TimeTypeDef &RTC_TimeStruct)
+{
+    Rtc.clearIRQ();
+    Rtc.SetAlarmIRQ(RTC_TimeStruct);
+    delay(10);
+    Axp.PowerOff();
+    return 0;
+}
+int M5Core2::shutdown(const RTC_DateTypeDef &RTC_DateStruct, const RTC_TimeTypeDef &RTC_TimeStruct)
+{
+    Rtc.clearIRQ();
+    Rtc.SetAlarmIRQ(RTC_DateStruct,RTC_TimeStruct);
+    delay(10);
+    Axp.PowerOff();
+    return 0;
 }
 
 M5Core2 M5;
