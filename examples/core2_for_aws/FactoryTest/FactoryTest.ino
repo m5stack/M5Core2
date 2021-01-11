@@ -2,6 +2,8 @@
     Description: This case is used to test CORE FOR AWS.
     Please install library before compiling:  
     ArduinoECCX08: file in M5Core2 lib examples -> core2_for_aws -> ArduinoECCX08.zip（unzip the lib zip file to the Arduino Lib path）
+
+    For build with PlatformIO, only mkdir a lib directory in the same level, and run `pio run`
 */
 
 #include <M5Core2.h>
@@ -2264,7 +2266,7 @@ void setup()
     checkPsram();
     checkIMUInit();
     checkSDCard();
-    checkIOPort();
+    //checkIOPort();
     
     DisCoverScrollbuff.deleteSprite();
  
