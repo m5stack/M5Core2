@@ -6,7 +6,7 @@
 M5Core2::M5Core2() : isInited(0) {
 }
 
-void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEnable) {
+void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEnable, mbus_mode_t mode) {
   // Correct init once
   if (isInited == true) {
     return;
@@ -27,7 +27,7 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEn
     Wire.begin(32, 33);
   }
 
-  Axp.begin();
+  Axp.begin(mode);
 
   // LCD INIT
   if (LCDEnable == true) {

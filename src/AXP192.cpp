@@ -4,7 +4,7 @@ AXP192::AXP192()
 {
 }
 
-void AXP192::begin(void)
+void AXP192::begin(mbus_mode_t mode)
 {
 
     Wire1.begin(21, 22);
@@ -62,7 +62,7 @@ void AXP192::begin(void)
     // I2C_WriteByteDataAt(0X15,0XFE,0XFF);
 
     //  bus power mode_output
-    SetBusPowerMode(0);
+    SetBusPowerMode(mode);
 }
 
 void AXP192::Write1Byte(uint8_t Addr, uint8_t Data)
