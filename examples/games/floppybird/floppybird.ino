@@ -28,16 +28,6 @@
 // grass size
 #define GRASSH            4     // grass height (inside floor, starts at floor y)
 
-
-TouchZone topHalf(0,0,320,120);
-TouchZone bottomHalf(0,120,320,160);
-Gesture swipeDown(topHalf, bottomHalf, "Swipe Down");
-
-TouchButton lt = TouchButton(0, 0, 160, 120, "left-top");
-TouchButton lb = TouchButton(0, 120, 160, 120, "left-bottom");
-TouchButton rt = TouchButton(160, 0, 160, 120, "right-top");
-TouchButton rb = TouchButton(160, 120, 160, 120, "right-bottom");
-
 int address = 0;
 int maxScore = EEPROM.readInt(address);
 const int buttonPin = 2;     
@@ -100,24 +90,6 @@ static short tmpx, tmpy;
 // faster drawPixel method by inlining calls and using setAddrWindow and pushColor
 // using macro to force inlining
 #define drawPixel(a, b, c) M5.Lcd.setAddrWindow(a, b, a, b); M5.Lcd.pushColor(c)
-
-
-void setup() {
-  // put your setup code here, to run once:
-  M5.begin();
-  M5.Touch.addHandler(eventDisplay,TE_TOUCH);
-  EEPROM.begin(1000);
-  //resetMaxScore();
-  Serial.println("last score:");
-  Serial.println(EEPROM.readInt(address));
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  game_start();
-  game_loop();
-  game_over();
-}
 
 
 
@@ -276,6 +248,24 @@ void game_loop() {
 }
 
 
+void game_init() {
+  // clear screen
+  M5.Lcd.fillScreen(BCKGRDCOL);
+  // reset score
+  score = 0;
+  // init bird
+  bird.x = 144;
+  bird.y = bird.old_y = TFTH2 - BIRDH;
+  bird.vel_y = -JUMP_FORCE;
+  tmpx = tmpy = 0;
+  // generate new random seed for the pipe gape
+  randomSeed(analogRead(0));
+  // init pipe
+  pipes.x = 0;
+  pipes.gap_y = random(20, TFTH-60);
+}
+
+
 // ---------------
 // game start
 // ---------------
@@ -298,31 +288,14 @@ void game_start() {
   M5.Lcd.println("Premi il bottone centrale");
   while (1) {
     // wait for push button
-      if(M5.BtnB.wasPressed()) {
-        break;
-      }
+    if(M5.BtnB.wasPressed()) {
+      break;
+    }
     M5.update();
         
     }
       // init game settings
       game_init();
-}
-
-void game_init() {
-  // clear screen
-  M5.Lcd.fillScreen(BCKGRDCOL);
-  // reset score
-  score = 0;
-  // init bird
-  bird.x = 144;
-  bird.y = bird.old_y = TFTH2 - BIRDH;
-  bird.vel_y = -JUMP_FORCE;
-  tmpx = tmpy = 0;
-  // generate new random seed for the pipe gape
-  randomSeed(analogRead(0));
-  // init pipe
-  pipes.x = 0;
-  pipes.gap_y = random(20, TFTH-60);
 }
 
 
@@ -354,7 +327,7 @@ void game_over() {
   M5.Lcd.print("score: ");
   M5.Lcd.print(score);
   M5.Lcd.setCursor( TFTW2 - (12*6), TFTH2 + 18);
-  M5.Lcd.println("press button");
+  M5.Lcd.println("press button B");
   M5.Lcd.setCursor( 10, 28);
   M5.Lcd.print("Max Score:");
   M5.Lcd.print(maxScore);
@@ -373,10 +346,29 @@ void resetMaxScore()
   EEPROM.commit();
 }
 
-void eventDisplay(TouchEvent& e) {
+void eventDisplay(Event& e) {
   // if the bird is not too close to the top of the screen apply jump force
   if (bird.y > BIRDH2*0.5) bird.vel_y = -JUMP_FORCE;
   // else zero velocity
   else bird.vel_y = 0;
 }
+
+
+void setup() {
+  // put your setup code here, to run once:
+  M5.begin();
+  M5.Buttons.addHandler(eventDisplay,E_TOUCH);
+  EEPROM.begin(1000);
+  //resetMaxScore();
+  Serial.println("last score:");
+  Serial.println(EEPROM.readInt(address));
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  game_start();
+  game_loop();
+  game_over();
+}
+
 

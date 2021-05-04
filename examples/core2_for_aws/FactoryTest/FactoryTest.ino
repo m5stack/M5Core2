@@ -520,47 +520,6 @@ int checkAETCC608AInit()
     Wire1.begin(21,22,100000);
 }
 
-int checkIOPort()
-{
-    pinMode(14,OUTPUT);
-    pinMode(13,INPUT);
-    pinMode(26,OUTPUT);
-    pinMode(36,INPUT);
-
-    uint8_t sendByte = 0xAA;
-    uint8_t readBytePin13 = 0,readBytePin36 = 0;
-
-    for( int i = 0; i < 8; i++ )
-    {   
-        uint8_t val = (( sendByte >> i ) & 0x01 ) ? HIGH : LOW;
-        digitalWrite(14,val);
-        digitalWrite(26,val);
-        delay(5);
-        readBytePin13 |= digitalRead(13);
-        readBytePin36 |= digitalRead(36);
-
-        readBytePin13 <<= 1;
-        readBytePin36 <<= 1;
-        delay(5);
-    }
-    Serial.printf("IO Read = %02X %02X\r\n",readBytePin13,readBytePin36);
-
-    if( readBytePin13 != 0xAA )
-    {
-        CoverScrollText("SOCKET2 Check failed",M5.Lcd.color565(FAILD_COLOR));
-        while (1)delay(100);
-    }
-    else if( readBytePin36 != 0xAA )
-    {
-        CoverScrollText("SOCKET1 Check failed",M5.Lcd.color565(FAILD_COLOR));
-        while (1)delay(100);
-    }
-    else
-    {
-        CoverScrollText("SOCKET Check Successful",M5.Lcd.color565(SUCCE_COLOR));
-    }
-}
-
 int checkSDCard()
 {
     sdcard_type_t Type = SD.cardType();
@@ -2266,7 +2225,6 @@ void setup()
     checkPsram();
     checkIMUInit();
     checkSDCard();
-    //checkIOPort();
     
     DisCoverScrollbuff.deleteSprite();
  

@@ -13,6 +13,14 @@
 
 #define PowerOff(x) SetSleep(x)
 
+
+typedef enum                 
+{
+    kMBusModeOutput = 0,  // powered by USB or Battery  
+    kMBusModeInput = 1  // powered by outside input
+} mbus_mode_t;
+
+
 class AXP192 {
 public:
 
@@ -36,7 +44,7 @@ public:
     };
 
   	AXP192();
-  	void  begin(void);
+  	void  begin(mbus_mode_t mode = kMBusModeOutput);
 	void  ScreenBreath(uint8_t brightness);
 	bool  GetBatState();
   
