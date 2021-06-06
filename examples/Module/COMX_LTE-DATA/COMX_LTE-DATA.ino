@@ -308,7 +308,7 @@ String readstr;
 void setup()
 {
 	// put your setup code here, to run once:
-	M5.begin(true,true,true,true,kMBusModeOutput);
+	M5.begin(true,true,true,true,kMBusModeInput);
 //  kMBusModeOutput,powered by USB or Battery  
 //  kMBusModeInput,powered by outside input
 	
