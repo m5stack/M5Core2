@@ -2,10 +2,7 @@
 
 中文 | [English](README_cn.md)
 
-<img src="https://docs.m5stack.com/assets/img/product_pics/core/core2/core2_01.webp" alt="M5Core2_P1" width="350" height="350">
-
-
-<img src="https://docs.m5stack.com/assets/img/product_pics/core/core2/core2_02.webp" alt="M5Core2_P2" width="350" height="350">
+<img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_01.webp" alt="M5Core2_P1" width="350" height="350">
 
 
 ## 描述
@@ -89,7 +86,7 @@ TF 卡最大支持 16GB
 
 ## M5Core2 M-BUS示意图
 
-<img class="pic" src="https://docs.m5stack.com/assets/img/product_pics/core/core2/core2_mbus.webp" width = "50%">
+<img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_mbus.webp" width = "50%">
 
 ## M5Core2 端口说明
 
@@ -110,4 +107,4 @@ TF 卡最大支持 16GB
 
 ## 更多信息
 
-[产品文档](https://docs.m5stack.com/#/zh_CN/core/core2)
+[产品文档](https://docs.m5stack.com/zh_CN/core/core2)
