@@ -2,10 +2,7 @@
 
 English | [中文](README_cn.md)
 
-<img src="https://docs.m5stack.com/assets/img/product_pics/core/core2/core2_01.webp" alt="M5Core2_P1" width="350" height="350">
-
-
-<img src="https://docs.m5stack.com/assets/img/product_pics/core/core2/core2_02.webp" alt="M5Core2_P2" width="350" height="350">
+<img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_01.webp" alt="M5Core2_P1" width="350" height="350">
 
 ## Description
 
@@ -97,7 +94,7 @@ TF card Maximum size 16GB
 
 ## M5Core2 M-BUS Schematic diagram
 
-<img class="pic" src="https://docs.m5stack.com/assets/img/product_pics/core/core2/core2_mbus.webp" width = "50%">
+<img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_mbus.webp" width = "50%">
 
 ## M5PORT EXPLAIN
 
@@ -118,4 +115,4 @@ TF card Maximum size 16GB
 
 ## More Information
 
-[Product docs](https://docs.m5stack.com/#/en/core/core2)
+[Product docs](https://docs.m5stack.com/en/core/core2)

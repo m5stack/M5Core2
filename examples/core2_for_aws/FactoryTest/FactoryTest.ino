@@ -1,7 +1,13 @@
 /*
     Description: This case is used to test CORE FOR AWS.
-    Please install library before compiling:  
-    ArduinoECCX08: file in M5Core2 lib examples -> core2_for_aws -> ArduinoECCX08.zip（unzip the lib zip file to the Arduino Lib path）
+    Please install the following libraries before compiling:  
+    1) ArduinoECCX08: 
+        - Arduino menu --> Sketch --> Include Library --> Add .ZIP library...
+        - Location of the M5Core2 Arduino library --> examples --> core2_for_aws --> ArduinoECCX08.zip
+    2) FastLED v3.4.0: 
+        - Arduino menu --> Tools --> Manage Libraries
+        - Library manager search bar --> "FastLED"
+        - Install FastLED v3.4.0 by Daniel Garcia
 */
 
 #include <M5Core2.h>
