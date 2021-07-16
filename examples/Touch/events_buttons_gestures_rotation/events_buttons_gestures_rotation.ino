@@ -1,12 +1,22 @@
+/*
+*******************************************************************************
+*Copyright (c) 2021 by M5Stack
+*                          配套  M5Stack 示例源代码
+*获取更多资料请访问：https://docs.m5stack.com/zh_CN/products
+*
+* 描  述：bmm150--三轴磁力计示例
+* 日期：2021.7.14
+*******************************************************************************
+*/
 #include <M5Core2.h>
 
-// Defines gestures
+//定义手势
 Gesture swipeRight("swipe right", 160, DIR_RIGHT, 30, true);
 Gesture swipeDown("swipe down", 120, DIR_DOWN, 30, true);
 Gesture swipeLeft("swipe left", 160, DIR_LEFT, 30, true);
 Gesture swipeUp("swipe up", 120, DIR_UP, 30, true);
 
-// Defines the buttons. Colors in format {bg, text, outline}
+//定义按钮按下/未按下时的样式{背景色, 文字颜色, 边框色}
 ButtonColors on_clrs = {RED, WHITE, WHITE};
 ButtonColors off_clrs = {BLACK, WHITE, WHITE};
 Button tl(0, 0, 0, 0, false ,"top-left", off_clrs, on_clrs, TL_DATUM);
