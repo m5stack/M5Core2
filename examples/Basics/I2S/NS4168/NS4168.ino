@@ -4,14 +4,12 @@
 *                  Equipped with M5Core2 sample source code
 * Visit the website for more information：https://docs.m5stack.com/en/products
 *
-* describe：Speaker example
+* describe：NS4168--I2S power amplifier example
 * date：2021/7/15
 *******************************************************************************
 */
 #include <M5Core2.h>
 #include <driver/i2s.h>
-
-extern const unsigned char previewR[120264];  // Referring to external data (Dingdong audio files are stored inside)
 
 #define CONFIG_I2S_BCK_PIN 12 // Define I2S related ports
 #define CONFIG_I2S_LRCK_PIN 0
@@ -24,9 +22,12 @@ extern const unsigned char previewR[120264];  // Referring to external data (Din
 #define MODE_SPK 1
 #define DATA_SIZE 1024
 
-bool InitI2SSpeakOrMic(int mode){ //Init I2S
-    esp_err_t err = ESP_OK;
+uint8_t microphonedata0[1024 * 100];
+int data_offset = 0;
 
+bool InitI2SSpeakOrMic(int mode){  //Init I2S
+    esp_err_t err = ESP_OK;
+    
     i2s_driver_uninstall(Speak_I2S_NUMBER); // Uninstall the I2S driver
     i2s_config_t i2s_config = {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER),  // Set the I2S operating mode
@@ -65,29 +66,18 @@ void DisplayInit(void){ // Initialize the display
   M5.Lcd.setTextSize(2);  // Set font size to 2
 }
 
-void SpeakInit(void){ // Initialize the speaker
-  M5.Axp.SetSpkEnable(true);  // Power on the speaker
-  InitI2SSpeakOrMic(MODE_SPK);
-}
-
-void DingDong(void){
-  size_t bytes_written = 0;
-  i2s_write(Speak_I2S_NUMBER, previewR, 120264, &bytes_written, portMAX_DELAY);
-}
-
 // After M5Core2 is started or reset
 // the program in the setUp () function will be run, and this part will only be run once.
-void setup() {
-  M5.begin(true, true, true, true); //Init M5Core2(LCD, SD card, Serial port, I2C, )
-  DisplayInit();  
+void setup(){
+  M5.begin(true, true, true, true); //Init M5Core2
+  M5.Axp.SetSpkEnable(true);  //Enable speaker power
+  DisplayInit();
   M5.Lcd.setTextColor(RED);
   M5.Lcd.setCursor(10, 10); // Set the cursor at (10,10)
-  M5.Lcd.printf("Speak Test!"); // The screen prints the formatted string and wraps it
+  M5.Lcd.printf("Recorder!"); // The screen prints the formatted string and wraps it
   M5.Lcd.setTextColor(BLACK);
   M5.Lcd.setCursor(10, 26);
-  M5.Lcd.printf("Press Left Button to listen DingDong!");
-  SpeakInit();
-  DingDong();
+  M5.Lcd.printf("Press Left Button to recording!");
   delay(100); //delay 100ms
 }
 
@@ -95,13 +85,23 @@ void setup() {
 //The loop() function is an infinite loop in which the program runs repeatedly
 void loop() {
   TouchPoint_t pos= M5.Touch.getPressPoint(); // Stores the touch coordinates in pos
-  if(pos.y > 240)
-    if(pos.x < 109)
-    {
-      M5.Axp.SetLDOEnable(3,true);  //Open the vibration
-      delay(100);
-      M5.Axp.SetLDOEnable(3,false); 
-      DingDong();
+  if(pos.y > 240){
+    if(pos.x < 109){
+        M5.Axp.SetLDOEnable(3,true);  //Open the vibration
+        delay(100);
+        M5.Axp.SetLDOEnable(3,false); 
+        data_offset = 0;
+        InitI2SSpeakOrMic(MODE_MIC);
+        size_t byte_read;
+        while (1){
+            i2s_read(Speak_I2S_NUMBER, (char *)(microphonedata0 + data_offset), DATA_SIZE, &byte_read, (100 / portTICK_RATE_MS));
+            data_offset += 1024;
+            if(data_offset == 1024 * 100 || M5.Touch.ispressed() != true)
+              break;             
+        }
+        size_t bytes_written;
+        InitI2SSpeakOrMic(MODE_SPK);
+        i2s_write(Speak_I2S_NUMBER, microphonedata0, data_offset, &bytes_written, portMAX_DELAY);
     }
-  delay(10);
+  }
 }
