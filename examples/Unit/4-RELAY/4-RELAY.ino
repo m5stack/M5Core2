@@ -7,7 +7,7 @@
 * 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/core2
 *
 * describe：4-Relay.  4个继电器
-* date：2021/8/9
+* date：2021/8/10
 *******************************************************************************
   Please connect to port A,Control 4 relays and demonstrate the asynchronous control relay LED
   请连接A端口，控制4继电器，并演示异步控制继电器LED
@@ -30,7 +30,7 @@
 UNIT_4RELAY unit_4relay;
 
 void setup() {
-  M5.begin(true,false,true,true); //Init M5Core And the I2C port(21,22).  初始化 M5Core 和I2C(21,22)端口
+  M5.begin(true,false,true,true); //Init M5Core2 And the I2C port(21,22).  初始化 M5Core2 和I2C(21,22)端口
   M5.Lcd.setCursor(80, 0, 4); //Set the cursor position to (80,0).  将光标位置设置为(80,0)
   M5.Lcd.print("4-RELAY UNIT\n\n");
   M5.Lcd.print("   Relay State: \n   Sync Mode: ");
