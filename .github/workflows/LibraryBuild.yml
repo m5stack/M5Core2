@@ -1,5 +1,17 @@
 name: LibraryBuild
-on: [push, pull_request]
+on:
+  push: # see: https://help.github.com/en/actions/reference/events-that-trigger-workflows#pull-request-event-pull_request
+    paths:
+    - '**.ino'
+    - '**.cpp'
+    - '**.h'
+    - '**LibraryBuild.yml'
+  pull_request:
+    paths:
+    - '**.ino'
+    - '**.cpp'
+    - '**.h'
+    - '**LibraryBuild.yml'
 jobs:
   build:
     name: Test compiling examples for M5stack-Core2
@@ -17,4 +29,5 @@ jobs:
         arduino-board-fqbn:  esp32:esp32:m5stack-core2
         platform-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_dev_index.json
         #required-libraries: FastLED,Adafruit_Sensors
-        sketches-exclude: FactoryTest,RGB_SK6812,TVOC,ENVII_SHT30_BMP280,DAC_MCP4725,BPS_BMP280,COLOR_TCS3472,
+        #sketches-exclude: FactoryTest,RGB_SK6812,TVOC,ENVII_SHT30_BMP280,DAC_MCP4725,BPS_BMP280,COLOR_TCS3472,BPS_QMP6988,4-RELAY,BPS_Unit
+        sketch-names-find-start: examples/Basics/
