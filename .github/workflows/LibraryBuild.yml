@@ -1,0 +1,19 @@
+name: LibraryBuild
+on: [push, pull_request]
+jobs:
+  build:
+    name: Test compiling examples for esp32
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Compile all examples
+      uses: ArminJo/arduino-test-compile@v3
+      with:
+        arduino-board-fqbn:  esp32:esp32:esp32:FlashFreq=80
+        platform-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_dev_index.json
+        
