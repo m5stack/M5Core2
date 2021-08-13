@@ -2,6 +2,7 @@
   #define _M5DISPLAY_H_
 
   #include <Arduino.h>
+  #include <vector>
   #include <FS.h>
   #include <SPI.h>
 
