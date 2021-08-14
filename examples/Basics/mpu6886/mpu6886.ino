@@ -37,9 +37,16 @@ void setup(){
   M5.Lcd.setTextSize(2);  //Set the font size.  设置字体大小
 }
 
+void loop(){
+  M5.IMU.getAccelData(&accX, &accY, &accZ);    //Passing Acc Reference
+  M5.IMU.getGyroData(&gyroX, &gyroY, &gyroZ);  //Passing Gyro Reference  
+  M5.IMU.getAhrsData(&pitch, &roll, &yaw);     //Passing Ahrs Reference
+  M5.IMU.getTempData(&temp);                   //Passing Temp Reference
+
 /* The M5Core screen is 320x240 pixels, starting at the top left corner of the screen (0,0).
 gyroscope output related
 M5Stack屏幕像素为 320x240,以屏幕左上角为原点 (0,0)*/
+
 //gyroscope output related.  陀螺仪输出相关
   M5.Lcd.setCursor(0, 20);  //Move the cursor position to (x,y).  移动光标位置到(x,y)处
   M5.Lcd.printf("gyroX,  gyroY, gyroZ"); //Screen printingformatted string.  输出格式化字符串
