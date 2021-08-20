@@ -252,6 +252,16 @@ void AXP192::PrepareToSleep(void)
     SetDCDC3(false);
 }
 
+float AXP192::GetBatteryLevel(void)
+{
+    const float batVoltage = GetBatVoltage();
+    const float batPercentage = 
+        (batVoltage < 3.2) 
+        ? (0) 
+        : (batVoltage - 3.2) * 100;
+    return batPercentage;    
+}
+
 void AXP192::RestoreFromLightSleep(void)
 {
     // Turn LCD backlight on
