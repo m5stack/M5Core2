@@ -45,8 +45,8 @@ void loop() {
   M5.IMU.getAhrsData(&pitch,&roll,&yaw);  //Stores the inertial sensor attitude.  存储惯性传感器的姿态
   M5.IMU.getTempData(&temp);  //Stores the inertial sensor temperature to temp.  存储惯性传感器的温度
 /* The M5Core screen is 320x240 pixels, starting at the top left corner of the screen (0,0).
-gyroscope output related
-M5Stack屏幕像素为 320x240,以屏幕左上角为原点 (0,0)*/
+  gyroscope output related
+  M5Core2屏幕像素为 320x240,以屏幕左上角为原点 (0,0)*/
 //gyroscope output related.  陀螺仪输出相关
   M5.Lcd.setCursor(0, 20);  //Move the cursor position to (x,y).  移动光标位置到(x,y)处
   M5.Lcd.printf("gyroX,  gyroY, gyroZ"); //Screen printingformatted string.  输出格式化字符串
@@ -72,5 +72,5 @@ M5Stack屏幕像素为 320x240,以屏幕左上角为原点 (0,0)*/
   M5.Lcd.setCursor(0, 175);
   M5.Lcd.printf("Temperature : %.2f C", temp);
 
-  delay(10);  // Delay 1000ms (1 sec)  //延迟1000ms（1秒）
+  delay(10);  // Delay 10ms.  延迟10ms
 }
