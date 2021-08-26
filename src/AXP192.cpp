@@ -255,12 +255,6 @@ void AXP192::PrepareToSleep(void)
 // Get current battery level
 float AXP192::GetBatteryLevel(void)
 {
-    /*
-        We test 10 devices M5Core2.
-        Average max battery voltage: 4.1844
-        We add 2% for safety, because it covers min max battery voltage wath a margin.
-    */
-
     const float batVoltage = GetBatVoltage();
     const float batPercentage = 
         (batVoltage < 3.248088) 
