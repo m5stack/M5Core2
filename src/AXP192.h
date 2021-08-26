@@ -57,7 +57,6 @@ public:
 	float GetCoulombData(void); 
 	float GetBatteryLevel(void);
 	void PowerOff(void);
-	float GetBatteryLevel(void);
 	void SetAdcState(bool state);
   	// -- sleep
 	void PrepareToSleep(void);
