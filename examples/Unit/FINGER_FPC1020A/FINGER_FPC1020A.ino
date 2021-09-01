@@ -12,7 +12,7 @@
 */
 
 #include <M5Core2.h>
-#include "M5_Finger.h"
+#include "M5_FPC1020A.h"
 
 uint8_t userNum;           //User number
 FingerPrint FP_M;
