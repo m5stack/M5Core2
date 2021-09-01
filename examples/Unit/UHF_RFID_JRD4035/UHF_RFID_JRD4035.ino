@@ -40,7 +40,7 @@ void setup()
   canvas.setTextScroll(true);
 
   RFID._debug = 0;
-  Serial2.begin(115200, SERIAL_8N1, 16, 17);//16.17
+  Serial2.begin(115200, SERIAL_8N1, 13, 14);
   if (RFID._debug == 1)Serial.begin(115200, SERIAL_8N1, 21, 22);
   M5.Lcd.fillRect(0, 0, 340, 280, BLACK);
 
