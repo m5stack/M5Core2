@@ -46,7 +46,6 @@
 #define GREENYELLOW         0xAFE5      /* 173, 255,  47 */
 #define PINK                0xF81F
 
-
 // Delay between some initialisation commands
 #define TFT_INIT_DELAY 0x80 // Not used unless commandlist invoked
 
