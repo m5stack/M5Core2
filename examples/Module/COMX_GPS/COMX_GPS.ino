@@ -1,7 +1,16 @@
 /*
-    Description: Use COM.GPS Module to get the coordinate data and time of the current location.
-    Please install library before compiling:  
-    TinyGPSPlus: https://github.com/mikalhart/TinyGPSPlus
+*******************************************************************************
+* Copyright (c) 2021 by M5Stack
+*                  Equipped with M5Core2 sample source code
+*                          配套  M5Core2 示例源代码
+* Visit the website for more information：https://docs.m5stack.com/en/module/comx_gps
+* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/module/comx_gps
+*
+* describe: comx_gps.
+* date：2021/9/2
+*******************************************************************************
+  Use COM.GPS Module to get the coordinate data and time of the current location.
+  使用 COM.GPS 模块获取当前位置的坐标数据和时间。
 */
 
 #include <M5Core2.h>
@@ -116,13 +125,15 @@ void displayInfo()
 void setup()
 {
   M5.begin(true, true, true, false, kMBusModeInput);
+  /*   kMBusModeOutput,powered by USB or Battery
+  kMBusModeInput,powered by outside input need to fill in this Otherwise M5Core2 will not work properly
+  由外部供电时此项必填,否则M5Core2将无法正常工作 */
   Serial2.begin(9600, SERIAL_8N1, 13, 14);
   M5.Lcd.setTextColor(GREEN, BLACK);
 
 //  while (*gpsStream)
 //    if (gps.encode(*gpsStream++))
 //      displayInfo();
-
   
 }
 

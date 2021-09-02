@@ -1,5 +1,16 @@
 /*
-    Description: This exmpale can display the encoder gear reading of the PLUS Module and the state of the keys.
+*******************************************************************************
+* Copyright (c) 2021 by M5Stack
+*                  Equipped with M5Core2 sample source code
+*                          配套  M5Core2 示例源代码
+* Visit the website for more information：https://docs.m5stack.com/en/module/plus
+* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/module/plus
+*
+* describe: PLUS.
+* date：2021/9/2
+*******************************************************************************
+  This exmpale can display the encoder gear reading of the PLUS Module and the state of the keys.
+  本例可以显示PLUS模块的编码器齿轮读数和按键状态。
 */
 #include <Arduino.h>
 #include <M5Core2.h>
@@ -13,9 +24,10 @@ uint8_t press = 0;
 
 void setup() {
     M5.begin(true,true,true,false,kMBusModeOutput);
-//  kMBusModeOutput,powered by USB or Battery  
-//  kMBusModeInput,powered by outside input
-  
+/*   kMBusModeOutput,powered by USB or Battery
+  kMBusModeInput,powered by outside input need to fill in this Otherwise M5Core2 will not work properly
+  由外部供电时此项必填,否则M5Core2将无法正常工作 */
+
     M5.Lcd.setTextFont(6);
     M5.Lcd.clear(BLACK);
     M5.Lcd.setTextColor(ORANGE, BLACK);
