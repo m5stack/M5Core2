@@ -55,6 +55,7 @@ public:
 	uint32_t GetCoulombchargeData(void);
 	uint32_t GetCoulombdischargeData(void);
 	float GetCoulombData(void); 
+	float GetBatteryLevel(void);
 	void PowerOff(void);
 	void SetAdcState(bool state);
   	// -- sleep
@@ -64,7 +65,6 @@ public:
 	void LightSleep(uint64_t time_in_us = 0);
   	uint8_t GetWarningLeve(void);
 
-public:
 	// void SetChargeVoltage( uint8_t );
 	// void SetChargeCurrent( uint8_t );
 	float GetBatVoltage();
