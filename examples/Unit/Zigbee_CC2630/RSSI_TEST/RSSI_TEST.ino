@@ -90,7 +90,7 @@ void configZigbee()
 void setup()
 {
     M5.begin();
-    Serial2.begin(38400, SERIAL_8N1, 16, 17);
+    Serial2.begin(38400, SERIAL_8N1, 13, 14);
     zigbee.begin(Serial2);
 
     M5.Lcd.fillRect(0, 0, 320, 240, M5.Lcd.color565(56, 56, 56));

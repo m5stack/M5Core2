@@ -1,12 +1,12 @@
 /*
 *******************************************************************************
 * Copyright (c) 2021 by M5Stack
-*                  Equipped with M5Core sample source code
-*                          配套  M5Core 示例源代码
-* Visit the website for more information：https://docs.m5stack.com/en/module/plus
-* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/module/plus
+*                  Equipped with M5Core2 sample source code
+*                          配套  M5Core2 示例源代码
+* Visit the website for more information：https://docs.m5stack.com/en/module/comx_lorawan
+* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/module/comx_lorawan
 *
-* describe: PLUS.
+* describe: comx_lorawan.
 * date：2021/9/2
 *******************************************************************************
   LoRa868 Duplex communication.Send messages regularly "HeLoRa World!"

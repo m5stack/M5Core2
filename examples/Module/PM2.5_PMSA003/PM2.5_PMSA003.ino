@@ -36,7 +36,7 @@ uint16_t CheckCode;
 void setup() {
   M5.begin();
   Serial.begin(9600);
-  Serial2.begin(9600, SERIAL_8N1, 16, 17);
+  Serial2.begin(9600, SERIAL_8N1, 13, 14);
   pinMode(13, OUTPUT);
   digitalWrite(13, 1);
 
