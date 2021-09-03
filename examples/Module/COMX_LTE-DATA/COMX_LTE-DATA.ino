@@ -323,7 +323,7 @@ void setup()
 /*   kMBusModeOutput,powered by USB or Battery
   kMBusModeInput,powered by outside input need to fill in this Otherwise M5Core2 will not work properly
   由外部供电时此项必填,否则M5Core2将无法正常工作 */
-	
+		Serial2.begin(115200, SERIAL_8N1, 13, 14);
 /* 	Serial2.begin(115200, SERIAL_8N1, 13, 14);
     The 13(RX), 14(TX) pins of the CORE2 correspond to the 16(RX), 17(TX) pins of the COMX
     CORE2的13（RX）、14（TX）引脚对应COMX的16（RX）、17（TX）引脚

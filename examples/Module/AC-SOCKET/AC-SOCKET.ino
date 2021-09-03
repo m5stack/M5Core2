@@ -25,7 +25,7 @@ bool ubCoilState = false;
 void setup() {
   M5.begin(true, false, true, false, kMBusModeOutput);
   mb_init(0xac, 9600, &tim);
-  Serial1.begin(9600, SERIAL_8N1, 16, 17);
+  Serial1.begin(9600, SERIAL_8N1, 13, 14);
   time_now = millis();
   // put your setup code here, to run once:
 }

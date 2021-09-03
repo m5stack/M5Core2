@@ -14,8 +14,8 @@
 */
 
 #include <M5Core2.h>
-#define RX_PIN      16
-#define TX_PIN      17
+#define RX_PIN      13
+#define TX_PIN      14
 
 #define X_OFF 160
 #define Y_OFF 30
@@ -27,7 +27,7 @@ void setup() {
   M5.Lcd.setTextSize(1);
   M5.Lcd.drawString("RS485 Unit test", 75, 3, 4);
   Serial.begin(115200);
-  Serial2.begin(115200, SERIAL_8N1, RX_PIN, TX_PIN);  //Set the baud rate of serial port 2 to 115200,8 data bits, no parity bits, and 1 stop bit, and set RX to 16 and TX to 17.  设置串口二的波特率为115200,8位数据位,没有校验位,1位停止位,并设置RX为16,TX为17
+  Serial2.begin(115200, SERIAL_8N1, RX_PIN, TX_PIN);  //Set the baud rate of serial port 2 to 115200,8 data bits, no parity bits, and 1 stop bit, and set RX to 13 and TX to 14.  设置串口二的波特率为115200,8位数据位,没有校验位,1位停止位,并设置RX为13,TX为14
 }
 
 

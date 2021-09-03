@@ -85,7 +85,7 @@ int drawChatBubbles(String str,uint16_t addr)
 void setup()
 {
   M5.begin();
-  Serial2.begin(38400, SERIAL_8N1, 16, 17);
+  Serial2.begin(38400, SERIAL_8N1, 13, 14);
 
   zigbee.begin(Serial2);
 
@@ -300,7 +300,7 @@ void AppEndDevice()
   zigbee.rebootModule();
 
   pinMode(5, INPUT_PULLUP);
-  Wire.begin(21,22);
+  Wire.begin(32,33);
 
   M5.Lcd.fillRect(20, 200, 280, 30, M5.Lcd.color565(56, 56, 56));
   M5.Lcd.drawRect(20, 200, 280, 30, M5.Lcd.color565(200, 200, 200));
