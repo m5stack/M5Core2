@@ -9,8 +9,8 @@
 * describe：Fan.  风扇
 * date：2021/8/16
 *******************************************************************************
-  Please connect to Port B(26), Adjust the speed of FAN Unit through PWM.
-  请连接端口B(26),通过PWM调节风扇单元的转速。
+  Please connect to Port B, Adjust the speed of FAN Unit through PWM.
+  请连接端口B,通过PWM调节风扇单元的转速。
 */
 #include <M5Core2.h>
 

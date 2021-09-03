@@ -9,8 +9,8 @@
 * describe: OLED.  显示屏
 * date：2021/8/31
 *******************************************************************************
-  Please connect to Port A(22、21),Displays a string on the screen.
-  请连接端口A(22、21),在屏幕上显示字符串。
+  Please connect to Port A,Displays a string on the screen.
+  请连接端口A,在屏幕上显示字符串。
 */
 #include <M5UnitOLED.h>
 

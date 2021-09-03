@@ -9,8 +9,8 @@
 * describe：BPS_QMP6988.  压力传感器
 * date：2021/8/10
 ******************************************************************************
-  Please connect to Port A(22、21),Read atmospheric pressure and display them on the display screen
-  请连接端口A(22、21),读取大气压强并在显示屏上显示
+  Please connect to Port A,Read atmospheric pressure and display them on the display screen
+  请连接端口A,读取大气压强并在显示屏上显示
 */
 #include <M5Core2.h>
 #include "Wire.h" //The BPS uses I2C comunication.

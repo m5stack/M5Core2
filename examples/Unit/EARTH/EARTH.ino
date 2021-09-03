@@ -9,8 +9,8 @@
 * describe：EARTH.  土壤湿度
 * date：2021/8/11
 *******************************************************************************
-  Please connect to Port B(26、36),Read the analog quantity and digital quantity returned by the EARTH unit, and convert the analog quantity into 12-bit data and display it on the screen.
-  请连接端口B(26、36),读取EARTH Unit 返回的模拟量和数字量，并将模拟量转换为12位数据显示在屏幕上。
+  Please connect to Port B,Read the analog quantity and digital quantity returned by the EARTH unit, and convert the analog quantity into 12-bit data and display it on the screen.
+  请连接端口B,读取EARTH Unit 返回的模拟量和数字量，并将模拟量转换为12位数据显示在屏幕上。
 */
 
 #include <M5Stack.h>
