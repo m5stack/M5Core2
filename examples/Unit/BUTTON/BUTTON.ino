@@ -9,8 +9,8 @@
 * describe：Button.  按键
 * date：2021/7/26
 *******************************************************************************
-  Please connect to Port B(36),Read the button status of BUTTON Unit and display it on the screen
-  请连接端口B(36),读取按键的状态并在显示屏上显示
+  Please connect to Port B,Read the button status of BUTTON Unit and display it on the screen
+  请连接端口B,读取按键的状态并在显示屏上显示
   if you don't have M5GO BOTTOM, you need change the pinMode and the digitalRead to 33, But you will not be able to use any I2C operations.
   如果你没有M5GO BOTTOM，你需要改变pinMode和digitalRead到33,但是你将不能使用任何I2C操作.
 */

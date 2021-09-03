@@ -9,8 +9,8 @@
 * describe：OP 180/90.  非接触式光电限位开关
 * date：2021/8/16
 *******************************************************************************
-  Please connect to Port B(36),Detect the current OP 90/180 Unit Photoelectric switch status.
-  请连接端口B(36),检测当前OP 90/180单元光电开关状态。
+  Please connect to Port B,Detect the current OP 90/180 Unit Photoelectric switch status.
+  请连接端口B,检测当前OP 90/180单元光电开关状态。
 */
 
 #include <M5Core2.h>

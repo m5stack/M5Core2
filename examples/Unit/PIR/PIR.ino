@@ -9,8 +9,8 @@
 * describe：PIR.  人体红外
 * date：2021/8/11
 *******************************************************************************
-  Please connect to Port B(26、36),Human body detection using PIR Unit.
-  请连接端口B(26、36),使用PIR Unit进行人体检测。
+  Please connect to Port B,Human body detection using PIR Unit.
+  请连接端口B,使用PIR Unit进行人体检测。
 */
 
 #include <M5Core2.h>
