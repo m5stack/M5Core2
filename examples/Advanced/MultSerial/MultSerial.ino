@@ -15,7 +15,7 @@
 void setup() {
   M5.begin(); //Init M5Core2.  初始化 M5Core2
   // Serial2.begin(unsigned long baud, uint32_t config, int8_t rxPin, int8_t txPin, bool invert)
-  Serial2.begin(115200, SERIAL_8N1, 16, 17);  //Init serial port 2.  初始化串口2
+  Serial2.begin(115200, SERIAL_8N1, 13, 14);  //Init serial port 2.  初始化串口2
 }
 
 void loop() {

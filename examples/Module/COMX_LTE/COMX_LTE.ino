@@ -1,7 +1,19 @@
-//Set the DIP switch to 5 and 13
-//and the screen will display the signal strength and network access status
-//press buttonA to dial phonenumber
-//ATD13800088888 is phone number, you can change 
+/*
+*******************************************************************************
+* Copyright (c) 2021 by M5Stack
+*                  Equipped with M5Core2 sample source code
+*                          配套  M5Core2 示例源代码
+* Visit the website for more information：https://docs.m5stack.com/en/module/comx_lte
+* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/module/comx_lte
+*
+* describe: comx_lte.
+* date：2021/9/2
+*******************************************************************************
+  Set the DIP switch to 5 and 13 and the screen will display the signal strength and network access status
+  press buttonA to dial phonenumber, ATD00000000000 is phone number, you can change
+  将 DIP 开关设置为 5 和 13 并且屏幕会显示信号强度和网络访问状态
+  按按钮A拨打电话号码,ATD00000000000 是电话号码，您可以更改
+*/
 
 #include <M5Core2.h>
 #include <stdint.h>
@@ -307,15 +319,18 @@ String readstr;
 
 void setup()
 {
-	// put your setup code here, to run once:
 	M5.begin(true,true,true,false,kMBusModeInput);
-//  kMBusModeOutput,powered by USB or Battery  
-//  kMBusModeInput,powered by outside input
+/*   kMBusModeOutput,powered by USB or Battery
+  kMBusModeInput,powered by outside input need to fill in this Otherwise M5Core2 will not work properly
+  由外部供电时此项必填,否则M5Core2将无法正常工作 */
 	
 	Serial2.begin(115200, SERIAL_8N1, 13, 14);
-//  The 13(RX), 14(TX) pins of the CORE2 correspond to the 16(RX), 17(TX) pins of the COMX
-//Please make sure that the dialing switch of COMX is set to 16(RX), 17(TX).
-
+/* 	Serial2.begin(115200, SERIAL_8N1, 13, 14);
+    The 13(RX), 14(TX) pins of the CORE2 correspond to the 16(RX), 17(TX) pins of the COMX
+    CORE2的13（RX）、14（TX）引脚对应COMX的16（RX）、17（TX）引脚
+    Please make sure that the dialing switch of COMX is set to 16(RX), 17(TX).
+    请确保 COMX 的拨号开关设置为 16(RX)、17(TX)。
+ */
 	Disbuff.createSprite(320,20);
 	Disbuff.fillRect(0,0,320,20,BLACK);
 	Disbuff.drawRect(0,0,320,20,Disbuff.color565(36,36,36));
@@ -387,6 +402,4 @@ void loop()
 		EraseFirstMsg();
 		AddMsg("AT+CHUP\r\n", kASSIGN_MO, 1000, 1000);	
 	}
-
-	// put your main code here, to run repeatedly:
 }
