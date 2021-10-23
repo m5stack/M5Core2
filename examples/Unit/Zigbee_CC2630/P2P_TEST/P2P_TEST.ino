@@ -101,7 +101,6 @@ void setup()
 
   Serial.printf("PAIN ID:%04X\r\n", arg->main_PANID);
 
-
   /*
   xTaskCreate([](void *arg){
       uint8_t readbuff[128];
