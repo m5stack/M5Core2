@@ -44,7 +44,9 @@ public:
     };
 
   	AXP192();
-  	void  begin(mbus_mode_t mode = kMBusModeOutput);
+  	void  begin();
+	// Will be deprecated
+  	void  begin(mbus_mode_t mode);
 	void  ScreenBreath(uint8_t brightness);
 	bool  GetBatState();
   
