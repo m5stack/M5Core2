@@ -27,7 +27,7 @@ HardwareSerial ss(2);
 void setup()
 {
   M5.begin();
-  ss.begin(GPSBaud, SERIAL_8N1, 13, 14);  //It requires the use of SoftwareSerial, and assumes that you have a 4800-baud serial GPS device hooked up on pins 4(rx) and 3(tx).  它需要使用SoftwareSerial，并假设您有一个4800波特的串行GPS设备连接在引脚4(rx)和3(tx)。
+  ss.begin(GPSBaud, SERIAL_8N1, 33, 32);  //Pin for RX (33) / TX (32) for grove Port.A. Default Unit GPS_AT6558 comes with a grove connector.
 
   M5.Lcd.println(F("Sats HDOP Latitude   Longitude   Fix  Date       Time     Date Alt    Course Speed Card  Distance Course Card  Chars Sentences Checksum"));
   M5.Lcd.println(F("          (deg)      (deg)       Age                      Age  (m)    --- from GPS ----  ---- to London  ----  RX    RX        Fail"));
