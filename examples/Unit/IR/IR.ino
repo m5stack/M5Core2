@@ -23,7 +23,6 @@ int cur_recv_value = 0;
 
 void setup() {
   M5.begin();
-  Serial.begin(115200);
   pinMode(ir_recv_pin, INPUT);
   pinMode(ir_send_pin, OUTPUT);
   //send infrared light.  发送红外线
