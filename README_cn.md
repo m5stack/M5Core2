@@ -19,12 +19,12 @@
 
 ## 更多信息
 
-**UIFlow 快速上手**: [点击这里](https://docs.m5stack.com/zh_CN/quick_start/m5stickc/uiflow)
+**UIFlow 快速上手**: [点击这里](https://docs.m5stack.com/zh_CN/quick_start/core2/uiflow)
 
-**MicroPyhton API**: [点击这里](https://docs.m5stack.com/zh_CN/mpy/display/m5stack_lvgl)
+**MicroPyhton API**: [点击这里](https://docs.m5stack.com/zh_CN/quick_start/core2/mpy)
 
 **Arduino IDE 环境搭建**: [点击这里](https://docs.m5stack.com/zh_CN/quick_start/core2/arduino)
 
-**M5StickC Arduino API**: [点击这里](https://docs.m5stack.com/zh_CN/api/core2/axp192_core2)
+**M5Core2 Arduino API**: [点击这里](https://docs.m5stack.com/zh_CN/api/core2/axp192_core2)
 
 **引脚地图**: [点击这里](https://docs.m5stack.com/zh_CN/core/core2)
