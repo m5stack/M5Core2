@@ -24,14 +24,14 @@ The 3 icons on the front of the screen are capacitive buttons which are programm
 
 <img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_mbus.webp" width = "50%">
 
-## 更多信息
+## More Information
 
-**UIFlow Quick Start**: [Click Here](https://docs.m5stack.com/en/quick_start/m5stickc/uiflow)
+**UIFlow Quick Start**: [Click Here](https://docs.m5stack.com/en/quick_start/core2/uiflow)
 
-**MicroPyhton API**: [Click Here](https://docs.m5stack.com/en/mpy/display/m5stack_lvgl)
+**MicroPyhton API**: [Click Here](https://docs.m5stack.com/en/quick_start/core2/mpy)
 
 **Arduino IDE Development**: [Click Here](https://docs.m5stack.com/en/quick_start/core2/arduino)
 
-**M5StickC Arduino API**: [Click Here](https://docs.m5stack.com/en/api/core2/axp192_core2)
+**M5Core2 Arduino API**: [Click Here](https://docs.m5stack.com/en/api/core2/axp192_core2)
 
 **PinMap**: [Click Here](https://docs.m5stack.com/en/core/core2)
