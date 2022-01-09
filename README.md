@@ -4,10 +4,10 @@ English | [中文](README_cn.md)
 
 <img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_01.webp" alt="M5Core2_P1" width="350" height="350">
 
-* **For the Detailed documentation of M5Core2，Please [Click here](https://docs.m5stack.com/en/core/core2)**
+**For the Detailed documentation of M5Core2, Please [Click here](https://docs.m5stack.com/en/core/core2)**
 
-* **In order to buy  M5Core2 ,Please [Click here](https://m5stack.aliexpress.com/store/group/M5Core/3226069_514774359.html?spm=a2g0o.store_pc_allProduct.0.0.2ec5329bwncFjf)**
-* 
+**In order to buy  M5Core2, Please [Click here](https://m5stack.aliexpress.com/store/group/M5Core/3226069_514774359.html?spm=a2g0o.store_pc_allProduct.0.0.2ec5329bwncFjf)**
+  
 ## Description
 
 **M5Core2** is the second generation core device in the M5Stack development kit series, which further enhances the functions of the original generation of cores. 
