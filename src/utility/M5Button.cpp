@@ -126,6 +126,7 @@ void Button::fingerDown(Point pos /* = Point() */,
     _state = true;
     _changed = true;
     _pressTime = _time;
+    _lastChange = _time;
     draw();
   }
   BUTTONS->fireEvent(finger, E_TOUCH, pos, pos, 0, this, nullptr);
@@ -140,6 +141,7 @@ void Button::fingerUp(uint8_t finger /* = 0  */) {
     // other finger not here
     _state = false;
     _changed = true;
+    _lastChange = _time;
     draw();
   }
   BUTTONS->fireEvent(finger, E_RELEASE, _fromPt[finger], _toPt[finger],
@@ -235,7 +237,7 @@ bool Button::wasReleasefor(uint32_t ms) {
 }
 
 bool Button::pressedFor(uint32_t ms) {
-  return (_state && _time - _lastChange >= ms);
+  return (_state && _time - _lastChange >= ms) ? 1 : 0;
 }
 
 bool Button::pressedFor(uint32_t ms, uint32_t continuous_time) {
