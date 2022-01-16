@@ -575,7 +575,7 @@ void AXP192::SetBusPowerMode(uint8_t state)
         //delay(2000);
 
         data = Read8bit(0x90);
-        Write1Byte(0x90, (data & 0xF8) | 0X01); //set GPIO0 to float , using enternal pulldown resistor to enable supply from BUS_5VS
+        Write1Byte(0x90, (data & 0xF8) | 0x07); //set GPIO0 to float , using enternal pulldown resistor to enable supply from BUS_5VS
     }
 }
 
