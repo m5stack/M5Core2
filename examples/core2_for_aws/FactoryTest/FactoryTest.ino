@@ -521,7 +521,7 @@ int checkAETCC608AInit()
     Serial.println();
 
     myECCX08.end();
-    Wire1.begin(21,22,100000);
+    Wire1.begin(21,22,100000UL);
 }
 
 int checkSDCard()
@@ -2223,7 +2223,7 @@ void setup()
     }
     FastLED.show();
     
-    Wire1.begin(21, 22, 10000);
+    Wire1.begin(21, 22, 100000UL);
     checkI2cAddr();
     checkAETCC608AInit();
     checkPsram();

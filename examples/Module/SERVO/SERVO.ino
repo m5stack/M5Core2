@@ -19,15 +19,15 @@
 
 #define SERVO_ADDR 0x53
 void setup() {
-  M5.begin(true,false,true,true,kMBusModeInput);
-/*   kMBusModeOutput,powered by USB or Battery
+  M5.begin(true, false, true, true, kMBusModeInput);
+  /*   kMBusModeOutput,powered by USB or Battery
   kMBusModeInput,powered by outside input need to fill in this Otherwise M5Core2 will not work properly
   由外部供电时此项必填,否则M5Core2将无法正常工作 */
   M5.Lcd.setTextFont(4);
   M5.Lcd.setCursor(70, 100);
   M5.Lcd.print("Servo Example");
 
-  Wire.begin(32, 33, 100000);
+  Wire.begin(32, 33, 100000UL);
 }
 
 // addr 0x01 mean control the number 1 servo by us
@@ -48,12 +48,12 @@ void Servo_write_angle(uint8_t number, uint8_t angle) {
 }
 
 void loop() {
-  for(uint8_t i = 0; i < 12; i++){
+  for (uint8_t i = 0; i < 12; i++) {
     Servo_write_us(i, 700);
     // Servo_write_angle(i, 0);
   }
   delay(1000);
-  for(uint8_t i = 0; i < 12; i++){
+  for (uint8_t i = 0; i < 12; i++) {
     Servo_write_us(i, 2300);
     // Servo_write_angle(i, 180);
   }
