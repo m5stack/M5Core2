@@ -52,6 +52,9 @@ bool InitI2SSpeakOrMic(int mode){  //Init I2S.  初始化I2S
     err += i2s_driver_install(Speak_I2S_NUMBER, &i2s_config, 0, NULL);
 
     i2s_pin_config_t tx_pin_config;
+    #if (ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4, 3, 0))
+      tx_pin_config.mck_io_num = I2S_PIN_NO_CHANGE;  
+    #endif
     tx_pin_config.bck_io_num = CONFIG_I2S_BCK_PIN;  // Link the BCK to the CONFIG_I2S_BCK_PIN pin. 将BCK链接至CONFIG_I2S_BCK_PIN引脚
     tx_pin_config.ws_io_num = CONFIG_I2S_LRCK_PIN;  //          ...
     tx_pin_config.data_out_num = CONFIG_I2S_DATA_PIN;  //       ...

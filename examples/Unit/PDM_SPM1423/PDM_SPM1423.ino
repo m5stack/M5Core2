@@ -52,6 +52,9 @@ bool InitI2SSpakerOrMic(int mode){
 
   i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);   // Install and drive I2S.  安装并驱动I2S
   i2s_pin_config_t pin_config;
+  #if (ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4, 3, 0))
+    tx_pin_config.mck_io_num = I2S_PIN_NO_CHANGE;  
+  #endif
   pin_config.bck_io_num   = I2S_PIN_NO_CHANGE;
   pin_config.ws_io_num    = PIN_CLK;
   pin_config.data_out_num = I2S_PIN_NO_CHANGE;
