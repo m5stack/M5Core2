@@ -7,7 +7,7 @@
 * 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/core2
 *
 * describe：Sleep--Axp电源休眠
-* date：2021/7/21
+* date：2022/3/12
 *******************************************************************************
 */
 #include <M5Core2.h>
@@ -37,7 +37,7 @@ void setup(){
   M5.Lcd.println("Going to deep sleep for 5 seconds.");
   delay(2500);
 
-  M5.Axp.DeepSleep(SLEEP_SEC(5)); //Wake up after 5 seconds of light sleep, the CPU will reboot and the program will start from the beginning.  轻度睡眠5秒后唤醒,CPU将重新启动，程序将从头开始执行
+  M5.Axp.DeepSleep(SLEEP_SEC(5)); //Wake up after 5 seconds of deep sleep, the CPU will reboot and the program will start from the beginning.  深度睡眠5秒后唤醒,CPU将重新启动，程序将从头开始执行
 }
 
 void loop()
