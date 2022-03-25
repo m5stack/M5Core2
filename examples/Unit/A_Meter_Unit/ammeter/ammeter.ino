@@ -3,11 +3,11 @@
 * Copyright (c) 2021 by M5Stack
 *                  Equipped with M5Core2 sample source code
 *                          配套  M5Core2 示例源代码
-* Visit the website for more information：https://docs.m5stack.com/en/core/core2
-* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/core2
+* Visit the website for more information: https://docs.m5stack.com/en/core/core2
+* 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/core2
 *
 * describe: Ameter_ADS1115.  电流计
-* date：2021/8/19
+* date: 2021/8/19
 *******************************************************************************
   Please connect to Port A,Measure current and display.
   请连接端口A,测量电流并显示到屏幕上
@@ -32,17 +32,19 @@ int16_t hope = 0.0;
 ammeterGain_t now_gain = PAG_512;
 
 void setup(void) {
-  M5.begin(); //Init M5Core2.  初始化M5Core2
+  M5.begin();  //Init M5Core2.  初始化M5Core2
   Wire.begin();
 
-  ammeter.setMode(SINGLESHOT);                /* | PAG      | Max Input Voltage(V) | */
-  ammeter.setRate(RATE_8);                    /* | PAG_6144 |        128           | */
-  ammeter.setGain(PAG_512);                   /* | PAG_4096 |        64            | */
-  hope = page512_volt / ammeter.resolution;   /* | PAG_2048 |        32            | */
-                                              /* | PAG_512  |        16            | */
-                                              /* | PAG_256  |        8             | */
+  ammeter.setMode(SINGLESHOT); /* | PAG      | Max Input Voltage(V) | */
+  ammeter.setRate(RATE_8);     /* | PAG_6144 |        128           | */
+  ammeter.setGain(PAG_512);    /* | PAG_4096 |        64            | */
+  hope = page512_volt /
+         ammeter.resolution; /* | PAG_2048 |        32            | */
+                             /* | PAG_512  |        16            | */
+                             /* | PAG_256  |        8             | */
   M5.Lcd.setTextFont(4);  //Set font to 4 point font.  设置字体为4号字体
-  M5.Lcd.setCursor(52, 210);  //Set the cursor at (52,210).  将光标设置在(52, 210)
+  M5.Lcd.setCursor(52,
+                   210);  //Set the cursor at (52,210).  将光标设置在(52, 210)
   M5.Lcd.printf("2A                            SAVE");
 }
 
@@ -50,7 +52,7 @@ void loop(void) {
   M5.update();  //Check the status of the key.  检测按键的状态
   if (M5.BtnA.wasPressed()) {
     ammeter.setMode(SINGLESHOT);  //Set the mode.  设置模式
-    ammeter.setRate(RATE_8);  //Set the rate.  设置速率
+    ammeter.setRate(RATE_8);      //Set the rate.  设置速率
     ammeter.setGain(PAG_512);
     now_gain = PAG_512;
     hope = page512_volt / ammeter.resolution;
@@ -88,7 +90,7 @@ void loop(void) {
 
   for (uint8_t i = 0; i < 10; i++) {
     if (volt_raw_list[i] == 0) {
-      continue ;
+      continue;
     }
     total += volt_raw_list[i];
     count += 1;
@@ -113,7 +115,8 @@ void loop(void) {
 
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.setCursor(10, 110);
-  M5.Lcd.printf("Cal ADC: %.0f         \r\n", adc_raw * ammeter.calibration_factor);
+  M5.Lcd.printf("Cal ADC: %.0f         \r\n",
+                adc_raw * ammeter.calibration_factor);
 
   M5.Lcd.setCursor(10, 150);
 

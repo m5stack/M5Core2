@@ -3,11 +3,11 @@
 * Copyright (c) 2021 by M5Stack
 *                  Equipped with M5Core sample source code
 *                          配套  M5Core 示例源代码
-* Visit the website for more information：https://docs.m5stack.com/en/core/gray
-* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/gray
+* Visit the website for more information: https://docs.m5stack.com/en/core/gray
+* 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/gray
 *
 * describe: Hall.  霍尔传感器
-* date：2021/8/18
+* date: 2021/8/18
 *******************************************************************************
   Please connect to Port B,LASER Unit wireless UART application: burn the program to two M5Cores
   And connect LASER.TX and LASER.RX
@@ -21,7 +21,7 @@
 char ch;
 #define RX
 void setup() {
-  M5.begin(); //Init M5Core2.  初始化M5Core2
+  M5.begin();  //Init M5Core2.  初始化M5Core2
 
   // Serial2.begin(unsigned long baud, uint32_t config, int8_t rxPin, int8_t txPin, bool invert)
   Serial2.begin(9600, SERIAL_8N1, 13, 14);
@@ -49,21 +49,20 @@ void setup() {
 }
 
 void loop() {
-
-#ifdef RX 
-M5.update();
- if(Serial2.available()) {
+#ifdef RX
+  M5.update();
+  if (Serial2.available()) {
     char ch = Serial2.read();
     M5.Lcd.print(ch);
- }
+  }
 
   if (M5.BtnA.wasReleased()) {
     M5.Lcd.clear();
     M5.Lcd.setCursor(0, 0);
   }
 #elif defined TX
-    Serial2.write('A');
-    delay(50);
+  Serial2.write('A');
+  delay(50);
 #else
   if (M5.BtnA.wasReleased()) {
     ch = 'A';
@@ -76,11 +75,9 @@ M5.update();
     Serial2.write(ch);
   }
   M5.update();
- if(Serial2.available()) {
+  if (Serial2.available()) {
     char ch = Serial2.read();
     M5.Lcd.print(ch);
- }
+  }
 #endif
-
-
 }

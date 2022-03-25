@@ -3,11 +3,11 @@
 * Copyright (c) 2021 by M5Stack
 *                  Equipped with M5Core2 sample source code
 *                          配套  M5Core2 示例源代码
-* Visit the website for more information：https://docs.m5stack.com/en/core/core2
-* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/core2
+* Visit the website for more information: https://docs.m5stack.com/en/core/core2
+* 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/core2
 *
 * describe: Hall.  霍尔传感器
-* date：2021/8/18
+* date: 2021/8/18
 *******************************************************************************
   Please connect to Port B,Displays a string on the screen.
   请连接端口B,在屏幕上显示字符串。
@@ -22,10 +22,12 @@
 #define HALL 36
 
 void setup() {
-  M5.begin(); //Init M5Core2.  初始化M5Core2
+  M5.begin();             //Init M5Core2.  初始化M5Core2
   M5.lcd.setTextSize(2);  //Set the text size to 2.  设置文字大小为2
   M5.Lcd.print("     HALL Sensor");
-  pinMode(HALL, INPUT); //Set the pins to which the Hall sensor is connected to the input mode.  将霍尔传感器所连接的引脚设置为输入模式
+  pinMode(
+      HALL,
+      INPUT);  //Set the pins to which the Hall sensor is connected to the input mode.  将霍尔传感器所连接的引脚设置为输入模式
 }
 
 void loop() {
