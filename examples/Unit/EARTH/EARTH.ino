@@ -16,8 +16,8 @@
 #include <M5Stack.h>
 
 void setup() {
-  M5.begin();             //Init M5Stack.  初始化M5Stack
-  M5.Power.begin();       //Init power  初始化电源模块
+  M5.begin(); //Init M5Stack.  初始化M5Stack
+  M5.Power.begin(); //Init power  初始化电源模块
   M5.lcd.setTextSize(2);  //Set the text size to 2.  设置文字大小为2
   M5.Lcd.printf("UNIT_EARTH EXAMPLE\n");
   pinMode(26, INPUT);

@@ -18,53 +18,56 @@
 
 ADS1100 ads;
 
-void setup(void) {
-  M5.begin();             //Init M5Core2.  初始化M5Core2
+void setup(void)
+{
+  M5.begin(); //Init M5Core2.  初始化M5Core2
   M5.lcd.setTextSize(2);  //Set the text size to 2.  设置文字大小为2
 
   // The address can be changed making the option of connecting multiple devices
   // 地址可以改变，以连接多个设备
-  ads.getAddr_ADS1100(ADS1100_DEFAULT_ADDRESS);  // 0x48, 1001 000 (ADDR = GND)
+  ads.getAddr_ADS1100(ADS1100_DEFAULT_ADDRESS);   // 0x48, 1001 000 (ADDR = GND)
 
   //The ADC gain (PGA).  ADC增益(PGA)
-  ads.setGain(GAIN_ONE);  // 1x gain(default)
+  ads.setGain(GAIN_ONE);          // 1x gain(default)
   // ads.setGain(GAIN_TWO);       // 2x gain
   // ads.setGain(GAIN_FOUR);      // 4x gain
   // ads.setGain(GAIN_EIGHT);     // 8x gain
 
   //Device operating mode.  设备工作模式
-  ads.setMode(MODE_CONTIN);  // Continuous conversion mode (default)
+  ads.setMode(MODE_CONTIN);       // Continuous conversion mode (default)
   // ads.setMode(MODE_SINGLE);    // Single-conversion mode
 
   //Data rate.  数据速率
-  ads.setRate(RATE_8);  // 8SPS (default)
+  ads.setRate(RATE_8);            // 8SPS (default)
   // ads.setRate(RATE_16);        // 16SPS
   // ads.setRate(RATE_32);        // 32SPS
   // ads.setRate(RATE_128);       // 128SPS
 
-  ads.setOSMode(
-      OSMODE_SINGLE);  // Set to start a single-conversion.  设置开始一次转换
+  ads.setOSMode(OSMODE_SINGLE);   // Set to start a single-conversion.  设置开始一次转换
 
   ads.begin();  //Sets up the Hardware.  设置硬件
 }
 
-void loop(void) {
+void loop(void)
+{
   byte error;
   int8_t address;
 
   address = ads.ads_i2cAddress;
   Wire.beginTransmission(address);
   error = Wire.endTransmission();
-  if (error == 0)  //If the device is connected.  如果连接上设备
+  if (error == 0) //If the device is connected.  如果连接上设备
   {
     int16_t result;
     result = ads.Measure_Differential();
     M5.Lcd.fillScreen(BLACK);
-    char data[20] = {0};
+    char data[20] = { 0 };
     sprintf(data, "%d", result);
     M5.Lcd.drawCentreString(data, 160, 100, 4);
-  } else {
-    M5.Lcd.drawString("No Found ADC sensor.", 20, 100, 2);
+  }
+  else
+  {
+    M5.Lcd.drawString("No Found ADC sensor.",20, 100, 2);
   }
   delay(1000);
 }

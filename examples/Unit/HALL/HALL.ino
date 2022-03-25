@@ -22,12 +22,10 @@
 #define HALL 36
 
 void setup() {
-  M5.begin();             //Init M5Core2.  初始化M5Core2
+  M5.begin(); //Init M5Core2.  初始化M5Core2
   M5.lcd.setTextSize(2);  //Set the text size to 2.  设置文字大小为2
   M5.Lcd.print("     HALL Sensor");
-  pinMode(
-      HALL,
-      INPUT);  //Set the pins to which the Hall sensor is connected to the input mode.  将霍尔传感器所连接的引脚设置为输入模式
+  pinMode(HALL, INPUT); //Set the pins to which the Hall sensor is connected to the input mode.  将霍尔传感器所连接的引脚设置为输入模式
 }
 
 void loop() {

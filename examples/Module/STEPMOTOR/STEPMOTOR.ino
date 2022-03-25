@@ -29,12 +29,12 @@
 // #define STEPMOTOR_I2C_ADDR 0x71
 
 void setup() {
-  M5.begin(true, true, true, true, kMBusModeInput);
-  /*   kMBusModeOutput,powered by USB or Battery
+  M5.begin(true,true,true,true,kMBusModeInput);
+/*   kMBusModeOutput,powered by USB or Battery
   kMBusModeInput,powered by outside input need to fill in this Otherwise M5Core2 will not work properly
   由外部供电时此项必填,否则M5Core2将无法正常工作 */
 
-  Wire1.begin(21, 22);
+  Wire1.begin(21,22);
   m5.Lcd.setTextColor(WHITE, BLACK);
   m5.Lcd.setTextSize(2);
   m5.lcd.setBrightness(100);

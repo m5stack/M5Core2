@@ -30,23 +30,21 @@ int16_t adc_raw = 0;
 
 int16_t hope = 0.0;
 
-voltmeterGain_t now_gain = PAG_512;
+voltmeterGain_t now_gain = PAG_512; 
 
 void setup() {
   M5.begin();
   Wire.begin();
 
-  voltmeter.setMode(SINGLESHOT);  // | PAG      | Max Input Voltage(V) |
-  voltmeter.setRate(RATE_8);      // | PAG_6144 |        128           |
-  voltmeter.setGain(PAG_512);     // | PAG_4096 |        64            |
-  hope = page512_volt /
-         voltmeter.resolution;  // | PAG_2048 |        32            |
-                                // | PAG_512  |        16            |
-                                // | PAG_256  |        8             |
+  voltmeter.setMode(SINGLESHOT);                // | PAG      | Max Input Voltage(V) |
+  voltmeter.setRate(RATE_8);                    // | PAG_6144 |        128           |
+  voltmeter.setGain(PAG_512);                   // | PAG_4096 |        64            |
+  hope = page512_volt / voltmeter.resolution;   // | PAG_2048 |        32            |
+                                                // | PAG_512  |        16            |
+                                                // | PAG_256  |        8             |
   M5.Lcd.setTextFont(4);  //Set font to 4 point font.  设置字体为4号字体
 
-  M5.Lcd.setCursor(52,
-                   210);  //Set the cursor at (52,210).  将光标设置在(52, 210)
+  M5.Lcd.setCursor(52, 210);  //Set the cursor at (52,210).  将光标设置在(52, 210)
   M5.Lcd.printf("5V            60V           SAVE");
 }
 
@@ -54,7 +52,7 @@ void loop(void) {
   M5.update();  //Check the status of the key.  检测按键的状态
   if (M5.BtnA.wasPressed()) {
     voltmeter.setMode(SINGLESHOT);  //Set the mode.  设置模式
-    voltmeter.setRate(RATE_8);      //Set the rate.  设置速率
+    voltmeter.setRate(RATE_8);  //Set the rate.  设置速率
     voltmeter.setGain(PAG_512);
     now_gain = PAG_512;
     hope = page512_volt / voltmeter.resolution;
@@ -106,7 +104,7 @@ void loop(void) {
 
   for (uint8_t i = 0; i < 10; i++) {
     if (volt_raw_list[i] == 0) {
-      continue;
+      continue ;
     }
     total += volt_raw_list[i];
     count += 1;
@@ -132,13 +130,11 @@ void loop(void) {
 
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.setCursor(10, 80);
-  M5.Lcd.printf("Cal volt: %.2f mv           \r\n",
-                adc_raw * voltmeter.resolution * voltmeter.calibration_factor);
+  M5.Lcd.printf("Cal volt: %.2f mv           \r\n", adc_raw * voltmeter.resolution * voltmeter.calibration_factor);
 
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.setCursor(10, 110);
-  M5.Lcd.printf("Cal ADC: %.0f      \r\n",
-                adc_raw * voltmeter.calibration_factor);
+  M5.Lcd.printf("Cal ADC: %.0f      \r\n", adc_raw * voltmeter.calibration_factor);
 
   M5.Lcd.setCursor(10, 150);
 

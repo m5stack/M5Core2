@@ -19,32 +19,28 @@
 
 WiFiMulti wifiMulti;
 
-void setup() {
+void setup()
+{
   M5.begin();  //Init M5Core2.  初始化 M5Core2
-  wifiMulti.addAP(
-      "wifi1",
-      "12345566");  //Storage wifi configuration information 1.  存储wifi配置信息1
+  wifiMulti.addAP("wifi1", "12345566");  //Storage wifi configuration information 1.  存储wifi配置信息1
   wifiMulti.addAP("wifi2", "12345566");
   wifiMulti.addAP("aaa", "sadf");
-  M5.lcd.print(
-      "Connecting Wifi...");  //Serial port format output string.  串口格式化输出字符串
+  M5.lcd.print("Connecting Wifi..."); //Serial port format output string.  串口格式化输出字符串
 }
 
-void loop() {
-  if (wifiMulti.run() ==
-      WL_CONNECTED) {  //If the connection to wifi is established successfully.  如果与wifi成功建立连接
-    M5.lcd.setCursor(0, 20);
+void loop()
+{
+  if(wifiMulti.run() == WL_CONNECTED) { //If the connection to wifi is established successfully.  如果与wifi成功建立连接
+    M5.lcd.setCursor(0,20);
     M5.lcd.print("WiFi connected\n\nSSID:");
     M5.lcd.println(WiFi.SSID());  //Output Network name.  输出网络名称
     M5.lcd.print("RSSI: ");
     M5.lcd.println(WiFi.RSSI());  //Output signal strength.  输出信号强度
     M5.lcd.print("IP address: ");
-    M5.lcd.println(WiFi.localIP());  //Output IP Address.  输出IP地址
+    M5.lcd.println(WiFi.localIP()); //Output IP Address.  输出IP地址
     delay(1000);
-    M5.lcd.fillRect(
-        0, 20, 180, 300,
-        BLACK);  //It's equivalent to partial screen clearance.  相当于部分清屏
-  } else {
+    M5.lcd.fillRect(0,20,180,300,BLACK);  //It's equivalent to partial screen clearance.  相当于部分清屏
+  }else{
     //If the connection to wifi is not established successfully.  如果没有与wifi成功建立连接
     M5.lcd.print(".");
     delay(1000);

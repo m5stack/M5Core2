@@ -16,20 +16,20 @@
 #include <M5Core2.h>
 #include "MAX30100.h"
 
-#define SAMPLING_RATE MAX30100_SAMPRATE_100HZ
-#define IR_LED_CURRENT MAX30100_LED_CURR_24MA
-#define RED_LED_CURRENT MAX30100_LED_CURR_27_1MA
-#define PULSE_WIDTH MAX30100_SPC_PW_1600US_16BITS
-#define HIGHRES_MODE true
+#define SAMPLING_RATE                       MAX30100_SAMPRATE_100HZ
+#define IR_LED_CURRENT                      MAX30100_LED_CURR_24MA
+#define RED_LED_CURRENT                     MAX30100_LED_CURR_27_1MA
+#define PULSE_WIDTH                         MAX30100_SPC_PW_1600US_16BITS
+#define HIGHRES_MODE                        true
 
-MAX30100
-    sensor;  // Instantiate a MAX30100 sensor class.  实例化一个MAX30100传感器类
+MAX30100 sensor;  // Instantiate a MAX30100 sensor class.  实例化一个MAX30100传感器类
 
-void setup() {
-  M5.begin();  //Init M5Core2.  初始化M5Core2
+void setup()
+{
+  M5.begin(); //Init M5Core2.  初始化M5Core2
   Serial.print("Initializing MAX30100..");
 
-  while (!sensor.begin()) {  // Initialize the sensor.  初始化传感器
+  while (!sensor.begin()) { // Initialize the sensor.  初始化传感器
     M5.Lcd.setTextFont(4);
     M5.Lcd.setCursor(50, 100, 4);
     M5.Lcd.println("Sensor not found");
@@ -44,14 +44,15 @@ void setup() {
   sensor.setHighresModeEnabled(HIGHRES_MODE);
 }
 
-void loop() {
+void loop()
+{
   uint16_t ir, red;
-  sensor.update();                          //更新传感器读取到的数据
+  sensor.update();  //更新传感器读取到的数据
   while (sensor.getRawValues(&ir, &red)) {  //如果获取到数据
     M5.Lcd.setTextFont(4);
     M5.Lcd.setCursor(100, 100, 4);
-    M5.Lcd.printf("IR:%d               ", ir);
+    M5.Lcd.printf("IR:%d               ",ir);
     M5.Lcd.setCursor(100, 130, 4);
-    M5.Lcd.printf("RED:%d              ", red);
+    M5.Lcd.printf("RED:%d              ",red);
   }
 }

@@ -34,10 +34,10 @@ void setup() {
   M5.Lcd.println("3. verify user permission");
 }
 
-void loop() {
+void loop(){
   uint8_t res1;
   //ButtonA: Add user.  添加用户
-  if (M5.BtnA.wasPressed()) {
+  if(M5.BtnA.wasPressed()){
     M5.Lcd.fillRect(0, 0, 320, 200, BLACK);
     Serial.println("Start Fingerprint Typing");
     Serial.println("Put Your Finger on the sensor");
@@ -47,21 +47,23 @@ void loop() {
     M5.Lcd.println("Put Your Finger on the sensor");
     M5.Lcd.println("wating....");
 
-    res1 = FP_M.fpm_addUser(22, 1);  //(user_num, userPermission)
-    if (res1 == ACK_SUCCESS) {
+    res1 = FP_M.fpm_addUser(22,1);  //(user_num, userPermission)
+    if(res1 == ACK_SUCCESS){
       M5.Lcd.println("Success");
       Serial.println("Success");
-    } else {
+    }else{
       M5.Lcd.println("Fail");
       Serial.println("Fail");
     }
   }
-  //ButtonB: Matching.  匹配指纹
-  if (M5.BtnB.wasPressed()) {
+//ButtonB: Matching.  匹配指纹
+  if(M5.BtnB.wasPressed()){
+
     M5.Lcd.fillRect(0, 0, 320, 100, BLACK);
     Serial.println("Start Verify Fingerprint");
     res1 = FP_M.fpm_compareFinger();
-    if (res1 == ACK_SUCCESS) {
+    if(res1 == ACK_SUCCESS){
+
       Serial.println("Success");
       Serial.print("User ID: ");
       Serial.println(FP_M.fpm_getUserId());
@@ -70,22 +72,23 @@ void loop() {
       M5.Lcd.print("User ID: ");
       M5.Lcd.println(FP_M.fpm_getUserId());
 
-    } else {
+    }else{
       Serial.println("No Such User");
 
       M5.Lcd.println("No Such User");
     }
   }
-  //ButtonC: Delete All User.  删除所有用户
-  if (M5.BtnC.wasPressed()) {
+//ButtonC: Delete All User.  删除所有用户
+  if(M5.BtnC.wasPressed()){
     M5.Lcd.fillRect(0, 0, 320, 100, BLACK);
     Serial.println("Start Delete Fingerprint");
     M5.Lcd.println("Start Delete Fingerprint");
     res1 = FP_M.fpm_deleteAllUser();
-    if (res1 == ACK_SUCCESS) {
+    if(res1 == ACK_SUCCESS){
       Serial.println("Delete All User Successful");
       M5.Lcd.println("Delete All User Successful");
-    } else {
+    }
+    else{
       Serial.println("Delete All User Failed");
       M5.Lcd.println("Delete All User Failed");
     }

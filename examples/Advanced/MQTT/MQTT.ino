@@ -23,7 +23,7 @@ const char* password = "xingchentansuo123";
 const char* mqtt_server = "mqtt.m5stack.com";
 
 unsigned long lastMsg = 0;
-#define MSG_BUFFER_SIZE (50)
+#define MSG_BUFFER_SIZE	(50)
 char msg[MSG_BUFFER_SIZE];
 int value = 0;
 
@@ -34,46 +34,37 @@ void reConnect();
 void setup() {
   M5.begin();
   setupWifi();
-  client.setServer(mqtt_server,
-                   1883);  //Sets the server details.  配置所连接的服务器
-  client.setCallback(
-      callback);  //Sets the message callback function.  设置消息回调函数
+  client.setServer(mqtt_server, 1883);  //Sets the server details.  配置所连接的服务器
+  client.setCallback(callback); //Sets the message callback function.  设置消息回调函数
 }
 
 void loop() {
   if (!client.connected()) {
     reConnect();
   }
-  client
-      .loop();  //This function is called periodically to allow clients to process incoming messages and maintain connections to the server.
+  client.loop();  //This function is called periodically to allow clients to process incoming messages and maintain connections to the server.
   //定期调用此函数，以允许主机处理传入消息并保持与服务器的连接
 
-  unsigned long now =
-      millis();  //Obtain the host startup duration.  获取主机开机时长
+  unsigned long now = millis(); //Obtain the host startup duration.  获取主机开机时长
   if (now - lastMsg > 2000) {
     lastMsg = now;
     ++value;
-    snprintf(
-        msg, MSG_BUFFER_SIZE, "hello world #%ld",
-        value);  //Format to the specified string and store it in MSG.  格式化成指定字符串并存入msg中
+    snprintf (msg, MSG_BUFFER_SIZE, "hello world #%ld", value); //Format to the specified string and store it in MSG.  格式化成指定字符串并存入msg中
     M5.Lcd.print("Publish message: ");
     M5.Lcd.println(msg);
-    client.publish(
-        "M5Stack",
-        msg);  //Publishes a message to the specified topic.  发送一条消息至指定话题
-    if (value % 12 == 0) {
+    client.publish("M5Stack", msg);  //Publishes a message to the specified topic.  发送一条消息至指定话题
+    if(value%12==0){
       M5.Lcd.clear();
-      M5.Lcd.setCursor(0, 0);
+      M5.Lcd.setCursor(0,0);
     }
   }
 }
 
 void setupWifi() {
   delay(10);
-  M5.Lcd.printf("Connecting to %s", ssid);
-  WiFi.mode(
-      WIFI_STA);  //Set the mode to WiFi station mode.  设置模式为WIFI站模式
-  WiFi.begin(ssid, password);  //Start Wifi connection.  开始wifi连接
+  M5.Lcd.printf("Connecting to %s",ssid);
+  WiFi.mode(WIFI_STA);  //Set the mode to WiFi station mode.  设置模式为WIFI站模式
+  WiFi.begin(ssid, password); //Start Wifi connection.  开始wifi连接
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);

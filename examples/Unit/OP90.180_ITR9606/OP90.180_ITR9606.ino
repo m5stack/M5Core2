@@ -16,18 +16,14 @@
 #include <M5Core2.h>
 
 void setup() {
-  M5.begin();             //Init M5Core2.  初始化M5Core2
+  M5.begin(); //Init M5Core2.  初始化M5Core2
   M5.lcd.setTextSize(2);  //Set the text size to 2.  设置文字大小为2
-  M5.Lcd.setCursor(80, 10);  //Set the cursor at (80,10).  将光标设置在(80,10)处
+  M5.Lcd.setCursor(80, 10); //Set the cursor at (80,10).  将光标设置在(80,10)处
   M5.Lcd.println("90/180 OPTICAL");
-  pinMode(
-      36,
-      INPUT_PULLUP);  //Set pin 36 to input pull-up mode.  设置36号引脚为输入上拉模式
+  pinMode(36,INPUT_PULLUP); //Set pin 36 to input pull-up mode.  设置36号引脚为输入上拉模式
 }
 
 void loop() {
   M5.Lcd.setCursor(80, 120);
-  M5.Lcd.printf(
-      "IR Receive: %d",
-      digitalRead(36));  //Output the value of pin 36.  输出36号引脚的值
+  M5.Lcd.printf("IR Receive: %d",digitalRead(36));  //Output the value of pin 36.  输出36号引脚的值
 }

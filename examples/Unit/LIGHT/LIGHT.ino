@@ -16,20 +16,18 @@
 #include <M5Core2.h>
 
 void setup() {
-  M5.begin();             //Init M5Core2.  初始化M5Core2
+  M5.begin(); //Init M5Core2.  初始化M5Core2
   M5.lcd.setTextSize(2);  //Set the text size to 2.  设置文字大小为2
   M5.Lcd.printf("UNIT_LIGHT EXAMPLE\n\n");
   M5.Lcd.println("Analog:");
   M5.Lcd.println("Digital:");
-  pinMode(26, INPUT);  //Set pin 26 as input mode.  设置引脚26为输入模式
+  pinMode(26, INPUT); //Set pin 26 as input mode.  设置引脚26为输入模式
 }
 
 void loop() {
   static uint16_t digitalRead_value = 0, analogRead_value = 0;
-  analogRead_value = analogRead(
-      36);  //Store the analog quantity read from pin 36.  将36号引脚读取到的模拟量存储
-  digitalRead_value = digitalRead(
-      26);  //Store the number read from pin 26.  将26号引脚读取到的数字量存储
+  analogRead_value = analogRead(36);  //Store the analog quantity read from pin 36.  将36号引脚读取到的模拟量存储
+  digitalRead_value = digitalRead(26);  //Store the number read from pin 26.  将26号引脚读取到的数字量存储
   M5.Lcd.setCursor(90, 30);
   M5.Lcd.printf("%d\n", analogRead_value);
   M5.Lcd.setCursor(90, 50);

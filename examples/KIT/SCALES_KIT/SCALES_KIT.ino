@@ -31,9 +31,9 @@ M5Canvas canvas(&display);
 HX711 scale;
 
 void setup() {
-  M5.begin();  //Init M5Stack.  初始化M5Stack
+  M5.begin(); //Init M5Stack.  初始化M5Stack
   display.begin();
-  canvas.setColorDepth(1);  // mono color
+  canvas.setColorDepth(1); // mono color
   canvas.createSprite(display.width(), display.height());
   canvas.setTextDatum(MC_DATUM);
   canvas.setPaletteColor(1, GREEN);
@@ -42,10 +42,11 @@ void setup() {
   canvas.pushSprite(0, 0);
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
 
+
   scale.set_gain();
   //The scale value is the adc value corresponding to 1g
   scale.set_scale(27.61f);  //set scale
-  scale.tare();             // auto set offset
+  scale.tare(); // auto set offset
 }
 
 char info[100];
@@ -56,15 +57,15 @@ void loop() {
   canvas.drawString("Connect the Weight Unit to PortB(G26,G36)", 160, 40);
   canvas.drawString("Click Btn A for Tare deduction", 160, 55);
   canvas.drawString("Click Btn B Switch to Calibration mode", 160, 70);
-  float weight = scale.get_units(10) / 1000.0;
+  float weight = scale.get_units(10)/1000.0;
   // float weight = scale.get_units(10) / 1.0;
   canvas.setTextSize(3);
-  if (weight >= 0) {
+  if(weight >= 0) {
     Serial.printf("Weight: %.2f", weight);
     sprintf(info, "Weight: %.2f", weight);
     canvas.drawString(String(info) + "kg", 160, 150);
     // canvas.drawString(String(info) + "g", 160, 150);
-  } else {
+  }else{
     canvas.drawString("Weight: 0kg", 160, 150);
     // canvas.drawString("Weight: 0g", 160, 150);
   }
@@ -75,7 +76,8 @@ void loop() {
   }
   if (M5.BtnB.wasPressed()) {
     long kg = 5;
-    while (1) {
+    while (1)
+    {
       M5.update();
       canvas.fillSprite(BLACK);
       canvas.setTextSize(1);
@@ -88,22 +90,22 @@ void loop() {
       canvas.fillTriangle(40, 200, 60, 220, 60, 180, 1);
       canvas.fillTriangle(280, 200, 260, 220, 260, 180, 1);
       canvas.pushSprite(0, 0);
-      if (M5.BtnA.isPressed()) {
+      if(M5.BtnA.isPressed()){
         kg--;
       }
-      if (M5.BtnC.isPressed()) {
+      if(M5.BtnC.isPressed()){
         kg++;
       }
-      if (M5.BtnB.wasPressed()) {
+      if(M5.BtnB.wasPressed()){
         break;
       }
       delay(10);
     }
     long kg_adc = scale.read_average(20);
     kg_adc = kg_adc - scale.get_offset();
-    scale.set_scale(kg_adc / (kg * 1000.0));
+    scale.set_scale( kg_adc / (kg * 1000.0));
     // canvas.drawString(String(kg) + "kg Calibration: " + String(kg_adc / (kg * 1000.0)), 160, 180);
-    canvas.drawString("Set Scale: " + String(kg_adc / (kg * 1000.0)), 160, 180);
+    canvas.drawString("Set Scale: " + String(kg_adc / (kg * 1000.0)), 160, 180); 
     canvas.pushSprite(0, 0);
     delay(1000);
   }

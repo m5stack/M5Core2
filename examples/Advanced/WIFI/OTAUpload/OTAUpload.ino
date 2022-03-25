@@ -22,13 +22,10 @@ const char* ssid = "M5wifi";
 const char* password = "21213123";
 
 void setup() {
-  M5.begin();  //Init M5Core2. 初始化 M5Core2
-  WiFi.begin(
-      ssid,
-      password);  //Connect wifi and return connection status.  连接wifi并返回连接状态
+  M5.begin(); //Init M5Core2. 初始化 M5Core2
+  WiFi.begin(ssid, password); //Connect wifi and return connection status.  连接wifi并返回连接状态
   M5.lcd.print("Waiting Wifi Connect");
-  while (WiFi.status() !=
-         WL_CONNECTED) {  //If the wifi connection fails.  若wifi未连接成功
+  while (WiFi.status() != WL_CONNECTED) { //If the wifi connection fails.  若wifi未连接成功
     delay(1000);
     M5.lcd.print(".");
   }
@@ -36,23 +33,19 @@ void setup() {
   M5.lcd.print("WiFi Connect To: ");
   M5.lcd.println(WiFi.SSID());  //Output Network name.  输出网络名称
   M5.lcd.print("IP address: ");
-  M5.lcd.println(WiFi.localIP());  //Output IP Address.  输出IP地址
+  M5.lcd.println(WiFi.localIP()); //Output IP Address.  输出IP地址
 
-  ArduinoOTA.setHostname(
-      "M5Core2");  //Set the network port name.  设置网络端口名称
-  ArduinoOTA.setPassword(
-      "666666");  //Set the network port connection password.  设置网络端口连接的密码
-  ArduinoOTA.begin();  //Initialize the OTA.  初始化OTA
-  M5.lcd.println(
-      "OTA ready!");  //M5.lcd port output format string.  串口输出格式化字符串
+  ArduinoOTA.setHostname("M5Core2"); //Set the network port name.  设置网络端口名称
+  ArduinoOTA.setPassword("666666"); //Set the network port connection password.  设置网络端口连接的密码
+  ArduinoOTA.begin(); //Initialize the OTA.  初始化OTA
+  M5.lcd.println("OTA ready!");  //M5.lcd port output format string.  串口输出格式化字符串
 }
 
 void loop() {
-  ArduinoOTA
-      .handle();  //Continuously check for update requests.  持续检测是否有更新请求
+  ArduinoOTA.handle();  //Continuously check for update requests.  持续检测是否有更新请求
   M5.update();
-  if (M5.BtnA.isPressed()) {  //if BtnA is Pressed.  如果按键A按下
-    ArduinoOTA.end();         //Ends the ArduinoOTA service.  结束OTA服务
+  if(M5.BtnA.isPressed()){  //if BtnA is Pressed.  如果按键A按下
+    ArduinoOTA.end(); //Ends the ArduinoOTA service.  结束OTA服务
     M5.lcd.println("OTA End!");
     delay(200);
   }

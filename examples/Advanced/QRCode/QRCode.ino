@@ -14,11 +14,10 @@
 #include <M5Core2.h>
 
 void setup() {
-  M5.begin();  //Init M5Core2.  初始化M5Core2
-  M5.Lcd.qrcode(
-      "http://www.m5stack.com", 0, 0, 150,
-      6);  //Create a QR code with a width of 150 QR code with version 6 at (0, 0).  在(0,0)处创建一个宽为150二维码版本为6的二维码
+  M5.begin(); //Init M5Core2.  初始化M5Core2
+  M5.Lcd.qrcode("http://www.m5stack.com",0,0,150,6);  //Create a QR code with a width of 150 QR code with version 6 at (0, 0).  在(0,0)处创建一个宽为150二维码版本为6的二维码
   //Please select the appropriate QR code version according to the number of characters.  请根据字符数量选择合适的二维码版本
 }
 
-void loop() {}
+void loop() {
+}

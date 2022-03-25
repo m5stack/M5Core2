@@ -21,7 +21,7 @@
 char ch;
 #define RX
 void setup() {
-  M5.begin();  //Init M5Core2.  初始化M5Core2
+  M5.begin(); //Init M5Core2.  初始化M5Core2
 
   // Serial2.begin(unsigned long baud, uint32_t config, int8_t rxPin, int8_t txPin, bool invert)
   Serial2.begin(9600, SERIAL_8N1, 13, 14);
@@ -49,20 +49,21 @@ void setup() {
 }
 
 void loop() {
-#ifdef RX
-  M5.update();
-  if (Serial2.available()) {
+
+#ifdef RX 
+M5.update();
+ if(Serial2.available()) {
     char ch = Serial2.read();
     M5.Lcd.print(ch);
-  }
+ }
 
   if (M5.BtnA.wasReleased()) {
     M5.Lcd.clear();
     M5.Lcd.setCursor(0, 0);
   }
 #elif defined TX
-  Serial2.write('A');
-  delay(50);
+    Serial2.write('A');
+    delay(50);
 #else
   if (M5.BtnA.wasReleased()) {
     ch = 'A';
@@ -75,9 +76,11 @@ void loop() {
     Serial2.write(ch);
   }
   M5.update();
-  if (Serial2.available()) {
+ if(Serial2.available()) {
     char ch = Serial2.read();
     M5.Lcd.print(ch);
-  }
+ }
 #endif
+
+
 }
