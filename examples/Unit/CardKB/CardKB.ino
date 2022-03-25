@@ -14,8 +14,8 @@
 */
 
 #include <M5Core2.h>
-#define CARDKB_ADDR \
-  0x5F  //Define the I2C address of CardKB.  定义CardKB的I2C地址
+
+#define CARDKB_ADDR 0x5F  //Define the I2C address of CardKB.  定义CardKB的I2C地址
 
 void setup() {
   M5.begin();             //Init M5Core2.  初始化 M5Core2
