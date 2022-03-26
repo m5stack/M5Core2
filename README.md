@@ -28,7 +28,7 @@ The 3 icons on the front of the screen are capacitive buttons which are programm
 
 **UIFlow Quick Start**: [Click Here](https://docs.m5stack.com/en/quick_start/core2/uiflow)
 
-**MicroPyhton API**: [Click Here](https://docs.m5stack.com/en/quick_start/core2/mpy)
+**MicroPython API**: [Click Here](https://docs.m5stack.com/en/quick_start/core2/mpy)
 
 **Arduino IDE Development**: [Click Here](https://docs.m5stack.com/en/quick_start/core2/arduino)
 

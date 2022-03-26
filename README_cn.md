@@ -21,7 +21,7 @@
 
 **UIFlow 快速上手**: [点击这里](https://docs.m5stack.com/zh_CN/quick_start/core2/uiflow)
 
-**MicroPyhton API**: [点击这里](https://docs.m5stack.com/zh_CN/quick_start/core2/mpy)
+**MicroPython API**: [点击这里](https://docs.m5stack.com/zh_CN/quick_start/core2/mpy)
 
 **Arduino IDE 环境搭建**: [点击这里](https://docs.m5stack.com/zh_CN/quick_start/core2/arduino)
 
