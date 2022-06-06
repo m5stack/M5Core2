@@ -6,7 +6,7 @@
 
 * **如果查看 M5Core2 的详细介绍文档，[点击这里](https://docs.m5stack.com/zh_CN/core/core2)**
 
-* **如果想要购买 M5Core2 的话，[点击这里](https://item.taobao.com/item.htm?spm=a1z10.5-c-s.w4002-22404213529.17.6e3e49d8MKGBmL&id=625561056791)**
+* **如果想要购买 M5Core2 的话，[点击这里](https://item.taobao.com/item.htm?spm=a1z10.5-c-s.w4002-22404213529.31.5ada1d91KUL15v&id=625561056791)**
 
 ## 描述
 
