@@ -34,7 +34,8 @@ M5Timer::M5Timer() {
 
   for (int i = 0; i < MAX_TIMERS; i++) {
     enabled[i] = false;
-    callbacks[i] = 0; // if the callback pointer is zero, the slot is free, i.e. doesn't "contain" any timer
+    callbacks[i] =
+        0;  // if the callback pointer is zero, the slot is free, i.e. doesn't "contain" any timer
     prev_millis[i] = current_millis;
     numRuns[i] = 0;
   }
@@ -53,7 +54,6 @@ void M5Timer::run() {
 
     // no callback == no timer, i.e. jump over empty slots
     if (callbacks[i] != 0) {
-
       // is it time to process this timer ?
       // see http://arduino.cc/forum/index.php/topic,124048.msg932592.html#msg932592
 
@@ -67,7 +67,7 @@ void M5Timer::run() {
           // "run forever" timers must always be executed
           if (maxNumRuns[i] == RUN_FOREVER) {
             toBeCalled[i] = DEFCALL_RUNONLY;
-          }else if (numRuns[i] < maxNumRuns[i]) {
+          } else if (numRuns[i] < maxNumRuns[i]) {
             // other timers get executed the specified number of times
             toBeCalled[i] = DEFCALL_RUNONLY;
             numRuns[i]++;
@@ -213,6 +213,4 @@ void M5Timer::toggle(int numTimer) {
   enabled[numTimer] = !enabled[numTimer];
 }
 
-int M5Timer::getNumTimers() {
-  return numTimers;
-}
+int M5Timer::getNumTimers() { return numTimers; }

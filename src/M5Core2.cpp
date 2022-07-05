@@ -3,10 +3,10 @@
 
 #include "M5Core2.h"
 
-M5Core2::M5Core2() : isInited(0) {
-}
+M5Core2::M5Core2() : isInited(0) {}
 
-void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable, bool I2CEnable, mbus_mode_t mode) {
+void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable,
+                    bool I2CEnable, mbus_mode_t mode) {
   // Correct init once
   if (isInited == true) {
     return;
@@ -58,33 +58,28 @@ void M5Core2::update() {
   yield();
 }
 
-void M5Core2::shutdown()
-{
-    Axp.PowerOff();
+void M5Core2::shutdown() { Axp.PowerOff(); }
+int M5Core2::shutdown(int seconds) {
+  Rtc.clearIRQ();
+  Rtc.SetAlarmIRQ(seconds);
+  delay(10);
+  Axp.PowerOff();
+  return 0;
 }
-int M5Core2::shutdown(int seconds)
-{
-    Rtc.clearIRQ();
-    Rtc.SetAlarmIRQ(seconds);
-    delay(10);
-    Axp.PowerOff();
-    return 0;
+int M5Core2::shutdown(const RTC_TimeTypeDef &RTC_TimeStruct) {
+  Rtc.clearIRQ();
+  Rtc.SetAlarmIRQ(RTC_TimeStruct);
+  delay(10);
+  Axp.PowerOff();
+  return 0;
 }
-int M5Core2::shutdown(const RTC_TimeTypeDef &RTC_TimeStruct)
-{
-    Rtc.clearIRQ();
-    Rtc.SetAlarmIRQ(RTC_TimeStruct);
-    delay(10);
-    Axp.PowerOff();
-    return 0;
-}
-int M5Core2::shutdown(const RTC_DateTypeDef &RTC_DateStruct, const RTC_TimeTypeDef &RTC_TimeStruct)
-{
-    Rtc.clearIRQ();
-    Rtc.SetAlarmIRQ(RTC_DateStruct,RTC_TimeStruct);
-    delay(10);
-    Axp.PowerOff();
-    return 0;
+int M5Core2::shutdown(const RTC_DateTypeDef &RTC_DateStruct,
+                      const RTC_TimeTypeDef &RTC_TimeStruct) {
+  Rtc.clearIRQ();
+  Rtc.SetAlarmIRQ(RTC_DateStruct, RTC_TimeStruct);
+  delay(10);
+  Axp.PowerOff();
+  return 0;
 }
 
 M5Core2 M5;

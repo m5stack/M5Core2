@@ -3,11 +3,11 @@
 * Copyright (c) 2021 by M5Stack
 *                  Equipped with M5Core2 sample source code
 *                          配套  M5Core2 示例源代码
-* Visit the website for more information: https://docs.m5stack.com/en/products
+* Visit for more information: https://docs.m5stack.com/en/products
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/products
 *
-* describe: AC Socket.
-* date: 2021/9/1
+* Product: AC Socket.
+* Date: 2021/9/1
 *******************************************************************************
   Click button B to turn on the power. Click button A to turn off the power.
   单击按钮 B 打开电源。 单击按钮 A 关闭电源。
@@ -30,14 +30,13 @@ void setup() {
   // put your setup code here, to run once:
 }
 
-
 void loop() {
   M5.update();
-  
-  if(millis() - time_now > 60000UL) {
+
+  if (millis() - time_now > 60000UL) {
     time_now = millis();
-    if(ucTestFlag) {
-      if(ubCoilState) {
+    if (ucTestFlag) {
+      if (ubCoilState) {
         char data_str[] = {0xAA, 5, 0x00, 0x00, 0x00, 0x00};
         mb_send_frame((uint8_t *)data_str, 6);
       } else {
@@ -48,23 +47,22 @@ void loop() {
     }
   }
 
-  if(M5.BtnA.wasPressed()) {
+  if (M5.BtnA.wasPressed()) {
     char data_str[] = {0xAA, 5, 0x00, 0x00, 0x00, 0x00};
     mb_send_frame((uint8_t *)data_str, 6);
   }
 
-  if(M5.BtnB.wasPressed()) {
+  if (M5.BtnB.wasPressed()) {
     char data_str[] = {0xAA, 5, 0x00, 0x00, 0xff, 0x00};
     mb_send_frame((uint8_t *)data_str, 6);
   }
 
-  
-  if(M5.BtnC.wasPressed()) {
+  if (M5.BtnC.wasPressed()) {
     ucTestFlag = 1 - ucTestFlag;
   }
 
   vTaskDelay(pdMS_TO_TICKS(10));
-  
+
   // while(Serial1.available()) {
   //   protocol_rec_put(Serial1.read());
   //   micros();
@@ -72,10 +70,6 @@ void loop() {
   // put your main code here, to run repeatedly:
 }
 
-void mb_send_one_byte(uint8_t data) {
-  Serial1.write(data);
-}
+void mb_send_one_byte(uint8_t data) { Serial1.write(data); }
 
-void protocol_callback(CmdData cmd) {
-  Serial.printf("got ... \r\n");
-}
+void protocol_callback(CmdData cmd) { Serial.printf("got ... \r\n"); }

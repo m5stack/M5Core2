@@ -26,22 +26,23 @@
   writedata(0x01);
   writedata(0x01);
 
-  writecommand(ILI9341_MADCTL);    // Memory Access Control
+  writecommand(ILI9341_MADCTL);  // Memory Access Control
 #ifdef M5STACK
-  writedata(TFT_MAD_MY | TFT_MAD_MV | TFT_MAD_COLOR_ORDER); // Rotation 0 (portrait mode)
+  writedata(TFT_MAD_MY | TFT_MAD_MV |
+            TFT_MAD_COLOR_ORDER);  // Rotation 0 (portrait mode)
 #else
-  writedata(TFT_MAD_MX | TFT_MAD_COLOR_ORDER); // Rotation 0 (portrait mode)
+  writedata(TFT_MAD_MX | TFT_MAD_COLOR_ORDER);  // Rotation 0 (portrait mode)
 #endif
 
   writecommand(ILI9341_PIXFMT);
   writedata(0x55);
 
-  writecommand(ILI9341_DFUNCTR);    // Display Function Control
+  writecommand(ILI9341_DFUNCTR);  // Display Function Control
   writedata(0x08);
   writedata(0x82);
   writedata(0x27);
 
-  writecommand(ILI9341_GMCTRP1);    //Set Gamma
+  writecommand(ILI9341_GMCTRP1);  //Set Gamma
   writedata(0x00);
   writedata(0x0C);
   writedata(0x11);
@@ -58,7 +59,7 @@
   writedata(0x34);
   writedata(0x0F);
 
-  writecommand(ILI9341_GMCTRN1);    //Set Gamma
+  writecommand(ILI9341_GMCTRN1);  //Set Gamma
   writedata(0x00);
   writedata(0x0B);
   writedata(0x11);
@@ -75,12 +76,11 @@
   writedata(0x33);
   writedata(0x0F);
 
-  writecommand(ILI9341_SLPOUT);    //Exit Sleep
+  writecommand(ILI9341_SLPOUT);  //Exit Sleep
 
   spi_end();
   delay(120);
   spi_begin();
 
-  writecommand(ILI9341_DISPON);    //Display on
-
+  writecommand(ILI9341_DISPON);  //Display on
 }

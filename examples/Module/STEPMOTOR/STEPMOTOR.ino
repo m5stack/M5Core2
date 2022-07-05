@@ -3,11 +3,11 @@
 * Copyright (c) 2021 by M5Stack
 *                  Equipped with M5Core2 sample source code
 *                          配套  M5Core2 示例源代码
-* Visit the website for more information: https://docs.m5stack.com/en/module/stepmotor
+* Visit for more information: https://docs.m5stack.com/en/module/stepmotor
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/module/stepmotor
 *
-* describe: STEPMOTOR.
-* date: 2021/9/1
+* Product: STEPMOTOR.
+* Date: 2021/9/1
 *******************************************************************************
   STEP-MOTOR Module TEST Example,If Button A was pressed, stepmotor will rotate back and forth at a time.
   步进电机模块测试示例，如果按下按钮A，步进电机将一次来回旋转。
@@ -29,12 +29,12 @@
 // #define STEPMOTOR_I2C_ADDR 0x71
 
 void setup() {
-  M5.begin(true,true,true,true,kMBusModeInput);
-/*   kMBusModeOutput,powered by USB or Battery
+  M5.begin(true, true, true, true, kMBusModeInput);
+  /*   kMBusModeOutput,powered by USB or Battery
   kMBusModeInput,powered by outside input need to fill in this Otherwise M5Core2 will not work properly
   由外部供电时此项必填,否则M5Core2将无法正常工作 */
 
-  Wire1.begin(21,22);
+  Wire1.begin(21, 22);
   m5.Lcd.setTextColor(WHITE, BLACK);
   m5.Lcd.setTextSize(2);
   m5.lcd.setBrightness(100);

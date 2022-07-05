@@ -117,8 +117,7 @@ bool Button::read(bool manualRead /* = true */) {
   return _state;
 }
 
-void Button::fingerDown(Point pos /* = Point() */,
-                        uint8_t finger /* = 0 */) {
+void Button::fingerDown(Point pos /* = Point() */, uint8_t finger /* = 0 */) {
   _finger = finger;
   _currentPt[finger] = _fromPt[finger] = pos;
   if (!_state && !_currentPt[1 - finger]) {
@@ -307,7 +306,6 @@ void Button::setFont(uint8_t textFont_ /* = 0 */) {
 
 void Button::setTextSize(uint8_t textSize_ /* = 0 */) { _textSize = textSize_; }
 
-
 // M5Buttons class
 
 /* static */ M5Buttons* M5Buttons::instance;
@@ -493,9 +491,8 @@ void M5Buttons::setFont(uint8_t textFont_) {
 
 void M5Buttons::setTextSize(uint8_t textSize_) { _textSize = textSize_; }
 
-void M5Buttons::fireEvent(uint8_t finger, uint16_t type, Point& from,
-                           Point& to, uint16_t duration, Button* button,
-                           Gesture* gesture) {
+void M5Buttons::fireEvent(uint8_t finger, uint16_t type, Point& from, Point& to,
+                          uint16_t duration, Button* button, Gesture* gesture) {
   Event e;
   e.finger = finger;
   e.type = type;

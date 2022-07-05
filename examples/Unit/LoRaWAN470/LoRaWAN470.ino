@@ -3,11 +3,11 @@
 * Copyright (c) 2021 by M5Stack
 *                  Equipped with M5Core2 sample source code
 *                          配套  M5Core2 示例源代码
-* Visit the website for more information: https://docs.m5stack.com/en/unit/lorawan470
+* Visit for more information: https://docs.m5stack.com/en/unit/lorawan470
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/unit/lorawan470
 *
-* describe: LoRaWAN470.
-* date: 2021/8/31
+* Product: LoRaWAN470.
+* Date: 2021/8/31
 *******************************************************************************
   Please connect to Port C,请连接端口C
 */
@@ -18,41 +18,40 @@
 M5GFX display;
 M5Canvas canvas(&display);
 
-String waitRevice(){
+String waitRevice() {
   String recvStr;
-  do{
+  do {
     recvStr = Serial2.readStringUntil('\n');
   } while (recvStr.length() == 0);
   canvas.println(recvStr);
   return recvStr;
 }
 
-void sendATCMD(String cmdStr){
+void sendATCMD(String cmdStr) {
   Serial2.print(cmdStr);
   delay(100);
 }
 
-int sendATCMDAndRevice(String cmdStr){
+int sendATCMDAndRevice(String cmdStr) {
   Serial2.print(cmdStr);
   delay(100);
   waitRevice();
   String recvStr = waitRevice();
-  if (recvStr.indexOf("OK") != -1){
+  if (recvStr.indexOf("OK") != -1) {
     return 0;
-  }else{
+  } else {
     return -1;
   }
 }
 
-void setup()
-{
+void setup() {
   M5.begin();
   Serial2.begin(115200, SERIAL_8N1, 13, 14);
   Serial2.flush();
   delay(100);
   display.begin();
   display.setTextSize(2);
-  canvas.setColorDepth(1); // mono color
+  canvas.setColorDepth(1);  // mono color
   canvas.createSprite(display.width(), display.height());
   canvas.setTextSize((float)canvas.width() / 160);
   canvas.setTextScroll(true);
@@ -104,7 +103,7 @@ void setup()
   sendATCMDAndRevice("AT+CJOIN=1,0,10,8\r\n");
 }
 
-enum systemstate{
+enum systemstate {
   kIdel = 0,
   kJoined,
   kSending,
@@ -116,60 +115,42 @@ int system_fsm = kIdel;
 int loraWanSendNUM = -1;
 int loraWanSendCNT = -1;
 
-void loop()
-{
+void loop() {
   String recvStr = waitRevice();
-  if (recvStr.indexOf("+CJOIN:") != -1)
-  {
-      if (recvStr.indexOf("OK") != -1)
-      {
-          canvas.printf("LoraWan JOIN");
-          system_fsm = kJoined;
+  if (recvStr.indexOf("+CJOIN:") != -1) {
+    if (recvStr.indexOf("OK") != -1) {
+      canvas.printf("LoraWan JOIN");
+      system_fsm = kJoined;
+    } else {
+      canvas.printf("LoraWan JOIN FAIL");
+      system_fsm = kIdel;
+    }
+  } else if (recvStr.indexOf("OK+RECV") != -1) {
+    if (system_fsm == kJoined) {
+      system_fsm = kSending;
+    } else if (system_fsm == kWaitSend) {
+      system_fsm = kSending;
+      char strbuff[128];
+      if ((loraWanSendCNT < 5) && (loraWanSendNUM == 8)) {
+        sprintf(strbuff, "TSET OK CNT: %d", loraWanSendCNT);
+        canvas.print(strbuff);
+      } else {
+        sprintf(strbuff, "FAILD NUM:%d CNT:%d", loraWanSendNUM, loraWanSendCNT);
+        canvas.print(strbuff);
       }
-      else
-      {
-          canvas.printf("LoraWan JOIN FAIL");
-          system_fsm = kIdel;
-      }
-  }
-  else if (recvStr.indexOf("OK+RECV") != -1)
-  {
-      if (system_fsm == kJoined)
-      {
-          system_fsm = kSending;
-      }
-      else if (system_fsm == kWaitSend)
-      {
-          system_fsm = kSending;
-          char strbuff[128];
-          if(( loraWanSendCNT < 5 )&&( loraWanSendNUM == 8 ))
-          {
-              sprintf(strbuff,"TSET OK CNT: %d",loraWanSendCNT);
-              canvas.print(strbuff);
-          }
-          else
-          {
-              sprintf(strbuff,"FAILD NUM:%d CNT:%d",loraWanSendNUM,loraWanSendCNT);
-              canvas.print(strbuff);
-          }
-      }
-  }
-  else if(recvStr.indexOf("OK+SEND") != -1)
-  {
-      String snednum = recvStr.substring(8);
-      canvas.printf(" [ INFO ] SEND NUM %s \r\n",snednum.c_str());
-      loraWanSendNUM = snednum.toInt();
-  }
-  else if(recvStr.indexOf("OK+SENT") != -1)
-  {
-      String snedcnt = recvStr.substring(8);
-      canvas.printf(" [ INFO ] SEND CNT %s \r\n",snedcnt.c_str());
+    }
+  } else if (recvStr.indexOf("OK+SEND") != -1) {
+    String snednum = recvStr.substring(8);
+    canvas.printf(" [ INFO ] SEND NUM %s \r\n", snednum.c_str());
+    loraWanSendNUM = snednum.toInt();
+  } else if (recvStr.indexOf("OK+SENT") != -1) {
+    String snedcnt = recvStr.substring(8);
+    canvas.printf(" [ INFO ] SEND CNT %s \r\n", snedcnt.c_str());
 
-      loraWanSendCNT = snedcnt.toInt();
+    loraWanSendCNT = snedcnt.toInt();
   }
 
-  if (system_fsm == kSending)
-  {
+  if (system_fsm == kSending) {
     canvas.println("LoraWan Sending");
     sendATCMD("AT+DTRX=1,8,8,4655434b20535443\r\n");
     system_fsm = kWaitSend;
