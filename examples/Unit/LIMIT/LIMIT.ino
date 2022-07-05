@@ -13,7 +13,7 @@
 
 #include <M5Core2.h>
 
-#define KEY_PIN 33  // Define Limit Pin.  定义Limit连接引脚
+#define KEY_PIN 36  // Define Limit Pin.  定义Limit连接引脚
 
 void setup() {
   M5.begin();  // Init M5Stack  初始化M5Stack
