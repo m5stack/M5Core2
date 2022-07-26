@@ -38,6 +38,18 @@ TFT_eSprite::TFT_eSprite(TFT_eSPI *tft) {
   this->cursor_y = this->cursor_x = 0;  // Text cursor position
 }
 
+/**************************************************************************************\
+** Function name:           setPsram
+** Description:             Enable/disable psram for the current sprite
+\**************************************************************************************/
+
+void TFT_eSprite::setPsram( bool enable )
+{
+  _usePsram = enable;
+}
+
+
+
 /***************************************************************************************
 ** Function name:           createSprite
 ** Description:             Create a sprite (bitmap) of defined width and height
@@ -96,23 +108,21 @@ void *TFT_eSprite::callocSprite(int16_t w, int16_t h, uint8_t frames) {
   uint8_t *ptr8 = NULL;
 
   if (_bpp == 16) {
-#if defined(ESP32) && defined(CONFIG_SPIRAM_SUPPORT)
     if (psramFound() && _usePsram)
       ptr8 = (uint8_t *)ps_calloc(w * h + 1, sizeof(uint16_t));
     else
-#endif
-      ptr8 = (uint8_t *)calloc(w * h + 1, sizeof(uint16_t));
+      // Since it's a M5Core2, disabled psram for this sprite **is** a user choice,
+      // using heap_caps_calloc instead of calloc prevents auto assignation to psram
+      ptr8 = (uint8_t *)heap_caps_calloc(w * h + 1, sizeof(uint16_t), MALLOC_CAP_8BIT);
   }
-
   else if (_bpp == 8) {
-#if defined(ESP32) && defined(CONFIG_SPIRAM_SUPPORT)
     if (psramFound() && _usePsram)
       ptr8 = (uint8_t *)ps_calloc(w * h + 1, sizeof(uint8_t));
     else
-#endif
-      ptr8 = (uint8_t *)calloc(w * h + 1, sizeof(uint8_t));
+      // Since it's a M5Core2, disabled psram for this sprite **is** a user choice,
+      // using heap_caps_calloc instead of calloc prevents auto assignation to psram
+      ptr8 = (uint8_t *)heap_caps_calloc(w * h + 1, sizeof(uint8_t), MALLOC_CAP_8BIT);
   }
-
   else  // Must be 1 bpp
   {
     //_dwidth   Display width+height in pixels always in rotation 0 orientation
@@ -127,13 +137,13 @@ void *TFT_eSprite::callocSprite(int16_t w, int16_t h, uint8_t frames) {
 
     if (frames > 2) frames = 2;  // Currently restricted to 2 frame buffers
     if (frames < 1) frames = 1;
-#if defined(ESP32) && defined(CONFIG_SPIRAM_SUPPORT)
     if (psramFound() && _usePsram)
       ptr8 =
           (uint8_t *)ps_calloc(frames * (w >> 3) * h + frames, sizeof(uint8_t));
     else
-#endif
-      ptr8 = (uint8_t *)calloc(frames * (w >> 3) * h + frames, sizeof(uint8_t));
+      // Since it's a M5Core2, disabled psram for this sprite **is** a user choice,
+      // using heap_caps_calloc instead of calloc prevents auto assignation to psram
+      ptr8 = (uint8_t *)heap_caps_calloc(frames * (w >> 3) * h + frames, sizeof(uint8_t), MALLOC_CAP_8BIT);
   }
 
   return ptr8;
@@ -512,7 +522,7 @@ uint16_t TFT_eSprite::readPixel(int32_t x, int32_t y) {
 
 /***************************************************************************************
 ** Function name:           pushImage
-** Description:             push 565 colour image into a defined area of a sprite 
+** Description:             push 565 colour image into a defined area of a sprite
 *************************************************************************************x*/
 void TFT_eSprite::pushImage(int32_t x, int32_t y, int32_t w, int32_t h,
                             uint16_t *data) {
