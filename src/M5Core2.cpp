@@ -43,7 +43,7 @@ void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable,
   }
 
   // TONE
-  // Speaker.begin();
+  Spk.begin();
 
   if (SerialEnable == true) {
     Serial.println("OK");

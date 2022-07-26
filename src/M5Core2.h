@@ -79,6 +79,7 @@
 #include "utility/Config.h"
 #include "utility/CommUtil.h"
 #include "utility/MPU6886.h"
+#include "Speaker.h"
 #include "AXP192.h"
 #include "RTC.h"
 
@@ -122,6 +123,8 @@ class M5Core2 {
   CommUtil I2C;
 
   RTC Rtc;
+
+  Speaker Spk;
 
   /**
          * Functions have been moved to Power class for compatibility.
