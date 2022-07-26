@@ -151,12 +151,29 @@ void AXP192::ReadBuff(uint8_t Addr, uint8_t Size, uint8_t *Buff) {
   }
 }
 
-void AXP192::ScreenBreath(uint8_t brightness) {
-  if (brightness > 12) {
-    brightness = 12;
-  }
-  uint8_t buf = Read8bit(0x28);
-  Write1Byte(0x28, ((buf & 0x0f) | (brightness << 4)));
+void AXP192::ScreenBreath(int brightness) {
+  int vol = map(brightness, 0, 100, 2400, 3300);
+  // Serial.printf("brightness:%d\n", brightness);
+
+  // Serial.printf("vol:%d\n", vol);
+  // Serial.printf("vol:%u\n", vol);
+
+  SetLcdVoltage((uint16_t)vol);
+  // delay(10);
+  // uint8_t buf = Read8bit(0x27);
+  // Serial.printf("brightness:%hhu\n", brightness);
+  // Serial.printf("brightness:%d\n", brightness);
+  // Serial.printf("brightness:%x\n", brightness);
+
+  // Serial.printf("buf:%hhu\n", buf);
+  // Serial.printf("buf:%d\n", buf);
+  // Serial.printf("buf:%x\n", buf);
+
+  // Serial.printf("result:%hhu\n", ((buf & 0x0f) | (brightness << 4)));
+  // Serial.printf("result:%d\n", ((buf & 0x0f) | (brightness << 4)));
+  // Serial.printf("result:%x\n", ((buf & 0x0f) | (brightness << 4)));
+
+  // Write1Byte(0x27, ((buf & 0x0f) | (brightness << 4)));
 }
 
 bool AXP192::GetBatState() {
@@ -385,6 +402,7 @@ void AXP192::SetLDOVoltage(uint8_t number, uint16_t voltage) {
   }
 }
 
+/// @param number 0=DCDC1 / 1=DCDC2 / 2=DCDC3
 void AXP192::SetDCVoltage(uint8_t number, uint16_t voltage) {
   uint8_t addr;
   if (number > 2) return;
@@ -394,12 +412,15 @@ void AXP192::SetDCVoltage(uint8_t number, uint16_t voltage) {
       addr = 0x26;
       break;
     case 1:
-      addr = 0x25;
+      addr = 0x23;
       break;
     case 2:
       addr = 0x27;
       break;
   }
+  // Serial.printf("result:%hhu\n", (Read8bit(addr) & 0X80) | (voltage & 0X7F));
+  // Serial.printf("result:%d\n", (Read8bit(addr) & 0X80) | (voltage & 0X7F));
+  // Serial.printf("result:%x\n", (Read8bit(addr) & 0X80) | (voltage & 0X7F));
   Write1Byte(addr, (Read8bit(addr) & 0X80) | (voltage & 0X7F));
 }
 
@@ -408,6 +429,7 @@ void AXP192::SetESPVoltage(uint16_t voltage) {
     SetDCVoltage(0, voltage);
   }
 }
+
 void AXP192::SetLcdVoltage(uint16_t voltage) {
   if (voltage >= 2500 && voltage <= 3300) {
     SetDCVoltage(2, voltage);

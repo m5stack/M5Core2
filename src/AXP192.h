@@ -43,7 +43,7 @@ class AXP192 {
   void begin();
   // Will be deprecated
   void begin(mbus_mode_t mode);
-  void ScreenBreath(uint8_t brightness);
+  void ScreenBreath(int brightness);
   bool GetBatState();
 
   void EnableCoulombcounter(void);
