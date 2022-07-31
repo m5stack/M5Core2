@@ -1441,7 +1441,7 @@ size_t TFT_eSprite::write(uint8_t utf8) {
       this->cursor_x += pgm_read_byte(&glyph->xAdvance) * (int16_t)textsize;
     }
   }
-#endif  // LOAD_GFXFF \
+#endif  // LOAD_GFXFF
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   return 1;
