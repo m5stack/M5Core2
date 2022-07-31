@@ -1,5 +1,17 @@
 #include "Speaker.h"
 
+// handle I2S migration across SDK versions
+#ifdef ESP_ARDUINO_VERSION_VAL
+  #if defined ESP_ARDUINO_VERSION && ESP_ARDUINO_VERSION >= ESP_ARDUINO_VERSION_VAL(2, 0, 0)
+    #define I2S_COMM_FORMAT I2S_COMM_FORMAT_STAND_I2S
+  #else
+    #define I2S_COMM_FORMAT I2S_COMM_FORMAT_I2S
+  #endif
+#else
+  #define I2S_COMM_FORMAT I2S_COMM_FORMAT_I2S
+#endif
+
+
 bool Speaker::InitI2SSpeakOrMic(int mode) {  // Init I2S.  初始化I2S
   esp_err_t err = ESP_OK;
 
@@ -14,7 +26,7 @@ bool Speaker::InitI2SSpeakOrMic(int mode) {  // Init I2S.  初始化I2S
       .channel_format =
           I2S_CHANNEL_FMT_ONLY_RIGHT,  // Set the channel format. 设置频道格式
       .communication_format =
-          I2S_COMM_FORMAT_STAND_I2S,  // Set the format of the communication.
+          I2S_COMM_FORMAT,  // Set the format of the communication.
                                       // 设置通讯格式
       .intr_alloc_flags =
           ESP_INTR_FLAG_LEVEL1,  // Set the interrupt flag.  设置中断的标志

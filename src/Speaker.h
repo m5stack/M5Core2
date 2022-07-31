@@ -1,10 +1,12 @@
 #ifndef _SPEAKER_H_
 #define _SPEAKER_H_
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include <driver/i2s.h>
 #include <esp_err.h>
-#include <Wire.h>
 #include <utility/ding.c>
+#include <Wire.h>
 
 #define CONFIG_I2S_BCK_PIN 12  //定义I2S相关端口
 #define CONFIG_I2S_LRCK_PIN 0
