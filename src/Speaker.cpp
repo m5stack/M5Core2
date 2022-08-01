@@ -6,20 +6,24 @@ bool Speaker::InitI2SSpeakOrMic(int mode) {  // Init I2S.  初始化I2S
   i2s_driver_uninstall(
       Speak_I2S_NUMBER);  // Uninstall the I2S driver.  卸载I2S驱动
   i2s_config_t i2s_config = {
-      .mode = (i2s_mode_t)(I2S_MODE_MASTER),  // Set the I2S operating mode.
-                                              // 设置I2S工作模式
-      .sample_rate = 44100,  // Set the I2S sampling rate.  设置I2S采样率
-      .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,  // Fixed 12-bit stereo MSB.
-      // 固定为12位立体声MSB
-      .channel_format =
-          I2S_CHANNEL_FMT_ONLY_RIGHT,  // Set the channel format. 设置频道格式
-      .communication_format =
-          I2S_COMM_FORMAT_STAND_I2S,  // Set the format of the communication.
-                                      // 设置通讯格式
-      .intr_alloc_flags =
-          ESP_INTR_FLAG_LEVEL1,  // Set the interrupt flag.  设置中断的标志
-      .dma_buf_count = 2,        // DMA buffer count.  DMA缓冲区计数
-      .dma_buf_len = 128,        // DMA buffer length.  DMA缓冲区长度
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER),  // Set the I2S operating mode.
+                                            // 设置I2S工作模式
+    .sample_rate = 44100,  // Set the I2S sampling rate.  设置I2S采样率
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,  // Fixed 12-bit stereo MSB.
+    // 固定为12位立体声MSB
+    .channel_format =
+        I2S_CHANNEL_FMT_ONLY_RIGHT,  // Set the channel format. 设置频道格式
+#if ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4, 1, 0)
+    .communication_format =
+        I2S_COMM_FORMAT_STAND_I2S,  // Set the format of the communication.
+                                    // 设置通讯格式
+#else
+    .communication_format = I2S_COMM_FORMAT_I2S,
+#endif
+    .intr_alloc_flags =
+        ESP_INTR_FLAG_LEVEL1,  // Set the interrupt flag.  设置中断的标志
+    .dma_buf_count = 2,        // DMA buffer count.  DMA缓冲区计数
+    .dma_buf_len = 128,        // DMA buffer length.  DMA缓冲区长度
   };
   if (mode == MODE_MIC) {
     i2s_config.mode =
