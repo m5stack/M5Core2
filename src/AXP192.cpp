@@ -410,18 +410,21 @@ void AXP192::SetDCVoltage(uint8_t number, uint16_t voltage) {
   switch (number) {
     case 0:
       addr = 0x26;
+      voltage &= 0x7F;
       break;
     case 1:
-      addr = 0x23;
+      addr = 0x25;
+      voltage &= 0x3F;
       break;
     case 2:
       addr = 0x27;
+      voltage &= 0x7F;
       break;
   }
   // Serial.printf("result:%hhu\n", (Read8bit(addr) & 0X80) | (voltage & 0X7F));
   // Serial.printf("result:%d\n", (Read8bit(addr) & 0X80) | (voltage & 0X7F));
   // Serial.printf("result:%x\n", (Read8bit(addr) & 0X80) | (voltage & 0X7F));
-  Write1Byte(addr, (Read8bit(addr) & 0X80) | (voltage & 0X7F));
+  Write1Byte(addr, (Read8bit(addr) & 0x80) | voltage));
 }
 
 void AXP192::SetESPVoltage(uint16_t voltage) {
