@@ -389,15 +389,25 @@ bool AXP192::isACIN() { return (Read8bit(0x00) & 0x80) ? true : false; }
 bool AXP192::isCharging() { return (Read8bit(0x00) & 0x04) ? true : false; }
 bool AXP192::isVBUS() { return (Read8bit(0x00) & 0x20) ? true : false; }
 
+uint8_t calcVoltageData(uint16_t value, uint16_t maxv, uint16_t minv, uint16_t step)
+{
+  uint8_t data = 0;
+  if (value > maxv)
+      value = maxv;
+  if (value > minv)
+      data = (value - minv) / step;
+  return data;
+}
+
 void AXP192::SetLDOVoltage(uint8_t number, uint16_t voltage) {
-  voltage = (voltage > 3300) ? 15 : (voltage / 100) - 18;
+  uint8_t vdata = calcVoltageData(voltage, 3300, 1800, 100) & 0x0F;
   switch (number) {
     //uint8_t reg, data;
     case 2:
-      Write1Byte(0x28, (Read8bit(0x28) & 0X0F) | (voltage << 4));
+      Write1Byte(0x28, (Read8bit(0x28) & 0x0F) | (vdata << 4));
       break;
     case 3:
-      Write1Byte(0x28, (Read8bit(0x28) & 0XF0) | voltage);
+      Write1Byte(0x28, (Read8bit(0x28) & 0xF0) | vdata);
       break;
   }
 }
@@ -405,26 +415,26 @@ void AXP192::SetLDOVoltage(uint8_t number, uint16_t voltage) {
 /// @param number 0=DCDC1 / 1=DCDC2 / 2=DCDC3
 void AXP192::SetDCVoltage(uint8_t number, uint16_t voltage) {
   uint8_t addr;
+  uint8_t vdata;
   if (number > 2) return;
-  voltage = (voltage < 700) ? 0 : (voltage - 700) / 25;
   switch (number) {
     case 0:
       addr = 0x26;
-      voltage &= 0x7F;
+      vdata = calcVoltageData(voltage, 3500, 700, 25) & 0x7F;
       break;
     case 1:
       addr = 0x25;
-      voltage &= 0x3F;
+      vdata = calcVoltageData(voltage, 2275, 700, 25) & 0x3F;
       break;
     case 2:
       addr = 0x27;
-      voltage &= 0x7F;
+      vdata = calcVoltageData(voltage, 3500, 700, 25) & 0x7F;
       break;
   }
   // Serial.printf("result:%hhu\n", (Read8bit(addr) & 0X80) | (voltage & 0X7F));
   // Serial.printf("result:%d\n", (Read8bit(addr) & 0X80) | (voltage & 0X7F));
   // Serial.printf("result:%x\n", (Read8bit(addr) & 0X80) | (voltage & 0X7F));
-  Write1Byte(addr, (Read8bit(addr) & 0x80) | voltage));
+  Write1Byte(addr, (Read8bit(addr) & 0x80) | vdata);
 }
 
 void AXP192::SetESPVoltage(uint16_t voltage) {
