@@ -389,13 +389,11 @@ bool AXP192::isACIN() { return (Read8bit(0x00) & 0x80) ? true : false; }
 bool AXP192::isCharging() { return (Read8bit(0x00) & 0x04) ? true : false; }
 bool AXP192::isVBUS() { return (Read8bit(0x00) & 0x20) ? true : false; }
 
-uint8_t calcVoltageData(uint16_t value, uint16_t maxv, uint16_t minv, uint16_t step)
-{
+uint8_t calcVoltageData(uint16_t value, uint16_t maxv, uint16_t minv,
+                        uint16_t step) {
   uint8_t data = 0;
-  if (value > maxv)
-      value = maxv;
-  if (value > minv)
-      data = (value - minv) / step;
+  if (value > maxv) value = maxv;
+  if (value > minv) data = (value - minv) / step;
   return data;
 }
 
