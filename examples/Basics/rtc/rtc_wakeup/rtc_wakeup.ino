@@ -23,13 +23,19 @@ the program in the setUp () function will be run, and this part will only be run
 void setup() {
   M5.begin();  //Init M5Core2.  初始化 M5Stack
 
-  RTCtime.Hours = 10;  // Set the time.  设置时间
-  RTCtime.Minutes = 30;
+  RTCtime.Hours = 12;  // Set the time.  设置时间
+  RTCtime.Minutes = 31;
   RTCtime.Seconds = 45;
-  M5.Lcd.setCursor(
-      0, 80);  // Move the cursor position to (x,y).  移动光标位置到(x,y)处
-  M5.Lcd.println(
-      "BtnA: shutdown, use power button to turn back on");  // The screen prints the formatted string and wraps it.  屏幕打印格式化字符串并换行
+  RTCtime_Now.Hours = 12;
+  RTCtime_Now.Minutes = 30;
+  RTCtime_Now.Seconds = 45;
+
+  M5.Rtc.SetTime(&RTCtime);
+  M5.Rtc.SetTime(&RTCtime_Now);
+
+  //The screen prints the formatted string and wraps it.
+  // 屏幕打印格式化字符串并换行
+  M5.Lcd.println("BtnA: shutdown, use power button to turn back on");
   M5.Lcd.println("BtnB: shutdown, wake up after 5 seconds");
   M5.Lcd.printf("BtnC: shutdown, wake up at RTC Time %d:%d:%d", RTCtime.Hours,
                 RTCtime.Minutes, RTCtime.Seconds);
