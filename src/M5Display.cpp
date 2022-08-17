@@ -20,7 +20,7 @@ void M5Display::begin() {
 
   // Init the back-light LED PWM
   ledcSetup(BLK_PWM_CHANNEL, 44100, 8);
-  ledcAttachPin(TFT_BL, BLK_PWM_CHANNEL);
+  // ledcAttachPin(TFT_BL, BLK_PWM_CHANNEL);
   ledcWrite(BLK_PWM_CHANNEL, 80);
 }
 
