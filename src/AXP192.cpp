@@ -60,6 +60,8 @@ void AXP192::begin() {
   delay(100);
   // I2C_WriteByteDataAt(0X15,0XFE,0XFF);
 
+  SetPeripherialsPower(true);
+
   // axp: check v-bus status
   if (Read8bit(0x00) & 0x08) {
     Write1Byte(0x30, Read8bit(0x30) | 0x80);
@@ -534,4 +536,11 @@ void AXP192::SetCHGCurrent(uint8_t state) {
   data &= 0xf0;
   data = data | (state & 0x0f);
   Write1Byte(0x33, data);
+}
+
+void AXP192::SetPeripherialsPower(uint8_t state) {
+  if (!state)
+    Write1Byte(0x10, Read8bit(0x10) & 0XFB);
+  else if (state)
+    Write1Byte(0x10, Read8bit(0x10) | 0X02);
 }
