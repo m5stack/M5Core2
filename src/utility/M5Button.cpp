@@ -528,7 +528,8 @@ void M5Buttons::delHandlers(EventHandlerCallback fn /* = nullptr */,
                             Gesture* gesture /* = nullptr */
 ) {
   for (int i = _eventHandlers.size() - 1; i >= 0; --i) {
-    if (fn && fn != _eventHandlers[i].fn) continue;
+    // this doesn't compile anymore
+    //if (fn && fn != _eventHandlers[i].fn) continue;
     if (button && _eventHandlers[i].button != button) continue;
     if (gesture && _eventHandlers[i].gesture != gesture) continue;
     _eventHandlers.erase(_eventHandlers.begin() + i);
