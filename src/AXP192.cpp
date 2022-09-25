@@ -542,5 +542,7 @@ void AXP192::SetPeripherialsPower(uint8_t state) {
   if (!state)
     Write1Byte(0x10, Read8bit(0x10) & 0XFB);
   else if (state)
-    Write1Byte(0x10, Read8bit(0x10) | 0X02);
+    Write1Byte(0x10, Read8bit(0x10) | 0X04);
+  uint8_t data;
+  // Set EXTEN to enable 5v boost
 }
