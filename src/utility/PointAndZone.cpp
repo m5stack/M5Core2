@@ -115,9 +115,8 @@ Zone::Zone(int16_t x_ /* = INVALID_VALUE */, int16_t y_ /* = INVALID_VALUE */,
 Zone::operator bool() { return !(x == INVALID_VALUE && y == INVALID_VALUE); }
 
 void Zone::set(int16_t x_ /* = INVALID_VALUE */,
-               int16_t y_ /* = INVALID_VALUE */,
-               int16_t w_ /* = 0 */, int16_t h_ /* = 0 */,
-               bool rot1_ /* = false */) {
+               int16_t y_ /* = INVALID_VALUE */, int16_t w_ /* = 0 */,
+               int16_t h_ /* = 0 */, bool rot1_ /* = false */) {
   x = x_;
   y = y_;
   w = w_;
@@ -130,7 +129,6 @@ bool Zone::valid() { return !(x == INVALID_VALUE && y == INVALID_VALUE); }
 bool Zone::contains(const Point& p) { return contains(p.x, p.y); }
 
 bool Zone::contains(int16_t x_, int16_t y_) {
-
 #ifdef TFT
   if (rot1 && TFT->rotation != 1) {
     Zone t = *this;

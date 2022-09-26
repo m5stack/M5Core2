@@ -8,7 +8,6 @@
 //   run without the need to make any more changes for a particular hardware setup!
 //   Note that some sketches are designed for a particular TFT pixel width/height
 
-
 // ##################################################################################
 //
 // Section 1. Call up the right driver file and any options for it
@@ -31,13 +30,13 @@
 //#define RM68140_DRIVER
 
 #include "ILI9341_Defines.h"
-#define  TFT_DRIVER 0x9341
+#define TFT_DRIVER 0x9341
 
 // Some displays support SPI reads via the MISO pin, other displays have a single
 // bi-directional SDA pin and the library will try to read this via the MOSI line.
 // To use the SDA line for reading data from the TFT uncomment the following line:
 
-#define TFT_SDA_READ      // This option is for ESP32 ONLY, tested with ST7789 display only
+#define TFT_SDA_READ  // This option is for ESP32 ONLY, tested with ST7789 display only
 
 // For ST7789 and ILI9341 ONLY, define the colour order IF the blue and red are swapped on your display
 // Try ONE option at a time to find the correct colour order for your display
@@ -124,7 +123,6 @@
 // If 5V is not available at a pin you can use 3.3V but backlight brightness
 // will be lower.
 
-
 // ###### EDIT THE PIN NUMBERS IN THE LINES FOLLOWING TO SUIT YOUR ESP8266 SETUP ######
 
 // For NodeMCU - use pin numbers in the form PIN_Dx where Dx is the NodeMCU pin designation
@@ -138,7 +136,6 @@
 //#define TOUCH_CS PIN_D2     // Chip select pin (T_CS) of touch screen
 
 //#define TFT_WR PIN_D2       // Write strobe for modified Raspberry Pi TFT only
-
 
 // ######  FOR ESP8266 OVERLAP MODE EDIT THE PIN NUMBERS IN THE FOLLOWING LINES  ######
 
@@ -156,7 +153,6 @@
 //#define TFT_DC   PIN_D5  // Data Command control pin
 //#define TFT_RST  PIN_D4  // Reset pin (could connect to NodeMCU RST, see next line)
 //#define TFT_RST  -1  // Set TFT_RST to -1 if the display RESET is connected to NodeMCU RST or 3.3V
-
 
 // ###### EDIT THE PIN NUMBERS IN THE LINES FOLLOWING TO SUIT YOUR ESP32 SETUP   ######
 
@@ -181,10 +177,10 @@
 #define TFT_MISO 38
 #define TFT_MOSI 23
 #define TFT_SCLK 18
-#define TFT_CS   5      // Chip select control pin
-#define TFT_DC   15     // Data Command control pin
-#define TFT_RST  -1     // Reset pin (could connect to Arduino RESET pin)
-#define TFT_BL   -1     // LED back-light (required for M5Stack)
+#define TFT_CS 5    // Chip select control pin
+#define TFT_DC 15   // Data Command control pin
+#define TFT_RST -1  // Reset pin (could connect to Arduino RESET pin)
+#define TFT_BL -1   // LED back-light (required for M5Stack)
 
 // ######       EDIT THE PINs BELOW TO SUIT YOUR ESP32 PARALLEL TFT SETUP        ######
 
@@ -215,7 +211,6 @@
 //#define TFT_D6   27
 //#define TFT_D7   14
 
-
 // ##################################################################################
 //
 // Section 3. Define the fonts that are to be used here
@@ -227,7 +222,7 @@
 // normally necessary. If all fonts are loaded the extra FLASH space required is
 // about 17Kbytes. To save FLASH space only enable the fonts you need!
 
-#define LOAD_GLCD   // Font 1. Original Adafruit 8 pixel font needs ~1820 bytes in FLASH
+#define LOAD_GLCD  // Font 1. Original Adafruit 8 pixel font needs ~1820 bytes in FLASH
 #define LOAD_FONT2  // Font 2. Small 16 pixel high font, needs ~3534 bytes in FLASH, 96 characters
 #define LOAD_FONT4  // Font 4. Medium 26 pixel high font, needs ~5848 bytes in FLASH, 96 characters
 #define LOAD_FONT6  // Font 6. Large 48 pixel font, needs ~2666 bytes in FLASH, only characters 1234567890:-.apm
@@ -239,7 +234,6 @@
 // Comment out the #define below to stop the SPIFFS filing system and smooth font code being loaded
 // this will save ~20kbytes of FLASH
 #define SMOOTH_FONT
-
 
 // ##################################################################################
 //
@@ -259,11 +253,11 @@
 // #define SPI_FREQUENCY  10000000
 // #define SPI_FREQUENCY  20000000
 // #define SPI_FREQUENCY  27000000 // Actually sets it to 26.67MHz = 80/3
-#define SPI_FREQUENCY  40000000 // Maximum to use SPIFFS
+#define SPI_FREQUENCY 40000000  // Maximum to use SPIFFS
 // #define SPI_FREQUENCY  80000000
 
 // Optional reduced SPI frequency for reading TFT
-#define SPI_READ_FREQUENCY  16000000
+#define SPI_READ_FREQUENCY 16000000
 
 // The XPT2046 requires a lower SPI clock rate of 2.5MHz so we define that here:
 // #define SPI_TOUCH_FREQUENCY  2500000

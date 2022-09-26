@@ -117,8 +117,7 @@ bool Button::read(bool manualRead /* = true */) {
   return _state;
 }
 
-void Button::fingerDown(Point pos /* = Point() */,
-                        uint8_t finger /* = 0 */) {
+void Button::fingerDown(Point pos /* = Point() */, uint8_t finger /* = 0 */) {
   _finger = finger;
   _currentPt[finger] = _fromPt[finger] = pos;
   if (!_state && !_currentPt[1 - finger]) {
@@ -126,6 +125,7 @@ void Button::fingerDown(Point pos /* = Point() */,
     _state = true;
     _changed = true;
     _pressTime = _time;
+    _lastChange = _time;
     draw();
   }
   BUTTONS->fireEvent(finger, E_TOUCH, pos, pos, 0, this, nullptr);
@@ -140,6 +140,7 @@ void Button::fingerUp(uint8_t finger /* = 0  */) {
     // other finger not here
     _state = false;
     _changed = true;
+    _lastChange = _time;
     draw();
   }
   BUTTONS->fireEvent(finger, E_RELEASE, _fromPt[finger], _toPt[finger],
@@ -235,7 +236,7 @@ bool Button::wasReleasefor(uint32_t ms) {
 }
 
 bool Button::pressedFor(uint32_t ms) {
-  return (_state && _time - _lastChange >= ms);
+  return (_state && _time - _lastChange >= ms) ? 1 : 0;
 }
 
 bool Button::pressedFor(uint32_t ms, uint32_t continuous_time) {
@@ -253,11 +254,12 @@ bool Button::releasedFor(uint32_t ms) {
 
 uint32_t Button::lastChange() { return (_lastChange); }
 
-void Button::addHandler(void (*fn)(Event&), uint16_t eventMask /* = E_ALL */) {
+void Button::addHandler(EventHandlerCallback fn,
+                        uint16_t eventMask /* = E_ALL */) {
   BUTTONS->addHandler(fn, eventMask, this, nullptr);
 }
 
-void Button::delHandlers(void (*fn)(Event&) /* = nullptr */) {
+void Button::delHandlers(EventHandlerCallback fn /* = nullptr */) {
   BUTTONS->delHandlers(fn, this, nullptr);
 }
 
@@ -304,7 +306,6 @@ void Button::setFont(uint8_t textFont_ /* = 0 */) {
 }
 
 void Button::setTextSize(uint8_t textSize_ /* = 0 */) { _textSize = textSize_; }
-
 
 // M5Buttons class
 
@@ -491,9 +492,8 @@ void M5Buttons::setFont(uint8_t textFont_) {
 
 void M5Buttons::setTextSize(uint8_t textSize_) { _textSize = textSize_; }
 
-void M5Buttons::fireEvent(uint8_t finger, uint16_t type, Point& from,
-                           Point& to, uint16_t duration, Button* button,
-                           Gesture* gesture) {
+void M5Buttons::fireEvent(uint8_t finger, uint16_t type, Point& from, Point& to,
+                          uint16_t duration, Button* button, Gesture* gesture) {
   Event e;
   e.finger = finger;
   e.type = type;
@@ -512,7 +512,8 @@ void M5Buttons::fireEvent(uint8_t finger, uint16_t type, Point& from,
   }
 }
 
-void M5Buttons::addHandler(void (*fn)(Event&), uint16_t eventMask /* = E_ALL */,
+void M5Buttons::addHandler(EventHandlerCallback fn,
+                           uint16_t eventMask /* = E_ALL */,
                            Button* button /* = nullptr */,
                            Gesture* gesture /* = nullptr */
 ) {
@@ -524,12 +525,13 @@ void M5Buttons::addHandler(void (*fn)(Event&), uint16_t eventMask /* = E_ALL */,
   _eventHandlers.push_back(handler);
 }
 
-void M5Buttons::delHandlers(void (*fn)(Event&) /* = nullptr */,
+void M5Buttons::delHandlers(EventHandlerCallback fn /* = nullptr */,
                             Button* button /* = nullptr */,
                             Gesture* gesture /* = nullptr */
 ) {
   for (int i = _eventHandlers.size() - 1; i >= 0; --i) {
-    if (fn && fn != _eventHandlers[i].fn) continue;
+    // this doesn't compile anymore
+    //if (fn && fn != _eventHandlers[i].fn) continue;
     if (button && _eventHandlers[i].button != button) continue;
     if (gesture && _eventHandlers[i].gesture != gesture) continue;
     _eventHandlers.erase(_eventHandlers.begin() + i);
@@ -611,11 +613,12 @@ bool Gesture::test(Point& from, Point& to, uint16_t duration) {
 
 bool Gesture::wasDetected() { return _detected; }
 
-void Gesture::addHandler(void (*fn)(Event&), uint16_t eventMask /* = E_ALL */) {
+void Gesture::addHandler(EventHandlerCallback fn,
+                         uint16_t eventMask /* = E_ALL */) {
   BUTTONS->addHandler(fn, eventMask, nullptr, this);
 }
 
-void Gesture::delHandlers(void (*fn)(Event&) /* = nullptr */) {
+void Gesture::delHandlers(EventHandlerCallback fn /* = nullptr */) {
   BUTTONS->delHandlers(fn, nullptr, this);
 }
 

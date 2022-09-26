@@ -2,10 +2,11 @@
 
 English | [中文](README_cn.md)
 
-<img src="https://docs.m5stack.com/assets/img/product_pics/core/core2/core2_01.webp" alt="M5Core2_P1" width="350" height="350">
+<img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_01.webp" alt="M5Core2_P1" width="350" height="350">
 
+**For the Detailed documentation of M5Core2, Please [Click here](https://docs.m5stack.com/en/core/core2)**
 
-<img src="https://docs.m5stack.com/assets/img/product_pics/core/core2/core2_02.webp" alt="M5Core2_P2" width="350" height="350">
+**In order to buy  M5Core2, Please [Click here](https://shop.m5stack.com/collections/m5-controllers/products/m5stack-core2-esp32-iot-development-kit)**
 
 ## Description
 
@@ -19,103 +20,18 @@ The M5Core2 retains the SD card slot and speakers. However, in order to ensure h
 
 The 3 icons on the front of the screen are capacitive buttons which are programmable. There is a small expansion board on the back of the base with a 6-axis IMU sensor and microphone.
 
-## PinMap
-
-**LCD & TF card**
-
-LCD ：320x240
-TF card Maximum size 16GB
-
-<table>
- <tr><td>ESP32 Chip</td><td>GPIO38</td><td>GPIO23</td><td>GPIO18</td><td>GPIO5</td><td>GPIO15</td><td></td><td> </td><td> </td></tr>
- <tr><td>AXP192 Chip</td><td> </td><td> </td><td> </td><td> </td><td> </td><td>AXP_IO4</td><td>AXP_DC3</td><td>AXP_LDO2</td></tr>
- <tr><td>ILI9342C</td><td>MISO</td><td>MOSI</td><td>SCK</td><td>CS</td><td>DC</td><td>RST</td><td>BL</td><td>PWR</td></tr>
-</table>
-
-<table>
-<tr><td>ESP32 Chip</td><td>GPIO38</td><td>GPIO23</td><td>GPIO18</td><td>GPIO4</td></tr>
-<tr><td>TF Card</td><td>MISO</td><td>MOSI</td><td>SCK</td><td>CS</td></tr>
-</table>
-
-**CAP.TOUCH**
-
-<table>
- <tr><td>ESP32 chip</td><td>GPIO21</td><td>GPIO22</td><td>GPIO39</td></tr>
- <tr><td>AXP192</td><td></td><td></td><td></td><td>AXP_IO4</td></tr>
- <tr><td>FT6336U</td><td>SDA</td><td>SCL</td><td>INT</td><td>RST</td></tr>
-</table>
-
-**Mic & NS4168**
-
-<table>
- <tr><td>ESP32 Chip</td><td>GPIO12</td><td>GPIO0</td><td>GPIO2</td><td>AXP_IO2</td><td>GPIO34</td></tr>
- <tr><td>NS4168</td><td>BCLK</td><td>LRCK</td><td>DATA</td><td>SPK_EN</td> </td></tr>
- <tr><td>Mic</td><td></td><td>CLK</td><td></td><td></td><td>DATA</td></tr>
-</table>
-
-**AXP Power Indicator Light & Vibration motor**
-
-<table>
- <tr><td>AXP192</td><td>AXP_IO1</td><td>AXP_LDO3</td></tr>
- <tr><td>Green LED</td><td>Vcc</td><td></td></tr>
- <tr><td>Vibration motor</td><td></td><td>Vcc</td></tr>
-</table>
-
-**RTC**
-
-<table>
- <tr><td>ESP32 Chip</td><td>GPIO21</td><td>GPIO22</td><td></td></tr>
- <tr><td>AXP192</td><td></td><td></td><td>AXP_PWR</td></tr>
- <tr><td>BM8563</td><td>SDA</td><td>SCL</td><td>INT</td></tr>
-</table>
-
-**IMU(3-axis gyroscope & 3-axis accelerometer)**
-
-<table>
- <tr><td>ESP32 Chip</td><td>GPIO21</td><td>GPIO22</td></tr>
- <tr><td>MPU6886</td><td>SDA</td><td>SCL</td></tr>
-</table>
-
-**USB to serial chip**
-
-<table>
- <tr><td>ESP32 Chip</td><td>GPIO1</td><td>GPIO3</td></tr>
- <tr><td>CP2104</td><td>RXD</td><td>TXD</td></tr>
-</table>
-
-
-**Internal I2C connection**
-
-<table>
- <tr><td>ESP32 Chip</td><td>GPIO21</td><td>GPIO22</td></tr>
- <tr><td>MPU6886</td><td>SDA</td><td>SCL</td></tr>
- <tr><td>AXP192</td><td>SDA</td><td>SCL</td></tr>
- <tr><td>BM8563</td><td>SDA</td><td>SCL</td></tr>
- <tr><td>FT6336U</td><td>SDA</td><td>SCL</td></tr>
-</table>
-
-
 ## M5Core2 M-BUS Schematic diagram
 
-<img class="pic" src="https://docs.m5stack.com/assets/img/product_pics/core/core2/core2_mbus.webp" width = "50%">
-
-## M5PORT EXPLAIN
-
-<table>
-      <thead>
-         <th>PORT</th>
-         <th>PIN</th>
-         <th>Note:</th>
-      </thead>
-      <tbody>
-      <tr>
-         <td>PORT-A(Red)</td>
-         <td>G32/33</td>
-         <td>I2C</td>
-      </tr>
-    </tbody>
-</table>
+<img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_mbus.webp" width = "50%">
 
 ## More Information
 
-[Product docs](https://docs.m5stack.com/#/en/core/core2)
+**UIFlow Quick Start**: [Click Here](https://docs.m5stack.com/en/quick_start/core2/uiflow)
+
+**MicroPython API**: [Click Here](https://docs.m5stack.com/en/quick_start/core2/mpy)
+
+**Arduino IDE Development**: [Click Here](https://docs.m5stack.com/en/quick_start/core2/arduino)
+
+**M5Core2 Arduino API**: [Click Here](https://docs.m5stack.com/en/api/core2/axp192_core2)
+
+**PinMap**: [Click Here](https://docs.m5stack.com/en/core/core2)

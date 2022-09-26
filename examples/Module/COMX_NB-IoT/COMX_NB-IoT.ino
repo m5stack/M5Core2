@@ -303,7 +303,7 @@ uint8_t restate;
 void setup()
 {
 	// put your setup code here, to run once:
-	M5.begin(true,true,true,true,kMBusModeOutput);
+	M5.begin(true,true,true,true,kMBusModeInput);
 //  kMBusModeOutput,powered by USB or Battery  
 //  kMBusModeInput,powered by outside input
 
@@ -311,7 +311,6 @@ void setup()
 //  The 13(RX), 14(TX) pins of the CORE2 correspond to the 16(RX), 17(TX) pins of the COMX
 //Please make sure that the dialing switch of COMX is set to 16(RX), 17(TX).
  
-	//Serial.printf("FUCK STC\n");
 
 	Disbuff.createSprite(320,20);
 	Disbuff.fillRect(0,0,320,20,BLACK);

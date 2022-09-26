@@ -1,0 +1,33 @@
+name: LibraryBuild
+on:
+  push: # see: https://help.github.com/en/actions/reference/events-that-trigger-workflows#pull-request-event-pull_request
+    paths:
+    - '**.ino'
+    - '**.cpp'
+    - '**.h'
+    - '**LibraryBuild.yml'
+  pull_request:
+    paths:
+    - '**.ino'
+    - '**.cpp'
+    - '**.h'
+    - '**LibraryBuild.yml'
+jobs:
+  build:
+    name: Test compiling Basic examples for M5stack-Core2
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Compile all examples
+      uses: ArminJo/arduino-test-compile@v3
+      with:
+        arduino-board-fqbn:  esp32:esp32:m5stack-core2
+        platform-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_dev_index.json
+        sketch-names-find-start: examples/Basics/
+        extra-arduino-cli-args: "--warnings default "
+        sketches-exclude: mpu6886

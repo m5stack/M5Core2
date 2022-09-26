@@ -123,7 +123,7 @@ bool M5Touch::read() {
 Point M5Touch::getPressPoint() {
   read();
   if (point[0]) return point[0];
-  return Point(-1, -1);   // -1, -1 is old API's definition of invalid
+  return Point(-1, -1);  // -1, -1 is old API's definition of invalid
 }
 
 void M5Touch::update() { read(); }

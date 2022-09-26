@@ -724,6 +724,7 @@
 class Gesture;
 
 #include <Arduino.h>
+#include <functional>
 #include <Free_Fonts.h>
 #include <M5Display.h>
 
@@ -801,6 +802,8 @@ class Event {
   Gesture* gesture;
 };
 
+typedef std::function<void(Event&)> EventHandlerCallback;
+
 class Button : public Zone {
  public:
   static std::vector<Button*> instances;
@@ -836,8 +839,8 @@ class Button : public Zone {
   bool pressedFor(uint32_t ms, uint32_t continuous_time);
   bool releasedFor(uint32_t ms);
   bool wasReleasefor(uint32_t ms);
-  void addHandler(void (*fn)(Event&), uint16_t eventMask = E_ALL);
-  void delHandlers(void (*fn)(Event&) = nullptr);
+  void addHandler(EventHandlerCallback fn, uint16_t eventMask = E_ALL);
+  void delHandlers(EventHandlerCallback fn = nullptr);
   char* getName();
   uint32_t lastChange();
   Event event;
@@ -903,8 +906,8 @@ class Gesture {
   int16_t instanceIndex();
   bool test(Point& from, Point& to, uint16_t duration);
   bool wasDetected();
-  void addHandler(void (*fn)(Event&), uint16_t eventMask = E_ALL);
-  void delHandlers(void (*fn)(Event&) = nullptr);
+  void addHandler(EventHandlerCallback fn, uint16_t eventMask = E_ALL);
+  void delHandlers(EventHandlerCallback fn = nullptr);
   char* getName();
   Zone fromZone;
   Zone toZone;
@@ -924,7 +927,7 @@ struct EventHandler {
   uint16_t eventMask;
   Button* button;
   Gesture* gesture;
-  void (*fn)(Event&);
+  EventHandlerCallback fn;
 };
 
 class M5Buttons {
@@ -941,9 +944,9 @@ class M5Buttons {
   void (*drawFn)(Button& b, ButtonColors bc);
   void fireEvent(uint8_t finger, uint16_t type, Point& from, Point& to,
                  uint16_t duration, Button* button, Gesture* gesture);
-  void addHandler(void (*fn)(Event&), uint16_t eventMask = E_ALL,
+  void addHandler(EventHandlerCallback fn, uint16_t eventMask = E_ALL,
                   Button* button = nullptr, Gesture* gesture = nullptr);
-  void delHandlers(void (*fn)(Event&), Button* button, Gesture* gesture);
+  void delHandlers(EventHandlerCallback fn, Button* button, Gesture* gesture);
   Event event;
 
  protected:

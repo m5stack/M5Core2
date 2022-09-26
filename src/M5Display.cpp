@@ -4,10 +4,10 @@
 #include <M5Touch.h>
 #endif /* M5Stack_M5Core2 */
 
-#define BLK_PWM_CHANNEL 7 // LEDC_CHANNEL_7
+#define BLK_PWM_CHANNEL 7  // LEDC_CHANNEL_7
 
 // So we can use this instance without including all of M5Core2 / M5Stack
-M5Display* M5Display::instance;
+M5Display *M5Display::instance;
 
 M5Display::M5Display() : TFT_eSPI() {
   if (!instance) instance = this;
@@ -20,13 +20,13 @@ void M5Display::begin() {
 
   // Init the back-light LED PWM
   ledcSetup(BLK_PWM_CHANNEL, 44100, 8);
-  ledcAttachPin(TFT_BL, BLK_PWM_CHANNEL);
+  // ledcAttachPin(TFT_BL, BLK_PWM_CHANNEL);
   ledcWrite(BLK_PWM_CHANNEL, 80);
 }
 
 void M5Display::sleep() {
   startWrite();
-  writecommand(ILI9341_SLPIN); // Software reset
+  writecommand(ILI9341_SLPIN);  // Software reset
   endWrite();
 }
 
@@ -40,38 +40,46 @@ void M5Display::setBrightness(uint8_t brightness) {
   ledcWrite(BLK_PWM_CHANNEL, brightness);
 }
 
-void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h, const uint16_t *data) {
+void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h,
+                           const uint16_t *data) {
   bool swap = getSwapBytes();
   setSwapBytes(true);
   pushImage((int32_t)x0, (int32_t)y0, (uint32_t)w, (uint32_t)h, data);
   setSwapBytes(swap);
 }
 
-void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h, uint16_t *data) {
+void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h,
+                           uint16_t *data) {
   bool swap = getSwapBytes();
   setSwapBytes(true);
   pushImage((int32_t)x0, (int32_t)y0, (uint32_t)w, (uint32_t)h, data);
   setSwapBytes(swap);
 }
 
-void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h, const uint16_t *data, uint16_t transparent) {
+void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h,
+                           const uint16_t *data, uint16_t transparent) {
   bool swap = getSwapBytes();
   setSwapBytes(true);
-  pushImage((int32_t)x0, (int32_t)y0, (uint32_t)w, (uint32_t)h, data, transparent);
+  pushImage((int32_t)x0, (int32_t)y0, (uint32_t)w, (uint32_t)h, data,
+            transparent);
   setSwapBytes(swap);
 }
 
-void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h, const uint8_t *data) {
+void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h,
+                           const uint8_t *data) {
   bool swap = getSwapBytes();
   setSwapBytes(true);
-  pushImage((int32_t)x0, (int32_t)y0, (uint32_t)w, (uint32_t)h, (const uint16_t*)data);
+  pushImage((int32_t)x0, (int32_t)y0, (uint32_t)w, (uint32_t)h,
+            (const uint16_t *)data);
   setSwapBytes(swap);
 }
 
-void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h, uint8_t *data) {
+void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h,
+                           uint8_t *data) {
   bool swap = getSwapBytes();
   setSwapBytes(true);
-  pushImage((int32_t)x0, (int32_t)y0, (uint32_t)w, (uint32_t)h, (uint16_t*)data);
+  pushImage((int32_t)x0, (int32_t)y0, (uint32_t)w, (uint32_t)h,
+            (uint16_t *)data);
   setSwapBytes(swap);
 }
 
@@ -81,8 +89,8 @@ void M5Display::progressBar(int x, int y, int w, int h, uint8_t val) {
 }
 
 #include "utility/qrcode.h"
-void M5Display::qrcode(const char *string, uint16_t x, uint16_t y, uint8_t width, uint8_t version) {
-
+void M5Display::qrcode(const char *string, uint16_t x, uint16_t y,
+                       uint8_t width, uint8_t version) {
   // Create the QR code
   QRCode qrcode;
   uint8_t qrcodeData[qrcode_getBufferSize(version)];
@@ -91,19 +99,22 @@ void M5Display::qrcode(const char *string, uint16_t x, uint16_t y, uint8_t width
   // Top quiet zone
   uint8_t thickness = width / qrcode.size;
   uint16_t lineLength = qrcode.size * thickness;
-  uint8_t xOffset = x + (width-lineLength)/2;
-  uint8_t yOffset = y + (width-lineLength)/2;
+  uint8_t xOffset = x + (width - lineLength) / 2;
+  uint8_t yOffset = y + (width - lineLength) / 2;
   fillRect(x, y, width, width, TFT_WHITE);
 
   for (uint8_t y = 0; y < qrcode.size; y++) {
     for (uint8_t x = 0; x < qrcode.size; x++) {
       uint8_t q = qrcode_getModule(&qrcode, x, y);
-      if (q) fillRect(x * thickness + xOffset, y * thickness + yOffset, thickness, thickness, TFT_BLACK);
+      if (q)
+        fillRect(x * thickness + xOffset, y * thickness + yOffset, thickness,
+                 thickness, TFT_BLACK);
     }
   }
 }
 
-void M5Display::qrcode(const String &string, uint16_t x, uint16_t y, uint8_t width, uint8_t version) {
+void M5Display::qrcode(const String &string, uint16_t x, uint16_t y,
+                       uint8_t width, uint8_t version) {
   int16_t len = string.length() + 2;
   char buffer[len];
   string.toCharArray(buffer, len);
@@ -116,22 +127,23 @@ void M5Display::qrcode(const String &string, uint16_t x, uint16_t y, uint8_t wid
 
 uint16_t read16(fs::File &f) {
   uint16_t result;
-  ((uint8_t *)&result)[0] = f.read(); // LSB
-  ((uint8_t *)&result)[1] = f.read(); // MSB
+  ((uint8_t *)&result)[0] = f.read();  // LSB
+  ((uint8_t *)&result)[1] = f.read();  // MSB
   return result;
 }
 
 uint32_t read32(fs::File &f) {
   uint32_t result;
-  ((uint8_t *)&result)[0] = f.read(); // LSB
+  ((uint8_t *)&result)[0] = f.read();  // LSB
   ((uint8_t *)&result)[1] = f.read();
   ((uint8_t *)&result)[2] = f.read();
-  ((uint8_t *)&result)[3] = f.read(); // MSB
+  ((uint8_t *)&result)[3] = f.read();  // MSB
   return result;
 }
 
 // Bodmers BMP image rendering function
-void M5Display::drawBmpFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y) {
+void M5Display::drawBmpFile(fs::FS &fs, const char *path, uint16_t x,
+                            uint16_t y) {
   if ((x >= width()) || (y >= height())) return;
 
   // Open requested file on SD card
@@ -144,7 +156,7 @@ void M5Display::drawBmpFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y
 
   uint32_t seekOffset;
   uint16_t w, h, row, col;
-  uint8_t  r, g, b;
+  uint8_t r, g, b;
 
   uint32_t startTime = millis();
 
@@ -167,8 +179,8 @@ void M5Display::drawBmpFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y
 
       for (row = 0; row < h; row++) {
         bmpFS.read(lineBuffer, sizeof(lineBuffer));
-        uint8_t*  bptr = lineBuffer;
-        uint16_t* tptr = (uint16_t*)lineBuffer;
+        uint8_t *bptr = lineBuffer;
+        uint16_t *tptr = (uint16_t *)lineBuffer;
         // Convert 24 to 16 bit colours
         for (col = 0; col < w; col++) {
           b = *bptr++;
@@ -179,12 +191,13 @@ void M5Display::drawBmpFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y
 
         // Push the pixel row to screen, pushImage will crop the line if needed
         // y is decremented as the BMP image is drawn bottom up
-        pushImage(x, y--, w, 1, (uint16_t*)lineBuffer);
+        pushImage(x, y--, w, 1, (uint16_t *)lineBuffer);
       }
-      Serial.print("Loaded in "); Serial.print(millis() - startTime);
+      Serial.print("Loaded in ");
+      Serial.print(millis() - startTime);
       Serial.println(" ms");
-    }
-    else Serial.println("BMP format not recognized.");
+    } else
+      Serial.println("BMP format not recognized.");
   }
   bmpFS.close();
 }
@@ -206,9 +219,9 @@ void M5Display::drawBmpFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y
 
 #include "rom/tjpgd.h"
 
-#define jpgColor(c)                                                            \
-  (((uint16_t)(((uint8_t *)(c))[0] & 0xF8) << 8) |                             \
-   ((uint16_t)(((uint8_t *)(c))[1] & 0xFC) << 3) |                             \
+#define jpgColor(c)                                \
+  (((uint16_t)(((uint8_t *)(c))[0] & 0xF8) << 8) | \
+   ((uint16_t)(((uint8_t *)(c))[1] & 0xFC) << 3) | \
    ((((uint8_t *)(c))[2] & 0xF8) >> 3))
 
 #if ARDUHAL_LOG_LEVEL >= ARDUHAL_LOG_LEVEL_ERROR
@@ -304,8 +317,7 @@ static uint32_t jpgWrite(JDEC *decoder, void *bitmap, JRECT *rect) {
   jpeg->tft->startWrite();
   // jpeg->tft->setAddrWindow(x - jpeg->offX + jpeg->x + oL, y - jpeg->offY +
   // jpeg->y, w - (oL + oR), h);
-  jpeg->tft->setWindow(x - jpeg->offX + jpeg->x + oL,
-                       y - jpeg->offY + jpeg->y,
+  jpeg->tft->setWindow(x - jpeg->offX + jpeg->x + oL, y - jpeg->offY + jpeg->y,
                        x - jpeg->offX + jpeg->x + oL + w - (oL + oR) - 1,
                        y - jpeg->offY + jpeg->y + h - 1);
 
@@ -399,9 +411,9 @@ void M5Display::drawJpg(const uint8_t *jpg_data, size_t jpg_len, uint16_t x,
   jpgDecode(&jpeg, jpgRead);
 }
 
-void M5Display::drawJpgFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y,
-                            uint16_t maxWidth, uint16_t maxHeight, uint16_t offX,
-                            uint16_t offY, jpeg_div_t scale) {
+void M5Display::drawJpgFile(fs::FS &fs, const char *path, uint16_t x,
+                            uint16_t y, uint16_t maxWidth, uint16_t maxHeight,
+                            uint16_t offX, uint16_t offY, jpeg_div_t scale) {
   if ((x + maxWidth) > width() || (y + maxHeight) > height()) {
     log_e("Bad dimensions given");
     return;
@@ -439,7 +451,6 @@ void M5Display::drawJpgFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y
   file.close();
 }
 
-
 /*
  * PNG
  */
@@ -460,12 +471,12 @@ typedef struct _png_draw_params {
   M5Display *tft;
 } png_file_decoder_t;
 
-static void pngle_draw_callback(pngle_t *pngle, uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t rgba[4])
-{
+static void pngle_draw_callback(pngle_t *pngle, uint32_t x, uint32_t y,
+                                uint32_t w, uint32_t h, uint8_t rgba[4]) {
   png_file_decoder_t *p = (png_file_decoder_t *)pngle_get_user_data(pngle);
-  uint16_t color = jpgColor(rgba); // XXX: It's PNG ;)
+  uint16_t color = jpgColor(rgba);  // XXX: It's PNG ;)
 
-  if (x < p->offX || y < p->offY) return ;
+  if (x < p->offX || y < p->offY) return;
   x -= p->offX;
   y -= p->offY;
 
@@ -480,7 +491,7 @@ static void pngle_draw_callback(pngle_t *pngle, uint32_t x, uint32_t y, uint32_t
     h = (uint32_t)ceil(h * p->scale);
   }
 
-  if (x >= p->maxWidth || y >= p->maxHeight) return ;
+  if (x >= p->maxWidth || y >= p->maxHeight) return;
   if (x + w >= p->maxWidth) w = p->maxWidth - x;
   if (y + h >= p->maxHeight) h = p->maxHeight - y;
 
@@ -492,14 +503,14 @@ static void pngle_draw_callback(pngle_t *pngle, uint32_t x, uint32_t y, uint32_t
   }
 }
 
-void M5Display::drawPngFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y,
-                            uint16_t maxWidth, uint16_t maxHeight, uint16_t offX,
-                            uint16_t offY, double scale, uint8_t alphaThreshold)
-{
+void M5Display::drawPngFile(fs::FS &fs, const char *path, uint16_t x,
+                            uint16_t y, uint16_t maxWidth, uint16_t maxHeight,
+                            uint16_t offX, uint16_t offY, double scale,
+                            uint8_t alphaThreshold) {
   File file = fs.open(path);
   if (!file) {
     log_e("Failed to open file for reading");
-    return ;
+    return;
   }
 
   pngle_t *pngle = pngle_new();
@@ -546,14 +557,14 @@ void M5Display::drawPngFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y
 }
 
 void M5Display::drawPngUrl(const char *url, uint16_t x, uint16_t y,
-                            uint16_t maxWidth, uint16_t maxHeight, uint16_t offX,
-                            uint16_t offY, double scale, uint8_t alphaThreshold)
-{
+                           uint16_t maxWidth, uint16_t maxHeight, uint16_t offX,
+                           uint16_t offY, double scale,
+                           uint8_t alphaThreshold) {
   HTTPClient http;
 
   if (WiFi.status() != WL_CONNECTED) {
     log_e("Not connected");
-    return ;
+    return;
   }
 
   http.begin(url);
@@ -562,7 +573,7 @@ void M5Display::drawPngUrl(const char *url, uint16_t x, uint16_t y,
   if (httpCode != HTTP_CODE_OK) {
     log_e("HTTP ERROR: %d\n", httpCode);
     http.end();
-    return ;
+    return;
   }
 
   WiFiClient *stream = http.getStreamPtr();
@@ -577,7 +588,6 @@ void M5Display::drawPngUrl(const char *url, uint16_t x, uint16_t y,
   if (!maxHeight) {
     maxHeight = height() - y;
   }
-
 
   png.x = x;
   png.y = y;
@@ -598,7 +608,10 @@ void M5Display::drawPngUrl(const char *url, uint16_t x, uint16_t y,
   int len;
   while (http.connected()) {
     size_t size = stream->available();
-    if (!size) { delay(1); continue; }
+    if (!size) {
+      delay(1);
+      continue;
+    }
 
     if (size > sizeof(buf) - remain) size = sizeof(buf) - remain;
     if ((len = stream->readBytes(buf + remain, size)) > 0) {
@@ -616,7 +629,6 @@ void M5Display::drawPngUrl(const char *url, uint16_t x, uint16_t y,
   pngle_destroy(pngle);
   http.end();
 }
-
 
 // Saves and restores font properties, datum, cursor, colors
 

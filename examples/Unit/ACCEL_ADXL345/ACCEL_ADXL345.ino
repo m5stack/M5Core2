@@ -1,8 +1,20 @@
 /*
-    Description: Read ACCEL Unit three-axis acceleration
-    Please install library before compiling:  
-    Arduino-ADXL345: https://github.com/jakalada/Arduino-ADXL345
+*******************************************************************************
+* Copyright (c) 2021 by M5Stack
+*                  Equipped with M5Core2 sample source code
+*                          配套  M5Core2 示例源代码
+* Visit for more information: https://docs.m5stack.com/en/unit/accel
+* 获取更多资料请访问: https://docs.m5stack.com/zh_CN/unit/accel
+*
+* Product: Accel.  加速度计
+* Date: 2022/7/5
+*******************************************************************************
+  Read ACCEL Unit three-axis acceleration
+  读取ACCEL 单位三轴加速度
+  Libraries:
+    - [Arduino-ADXL345](https://github.com/jakalada/Arduino-ADXL345)
 */
+
 #include <M5Core2.h>
 #include <ADXL345.h>
 ADXL345 accel(ADXL345_ALT);
@@ -14,9 +26,12 @@ void setup() {
   M5.Lcd.setCursor(140, 10, 4);
   M5.Lcd.println("ACC");
 
-  M5.Lcd.setCursor(40, 100); M5.Lcd.print(" x ");
-  M5.Lcd.setCursor(140, 100); M5.Lcd.print(" y ");
-  M5.Lcd.setCursor(240, 100); M5.Lcd.print(" z ");
+  M5.Lcd.setCursor(40, 100);
+  M5.Lcd.print(" x ");
+  M5.Lcd.setCursor(140, 100);
+  M5.Lcd.print(" y ");
+  M5.Lcd.setCursor(240, 100);
+  M5.Lcd.print(" z ");
 
   byte deviceID = accel.readDeviceID();
   if (deviceID != 0) {
@@ -25,7 +40,7 @@ void setup() {
     Serial.println("");
   } else {
     Serial.println("read device id: failed");
-    while(1) {
+    while (1) {
       delay(100);
     }
   }
@@ -42,7 +57,7 @@ void setup() {
   // - ...
   if (!accel.writeRate(ADXL345_RATE_200HZ)) {
     Serial.println("write rate: failed");
-    while(1) {
+    while (1) {
       delay(100);
     }
   }
@@ -54,14 +69,14 @@ void setup() {
   // - ADXL345_RANGE_16G: +-16 g
   if (!accel.writeRange(ADXL345_RANGE_16G)) {
     Serial.println("write range: failed");
-    while(1) {
+    while (1) {
       delay(100);
     }
   }
 
   if (!accel.start()) {
     Serial.println("start: failed");
-    while(1) {
+    while (1) {
       delay(100);
     }
   }
@@ -69,15 +84,18 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-    if (accel.update()) {
+  if (accel.update()) {
     M5.Lcd.fillRect(0, 130, 360, 30, BLACK);
-    M5.Lcd.setCursor(35,  130); M5.Lcd.print((int)(1000*accel.getX()));
-    M5.Lcd.setCursor(135, 130); M5.Lcd.print((int)(1000*accel.getY()));
-    M5.Lcd.setCursor(235, 130); M5.Lcd.print((int)(1000*accel.getZ()));
+    M5.Lcd.setCursor(35, 130);
+    M5.Lcd.print((int)(1000 * accel.getX()));
+    M5.Lcd.setCursor(135, 130);
+    M5.Lcd.print((int)(1000 * accel.getY()));
+    M5.Lcd.setCursor(235, 130);
+    M5.Lcd.print((int)(1000 * accel.getZ()));
     //M5.Lcd.setCursor(300, 130); M5.Lcd.print("mg");
   } else {
     Serial.println("update failed");
-    while(1) {
+    while (1) {
       delay(100);
     }
   }
