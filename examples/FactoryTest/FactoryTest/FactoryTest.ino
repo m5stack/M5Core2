@@ -1,5 +1,7 @@
 /*
-    Description: This case is used to test CORE FOR AWS.
+    Description: This case is used to test CORE2 OR CORE2 FOR AWS.
+    Please note the selection of your device on line 15 of the programs!
+
     Please install the following libraries before compiling:
     1) ArduinoECCX08:
         - Arduino menu --> Sketch --> Include Library --> Add .ZIP library...
@@ -9,6 +11,9 @@
         - Library manager search bar --> "FastLED"
         - Install FastLED v3.4.0 by Daniel Garcia
 */
+
+bool Device = 0;  //Please select your device
+                  //Core2 = 1,Core2_AWS = 0;
 
 #include <ArduinoECCX08.h>
 #include <M5Core2.h>
@@ -471,7 +476,6 @@ int checkAETCC608AInit() {
 
   myECCX08.end();
   Wire1.begin(21, 22, 100000UL);
-  return 0;
 }
 
 int checkSDCard() {
@@ -1923,7 +1927,11 @@ void setup() {
 
   Wire1.begin(21, 22, 100000UL);
   checkI2cAddr();
-  checkAETCC608AInit();
+  if (Device)
+    ;
+  else
+    checkAETCC608AInit();
+
   checkPsram();
   checkIMUInit();
   checkSDCard();
