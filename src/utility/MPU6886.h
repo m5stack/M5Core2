@@ -78,7 +78,7 @@ class MPU6886 {
   float aRes, gRes;
 
  private:
- private:
+ protected:
   void I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr,
                        uint8_t number_Bytes, uint8_t* read_Buffer);
   void I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr,
