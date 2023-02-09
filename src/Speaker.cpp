@@ -92,6 +92,6 @@ const size_t Speaker::PlaySound(const unsigned char* data, const size_t& amount_
   if (data == nullptr) {
     return bytes_written;
   }
-  i2s_write(Speak_I2S_NUMBER, ding, amount_of_bytes, &bytes_written, portMAX_DELAY);
+  i2s_write(Speak_I2S_NUMBER, data, amount_of_bytes, &bytes_written, portMAX_DELAY);
   return bytes_written;
 }
