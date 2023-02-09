@@ -5,7 +5,6 @@
 #include <freertos/task.h>
 #include <driver/i2s.h>
 #include <esp_err.h>
-#include <utility/ding.c>
 #include <Wire.h>
 
 #define CONFIG_I2S_BCK_PIN 12  //定义I2S相关端口
@@ -28,6 +27,8 @@ class Speaker {
  public:
   void begin(void);
   bool InitI2SSpeakOrMic(int mode);
-  void DingDong(void);
+  // Plays the given amount of bytes from the given data array and returns the amount of bytes,
+  // that were actually played by the speaker.
+  const size_t PlaySound(const unsigned char* data, const size_t& amount_of_bytes);
 };
 #endif
