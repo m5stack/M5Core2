@@ -7543,7 +7543,7 @@ void DisplayInit(void) {     // Initialize the display. 显示屏初始化
 //在 M5Core
 //启动或者复位后，即会开始执行setup()函数中的程序，该部分只会执行一次。
 void setup() {
-  M5.begin(true, true, true, true, true);  // Init M5Core2.  初始化 M5Core2
+  M5.begin(true, true, true, true, mbus_mode_t::kMBusModeOutput, true);  // Init M5Core2.  初始化 M5Core2
   DisplayInit();
   M5.Lcd.setTextColor(RED);
   M5.Lcd.setCursor(10,
