@@ -6,7 +6,7 @@
 M5Core2::M5Core2() : isInited(0) {}
 
 void M5Core2::begin(bool LCDEnable, bool SDEnable, bool SerialEnable,
-                    bool SpeakerEnable, bool I2CEnable, mbus_mode_t mode) {
+                    bool I2CEnable, mbus_mode_t mode, bool SpeakerEnable) {
   // Correct init once
   if (isInited == true) {
     return;
