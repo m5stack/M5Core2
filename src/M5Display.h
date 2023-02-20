@@ -32,7 +32,7 @@ class M5Display : public TFT_eSPI {
   void begin();
   void sleep();
   void wakeup();
-  void setBrightness(uint8_t brightness);
+  void setBrightness(uint8_t brightness);   // 0 to 100
   void clearDisplay(uint32_t color = ILI9341_BLACK) { fillScreen(color); }
   void clear(uint32_t color = ILI9341_BLACK) { fillScreen(color); }
   void display() {}
