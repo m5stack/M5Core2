@@ -37,7 +37,9 @@ void M5Display::wakeup() {
 }
 
 void M5Display::setBrightness(uint8_t brightness) {
-  M5.Axp.SetLcdVoltage(map(bright,0,100,2500,3300));
+  if (brightness > 100) { brightness = 100; }
+  if (brightness < 0) { brightness = 0; }
+  M5.Axp.SetLcdVoltage(map(brightness,0,100,2500,3300));
 }
 
 void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h,
