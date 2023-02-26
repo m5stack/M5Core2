@@ -87,7 +87,13 @@ void Speaker::Write1Byte(uint8_t Addr, uint8_t Data) {
   Wire1.endTransmission();
 }
 
-void Speaker::DingDong(void) {
+const size_t Speaker::PlaySound(const unsigned char* data,
+                                const size_t& amount_of_bytes) {
   size_t bytes_written = 0;
-  i2s_write(Speak_I2S_NUMBER, ding, 35988, &bytes_written, portMAX_DELAY);
+  if (data == nullptr) {
+    return bytes_written;
+  }
+  i2s_write(Speak_I2S_NUMBER, data, amount_of_bytes, &bytes_written,
+            portMAX_DELAY);
+  return bytes_written;
 }

@@ -476,6 +476,7 @@ int checkAETCC608AInit() {
 
   myECCX08.end();
   Wire1.begin(21, 22, 100000UL);
+  return 0;
 }
 
 int checkSDCard() {
