@@ -154,6 +154,10 @@ void AXP192::ReadBuff(uint8_t Addr, uint8_t Size, uint8_t *Buff) {
 }
 
 void AXP192::ScreenBreath(int brightness) {
+  if (brightness >= 100)
+    brightness = 100;
+  else if (brightness < 0)
+    brightness = 0;
   int vol = map(brightness, 0, 100, 2400, 3300);
   // Serial.printf("brightness:%d\n", brightness);
 
