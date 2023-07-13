@@ -92,14 +92,8 @@ uint8_t RTC::Bcd2ToByte(uint8_t Value) {
 }
 
 uint8_t RTC::ByteToBcd2(uint8_t Value) {
-  uint8_t bcdhigh = 0;
-
-  while (Value >= 10) {
-    bcdhigh++;
-    Value -= 10;
-  }
-
-  return ((uint8_t)(bcdhigh << 4) | Value);
+  uint8_t bcdhigh = Value / 10;
+  return (bcdhigh << 4) | (Value - (bcdhigh * 10));
 }
 
 void RTC::GetTime(RTC_TimeTypeDef *RTC_TimeStruct) {
@@ -220,25 +214,29 @@ int RTC::SetAlarmIRQ(const RTC_TimeTypeDef &RTC_TimeStruct) {
 
   if (RTC_TimeStruct.Minutes >= 0) {
     irq_enable = true;
-    out_buf[0] = ByteToBcd2(RTC_TimeStruct.Minutes) & 0x7f;
+    out_buf[0] =
+        ByteToBcd2(RTC_TimeStruct.Minutes) & 0x7f;  //将第7位置0,其他表示分钟
   }
 
   if (RTC_TimeStruct.Hours >= 0) {
     irq_enable = true;
-    out_buf[1] = ByteToBcd2(RTC_TimeStruct.Hours) & 0x3f;
+    out_buf[1] =
+        ByteToBcd2(RTC_TimeStruct.Hours) & 0x3f;  //将第7,6位置0,其他表示小时
+  }
+
+  for (int i = 0; i < 4; i++) {
+    WriteReg(0x09 + i, out_buf[i]);
+    delay(2);
   }
 
   uint8_t reg_value = ReadReg(0x01);
 
   if (irq_enable) {
-    reg_value |= (1 << 1);
+    reg_value |= (1 << 1);  //第 2 位设置为 1
   } else {
     reg_value &= ~(1 << 1);
   }
 
-  for (int i = 0; i < 4; i++) {
-    WriteReg(0x09 + i, out_buf[i]);
-  }
   WriteReg(0x01, reg_value);
 
   return irq_enable ? 1 : 0;
