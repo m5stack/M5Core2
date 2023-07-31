@@ -582,6 +582,7 @@ const GFXfont Orbitron_Light_32 PROGMEM = {
     32,
 #ifdef USE_M5_FONT_CREATOR
     0,
+    nullptr,
     0,
 #endif
 };

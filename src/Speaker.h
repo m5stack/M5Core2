@@ -28,7 +28,6 @@ class Speaker {
   bool InitI2SSpeakOrMic(int mode);
   // Plays the given amount of bytes from the given data array and returns the amount of bytes,
   // that were actually played by the speaker.
-  const size_t PlaySound(const unsigned char* data,
-                         const size_t& amount_of_bytes);
+  size_t PlaySound(const unsigned char* data, const size_t& amount_of_bytes);
 };
 #endif

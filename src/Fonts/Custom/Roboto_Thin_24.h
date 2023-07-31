@@ -332,6 +332,7 @@ const GFXfont Roboto_Thin_24 PROGMEM = {
     29,
 #ifdef USE_M5_FONT_CREATOR
     0,
+    nullptr,
     0,
 #endif
 };

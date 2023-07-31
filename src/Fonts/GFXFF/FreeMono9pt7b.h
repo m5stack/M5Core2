@@ -175,6 +175,7 @@ const GFXfont FreeMono9pt7b PROGMEM = {(uint8_t *)FreeMono9pt7bBitmaps,
                                        18,
 #ifdef USE_M5_FONT_CREATOR
                                        0,
+                                       nullptr,
                                        0
 #endif
 };

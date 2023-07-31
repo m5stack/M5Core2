@@ -24,6 +24,11 @@ bool Speaker::InitI2SSpeakOrMic(int mode) {  // Init I2S.  初始化I2S
         ESP_INTR_FLAG_LEVEL1,  // Set the interrupt flag.  设置中断的标志
     .dma_buf_count = 2,        // DMA buffer count.  DMA缓冲区计数
     .dma_buf_len = 128,        // DMA buffer length.  DMA缓冲区长度
+    .use_apll = false,
+    .tx_desc_auto_clear = true,
+    .fixed_mclk = -1,
+    .mclk_multiple = I2S_MCLK_MULTIPLE_DEFAULT,
+    .bits_per_chan = I2S_BITS_PER_CHAN_DEFAULT,
   };
   if (mode == MODE_MIC) {
     i2s_config.mode =
@@ -87,8 +92,8 @@ void Speaker::Write1Byte(uint8_t Addr, uint8_t Data) {
   Wire1.endTransmission();
 }
 
-const size_t Speaker::PlaySound(const unsigned char* data,
-                                const size_t& amount_of_bytes) {
+size_t Speaker::PlaySound(const unsigned char* data,
+                          const size_t& amount_of_bytes) {
   size_t bytes_written = 0;
   if (data == nullptr) {
     return bytes_written;
