@@ -18,27 +18,27 @@
 String str = "";
 
 void setup() {
-  M5.begin(true, false, true, false);
-  M5.Lcd.drawString("ISO485", 20, 0, 2);
-  Serial2.begin(115200, SERIAL_8N1, 14, 13);
-  M5.Lcd.setCursor(0, 20);
+    M5.begin(true, false, true, false);
+    M5.Lcd.drawString("ISO485", 20, 0, 2);
+    Serial2.begin(115200, SERIAL_8N1, 14, 13);
+    M5.Lcd.setCursor(0, 20);
 }
 
 void loop() {
-  if (M5.BtnA.wasPressed()) {
-    Serial2.write("Hello World\r\n");
-    Serial.println("1");
-  }
-  if (Serial2.available()) {
-    char ch = Serial2.read();
-    str += ch;
-    Serial.println("2");
-
-    if (str.endsWith("\r\n")) {
-      Serial.print(str);
-      M5.Lcd.print(str);
-      str = "";
+    if (M5.BtnA.wasPressed()) {
+        Serial2.write("Hello World\r\n");
+        Serial.println("1");
     }
-  }
-  M5.update();
+    if (Serial2.available()) {
+        char ch = Serial2.read();
+        str += ch;
+        Serial.println("2");
+
+        if (str.endsWith("\r\n")) {
+            Serial.print(str);
+            M5.Lcd.print(str);
+            str = "";
+        }
+    }
+    M5.update();
 }

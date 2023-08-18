@@ -1,5 +1,9 @@
 # M5Core2 Library
 
+[![Arduino Compile](https://github.com/m5stack/M5Core2/actions/workflows/arduino-action-core2-compile.yml/badge.svg)](https://github.com/m5stack/M5Core2/actions/workflows/arduino-action-stickc-compile.yml)
+[![Arduino Lint](https://github.com/m5stack/M5Core2/actions/workflows/Arduino-Lint-Check.yml/badge.svg)](https://github.com/m5stack/M5Core2/actions/workflows/Arduino-Lint-Check.yml)
+[![Clang Format](https://github.com/m5stack/M5Core2/actions/workflows/clang-format-check.yml/badge.svg)](https://github.com/m5stack/M5Core2/actions/workflows/clang-format-check.yml)
+
 English | [中文](README_cn.md)
 
 <img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_01.webp" alt="M5Core2_P1" width="350" height="350">

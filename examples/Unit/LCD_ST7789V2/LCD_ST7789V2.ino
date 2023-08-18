@@ -26,37 +26,38 @@ static constexpr char text[] =
     "シューリンガンのグーリンダイ、グーリンダイのポンポコピーのポンポコナの、長"
     "久命の長助";
 static constexpr size_t textlen = sizeof(text) / sizeof(text[0]);
-int textpos = 0;
-int scrollstep = 2;
+int textpos                     = 0;
+int scrollstep                  = 2;
 
 void setup(void) {
-  M5.begin();
-  display.init();           //Initialize the display.  初始化显示屏
-  display.setRotation(3);   //Rotating display.  旋转显示屏
-  canvas.setColorDepth(1);  // Set the color depth.  设置色深
-  canvas.setFont(&fonts::lgfxJapanMinchoP_32);  //Set the font.  设置字体
-  canvas.setTextSize(2);  //Set the font size.  设置字号
-  canvas.createSprite(
-      display.width() + 64,
-      72);  //Create a canvas with a wide display width of +64 and a height of 72.  创建一块宽显示屏宽度+64,高72的画布
+    M5.begin();
+    display.init();           // Initialize the display.  初始化显示屏
+    display.setRotation(3);   // Rotating display.  旋转显示屏
+    canvas.setColorDepth(1);  // Set the color depth.  设置色深
+    canvas.setFont(&fonts::lgfxJapanMinchoP_32);  // Set the font.  设置字体
+    canvas.setTextSize(2);  // Set the font size.  设置字号
+    canvas.createSprite(
+        display.width() + 64,
+        72);  // Create a canvas with a wide display width of +64 and a height
+              // of 72.  创建一块宽显示屏宽度+64,高72的画布
 }
 
 void loop(void) {
-  int32_t cursor_x = canvas.getCursorX() - scrollstep;
-  if (cursor_x <= 0) {
-    textpos = 0;
-    cursor_x = display.width();
-  }
+    int32_t cursor_x = canvas.getCursorX() - scrollstep;
+    if (cursor_x <= 0) {
+        textpos  = 0;
+        cursor_x = display.width();
+    }
 
-  canvas.setCursor(cursor_x, 0);  //Set the cursor position.  设置光标的位置
-  canvas.scroll(-scrollstep, 0);  //Set the rolling.  设置滚动
-  while (textpos < textlen && cursor_x <= display.width()) {
-    canvas.print(text[textpos++]);
-    cursor_x = canvas.getCursorX();
-  }
-  display.waitDisplay();
-  canvas.pushSprite(
-      &display, 0,
-      (display.height() - canvas.height()) >>
-          1);  //Displays the contents of the canvas.  显示画布上的内容
+    canvas.setCursor(cursor_x, 0);  // Set the cursor position.  设置光标的位置
+    canvas.scroll(-scrollstep, 0);  // Set the rolling.  设置滚动
+    while (textpos < textlen && cursor_x <= display.width()) {
+        canvas.print(text[textpos++]);
+        cursor_x = canvas.getCursorX();
+    }
+    display.waitDisplay();
+    canvas.pushSprite(
+        &display, 0,
+        (display.height() - canvas.height()) >>
+            1);  // Displays the contents of the canvas.  显示画布上的内容
 }
