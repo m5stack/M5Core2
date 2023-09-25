@@ -12,7 +12,7 @@
 */
 #include <M5Core2.h>
 
-uint8_t microphonedata0[1024 * 100];
+uint8_t microphonedata0[1024 * 80];
 int data_offset = 0;
 
 void DisplayInit(void) {       // Initialize the display. 显示屏初始化
@@ -64,7 +64,7 @@ void loop() {
                          (char *)(microphonedata0 + data_offset), DATA_SIZE,
                          &byte_read, (100 / portTICK_RATE_MS));
                 data_offset += 1024;
-                if (data_offset == 1024 * 100 || M5.Touch.ispressed() != true)
+                if (data_offset == 1024 * 80 || M5.Touch.ispressed() != true)
                     break;
             }
             size_t bytes_written;
