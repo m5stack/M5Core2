@@ -709,6 +709,10 @@ void TFT_eSPI_Button::drawButton(bool inverted /* = false */,
   if (long_name != "") strncpy(_label, oldLabel, 50);
 }
 
+bool TFT_eSPI_Button::isPressed() {
+  return currstate;
+}
+
 bool TFT_eSPI_Button::contains(int16_t _x, int16_t _y) {
   return ((_x >= x) && (_x < (x + w)) &&
           (_y >= y) && (_y < (y + h)));
