@@ -16,12 +16,14 @@
 #include "utility/CommUtil.h"
 #include "utility/MPU6886.h"
 #include "Speaker.h"
-#include "AXP192.h"
+#include "AXP.h"
 #include "RTC.h"
+
 
 class M5Core2 {
  public:
   M5Core2();
+  [[deprecated("It is recommended to use M5Unified Lib, which will be discontinued soon.")]] 
   void begin(bool LCDEnable = true, bool SDEnable = true,
              bool SerialEnable = true, bool I2CEnable = false,
              mbus_mode_t mode = kMBusModeOutput, bool SpeakerEnable = true);
@@ -37,7 +39,7 @@ class M5Core2 {
   M5Display Lcd;
 
   // Power
-  AXP192 Axp;
+  AXP Axp;
 
   // Touch
   M5Touch Touch;
