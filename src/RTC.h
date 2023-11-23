@@ -23,6 +23,8 @@ class RTC {
   void begin(void);
   void GetBm8563Time(void);
 
+  bool getVoltLow(void);
+
   int SetTime(RTC_TimeTypeDef* RTC_TimeStruct);
   int SetDate(RTC_DateTypeDef* RTC_DateStruct);
 
