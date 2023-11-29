@@ -46,8 +46,8 @@ void setup() {
     M5.begin();  // Init M5Core2.  初始化M5Core2
     // Creat Task1.  创建线程1
     xTaskCreatePinnedToCore(
-        task1,  // Function to implement the task.
-                // 线程对应函数名称(不能有返回值)
+        task1,    // Function to implement the task.
+                  // 线程对应函数名称(不能有返回值)
         "task1",  // 线程名称
         4096,     // The size of the task stack specified as the number of *
                   // bytes.任务堆栈的大小(字节)

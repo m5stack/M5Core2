@@ -137,13 +137,13 @@
 #include "utility/Config.h"  // Defines 'TFT', a pointer to the display
 
 #define INVALID_VALUE -32768
-#define PLUSMINUS 45  // default value for isDirectionTo
+#define PLUSMINUS     45  // default value for isDirectionTo
 
-#define DIR_UP 0
+#define DIR_UP    0
 #define DIR_RIGHT 90
-#define DIR_DOWN 180
-#define DIR_LEFT 270
-#define DIR_ANY INVALID_VALUE
+#define DIR_DOWN  180
+#define DIR_LEFT  270
+#define DIR_ANY   INVALID_VALUE
 
 #define HIGHEST_X 319  // Can't trust TFT_WIDTH, driver is portrait
 #define HIGHEST_Y 239
@@ -151,40 +151,40 @@
 class Zone;
 
 class Point {
- public:
-  Point(int16_t x_ = INVALID_VALUE, int16_t y_ = INVALID_VALUE);
-  bool operator==(const Point& p);
-  bool operator!=(const Point& p);
-  explicit operator bool();
-  operator char*();
-  void set(int16_t x_ = INVALID_VALUE, int16_t y_ = INVALID_VALUE);
-  bool valid();
-  bool in(Zone& z);
-  bool Equals(const Point& p);
-  uint16_t distanceTo(const Point& p);
-  uint16_t directionTo(const Point& p, bool rot1 = false);
-  bool isDirectionTo(const Point& p, int16_t wanted,
-                     uint8_t plusminus = PLUSMINUS, bool rot1 = false);
-  void rotate(uint8_t m);
-  int16_t x, y;
+   public:
+    Point(int16_t x_ = INVALID_VALUE, int16_t y_ = INVALID_VALUE);
+    bool operator==(const Point& p);
+    bool operator!=(const Point& p);
+    explicit operator bool();
+    operator char*();
+    void set(int16_t x_ = INVALID_VALUE, int16_t y_ = INVALID_VALUE);
+    bool valid();
+    bool in(Zone& z);
+    bool Equals(const Point& p);
+    uint16_t distanceTo(const Point& p);
+    uint16_t directionTo(const Point& p, bool rot1 = false);
+    bool isDirectionTo(const Point& p, int16_t wanted,
+                       uint8_t plusminus = PLUSMINUS, bool rot1 = false);
+    void rotate(uint8_t m);
+    int16_t x, y;
 
- private:
-  char _text[12];
+   private:
+    char _text[12];
 };
 
 class Zone {
- public:
-  Zone(int16_t x_ = INVALID_VALUE, int16_t y_ = INVALID_VALUE, int16_t w_ = 0,
-       int16_t h_ = 0, bool rot1_ = false);
-  explicit operator bool();
-  bool valid();
-  void set(int16_t x_ = INVALID_VALUE, int16_t y_ = INVALID_VALUE,
-           int16_t w_ = 0, int16_t h_ = 0, bool rot1_ = false);
-  bool contains(const Point& p);
-  bool contains(int16_t x, int16_t y);
-  void rotate(uint8_t m);
-  int16_t x, y, w, h;
-  bool rot1;
+   public:
+    Zone(int16_t x_ = INVALID_VALUE, int16_t y_ = INVALID_VALUE, int16_t w_ = 0,
+         int16_t h_ = 0, bool rot1_ = false);
+    explicit operator bool();
+    bool valid();
+    void set(int16_t x_ = INVALID_VALUE, int16_t y_ = INVALID_VALUE,
+             int16_t w_ = 0, int16_t h_ = 0, bool rot1_ = false);
+    bool contains(const Point& p);
+    bool contains(int16_t x, int16_t y);
+    void rotate(uint8_t m);
+    int16_t x, y, w, h;
+    bool rot1;
 };
 
 #endif /* _POINTANDZONE_H_ */

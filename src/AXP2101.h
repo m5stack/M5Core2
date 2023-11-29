@@ -6,37 +6,37 @@
 
 #define AXP2101_ADDR 0x34
 
-#define AXP2101_SLAVE_ADDRESS 0x34
-#define AXP2101_DCDC1_VOLTAGE_REG 0x82
-#define AXP2101_DCDC3_VOLTAGE_REG 0x84
-#define AXP2101_DCDC_CTRL_REG 0x80
-#define AXP2101_LDO_CTRL_REG 0x90
-#define AXP2101_BLDO1_VOLTAGE_REG 0x96
-#define AXP2101_BLDO2_VOLTAGE_REG 0x97
-#define AXP2101_CHGLED_REG 0x69
-#define AXP2101_CHARGER_SETTING_REG 0x63
+#define AXP2101_SLAVE_ADDRESS           0x34
+#define AXP2101_DCDC1_VOLTAGE_REG       0x82
+#define AXP2101_DCDC3_VOLTAGE_REG       0x84
+#define AXP2101_DCDC_CTRL_REG           0x80
+#define AXP2101_LDO_CTRL_REG            0x90
+#define AXP2101_BLDO1_VOLTAGE_REG       0x96
+#define AXP2101_BLDO2_VOLTAGE_REG       0x97
+#define AXP2101_CHGLED_REG              0x69
+#define AXP2101_CHARGER_SETTING_REG     0x63
 #define AXP2101_ICC_CHARGER_SETTING_REG 0x62
-#define AXP2101_ALDO3_VOLTAGE_REG 0x94
-#define AXP2101_ALDO2_VOLTAGE_REG 0x93
-#define AXP2101_ALDO4_VOLTAGE_REG 0x95
-#define AXP2101_DLDO1_VOLTAGE_REG 0x99
-#define AXP2101_PMU_CONFIG_REG 0x10
-#define AXP2101_ADC_ENABLE_REG 0x30
+#define AXP2101_ALDO3_VOLTAGE_REG       0x94
+#define AXP2101_ALDO2_VOLTAGE_REG       0x93
+#define AXP2101_ALDO4_VOLTAGE_REG       0x95
+#define AXP2101_DLDO1_VOLTAGE_REG       0x99
+#define AXP2101_PMU_CONFIG_REG          0x10
+#define AXP2101_ADC_ENABLE_REG          0x30
 
-#define AXP2101_DLDO1_CTRL_MASK 1<<7
-#define AXP2101_CPUSLDO_CTRL_MASK 1<<6
-#define AXP2101_BLDO2_CTRL_MASK 1<<5
-#define AXP2101_BLDO1_CTRL_MASK 1<<4
-#define AXP2101_ALDO4_CTRL_MASK 1<<3
-#define AXP2101_ALDO3_CTRL_MASK 1<<2
-#define AXP2101_ALDO2_CTRL_MASK 1<<1
-#define AXP2101_ALDO1_CTRL_MASK 1<<0
+#define AXP2101_DLDO1_CTRL_MASK   1 << 7
+#define AXP2101_CPUSLDO_CTRL_MASK 1 << 6
+#define AXP2101_BLDO2_CTRL_MASK   1 << 5
+#define AXP2101_BLDO1_CTRL_MASK   1 << 4
+#define AXP2101_ALDO4_CTRL_MASK   1 << 3
+#define AXP2101_ALDO3_CTRL_MASK   1 << 2
+#define AXP2101_ALDO2_CTRL_MASK   1 << 1
+#define AXP2101_ALDO1_CTRL_MASK   1 << 0
 
-#define AXP2101_DCDC5_CTRL_MASK 1<<4
-#define AXP2101_DCDC4_CTRL_MASK 1<<3
-#define AXP2101_DCDC3_CTRL_MASK 1<<2
-#define AXP2101_DCDC2_CTRL_MASK 1<<1
-#define AXP2101_DCDC1_CTRL_MASK 1<<0
+#define AXP2101_DCDC5_CTRL_MASK 1 << 4
+#define AXP2101_DCDC4_CTRL_MASK 1 << 3
+#define AXP2101_DCDC3_CTRL_MASK 1 << 2
+#define AXP2101_DCDC2_CTRL_MASK 1 << 1
+#define AXP2101_DCDC1_CTRL_MASK 1 << 0
 
 class AXP2101 {
    private:
@@ -50,11 +50,12 @@ class AXP2101 {
     bool begin(TwoWire* wire = &Wire, uint8_t addr = AXP2101_ADDR,
                uint8_t sda = 21, uint8_t scl = 22, uint32_t speed = 400000L);
 
-    bool readRegister(uint8_t addr, uint8_t reg, uint8_t* result, uint16_t length, uint32_t freq);
+    bool readRegister(uint8_t addr, uint8_t reg, uint8_t* result,
+                      uint16_t length, uint32_t freq);
     uint8_t readRegister8(uint8_t addr, uint8_t reg, uint32_t freq);
     bool writeRegister8(uint8_t addr, uint8_t reg, uint8_t data, uint32_t freq);
     bool bitOn(uint8_t addr, uint8_t reg, uint8_t data, uint32_t freq);
-    bool bitOff(uint8_t addr, uint8_t reg, uint8_t data, uint32_t freq);             
+    bool bitOff(uint8_t addr, uint8_t reg, uint8_t data, uint32_t freq);
     void set_bus_3v3(uint16_t voltage);
     void set_lcd_back_light_voltage(uint16_t voltage);
     void set_bus_5v(uint8_t sw);
@@ -97,7 +98,6 @@ class AXP2101 {
     bool set_dcdc1_on_off(bool sw);
     bool set_dcdc2_on_off(bool sw);
     bool set_dcdc3_on_off(bool sw);
-
 };
 
 #endif

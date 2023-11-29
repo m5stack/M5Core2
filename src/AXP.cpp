@@ -106,10 +106,8 @@ void AXP::begin(mbus_mode_t mode) {
 
 void AXP::begin() {
     Wire1.begin(21, 22);
-    // Wire1.setClock(400000);
     Wire1.setClock(100000);
     uint8_t val = Read8bit(0x03);
-    // Serial.printf("PMIC: %02X\r\n", val);
     if (val == 0x03) {
         _pmic = pmic_axp192;
         axp192.begin();

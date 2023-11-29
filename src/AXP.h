@@ -37,7 +37,6 @@ bool writeRegister8Array(const std::uint8_t *reg_data_array,
 uint8_t calcVoltageData(uint16_t value, uint16_t maxv, uint16_t minv,
                         uint16_t step);
 
-
 class AXP {
    public:
     enum pmic_t { pmic_unknown = 0, pmic_axp192, pmic_axp2101 };
@@ -81,7 +80,9 @@ class AXP {
     float GetCoulombData(void);
     float GetBatteryLevel(void);
     void PowerOff(void);
-    void SetSleep(void){PowerOff();};
+    void SetSleep(void) {
+        PowerOff();
+    };
 
     void SetAdcState(bool state);
     // -- sleep
