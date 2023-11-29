@@ -216,11 +216,11 @@ class MFRC522 {
         TestDAC1Reg   = 0x39,    // defines the test value for TestDAC1
         TestDAC2Reg   = 0x3A,    // defines the test value for TestDAC2
         TestADCReg    = 0x3B     // shows the value of ADC I and Q channels
-                                 // 						  0x3C			// reserved for production
-                           // tests 						  0x3D			// reserved for production
-                           // tests 						  0x3E			// reserved for production
-                           // tests 						  0x3F			// reserved for production
-                           // tests
+                                 // 						  0x3C			// reserved for
+                           // production tests 						  0x3D
+                           // // reserved for production tests
+                           // 0x3E			// reserved for production tests
+                           // 0x3F			// reserved for production tests
     };
 
     // MFRC522 commands. Productd in chapter 10 of the datasheet.

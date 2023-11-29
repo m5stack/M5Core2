@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -45,9 +45,8 @@ typedef void (*pngle_done_callback_t)(pngle_t *pngle);
 // ----------------
 pngle_t *pngle_new();
 void pngle_destroy(pngle_t *pngle);
-void pngle_reset(
-    pngle_t *
-        pngle);  // clear its internal state (not applied to pngle_set_* functions)
+void pngle_reset(pngle_t *pngle);  // clear its internal state (not applied to
+                                   // pngle_set_* functions)
 const char *pngle_error(pngle_t *pngle);
 int pngle_feed(
     pngle_t *pngle, const void *buf,
@@ -62,8 +61,9 @@ void pngle_set_done_callback(pngle_t *png, pngle_done_callback_t callback);
 
 void pngle_set_display_gamma(
     pngle_t *pngle,
-    double
-        display_gamma);  // enables gamma correction by specifying display gamma, typically 2.2. No effect when gAMA chunk is missing
+    double display_gamma);  // enables gamma correction by specifying display
+                            // gamma, typically 2.2. No effect when gAMA chunk
+                            // is missing
 
 void pngle_set_user_data(pngle_t *pngle, void *user_data);
 void *pngle_get_user_data(pngle_t *pngle);
@@ -73,13 +73,13 @@ void *pngle_get_user_data(pngle_t *pngle);
 // ----------------
 
 typedef struct _pngle_ihdr_t {
-  uint32_t width;
-  uint32_t height;
-  uint8_t depth;
-  uint8_t color_type;
-  uint8_t compression;
-  uint8_t filter;
-  uint8_t interlace;
+    uint32_t width;
+    uint32_t height;
+    uint8_t depth;
+    uint8_t color_type;
+    uint8_t compression;
+    uint8_t filter;
+    uint8_t interlace;
 } pngle_ihdr_t;
 
 // Get IHDR information

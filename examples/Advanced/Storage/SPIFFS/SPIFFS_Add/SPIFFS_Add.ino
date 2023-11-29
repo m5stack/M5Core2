@@ -29,7 +29,7 @@ void setup() {
         M5.Lcd.println(
             "\nSPIFFS format start...");  // Screen prints format String.
                                           // 屏幕打印格式化字符串
-        SPIFFS.format();  // Formatting SPIFFS.  格式化SPIFFS
+        SPIFFS.format();                  // Formatting SPIFFS.  格式化SPIFFS
         M5.Lcd.println("SPIFFS format finish");
     }
     if (SPIFFS.begin()) {  // Start SPIFFS, return 1 on success.

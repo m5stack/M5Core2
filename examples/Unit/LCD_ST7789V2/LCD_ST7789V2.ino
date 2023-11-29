@@ -12,7 +12,7 @@
   Please connect to Port A,Displays a string on the screen.
   请连接端口A,在屏幕上显示字符串。
 */
-#include <M5Core2.h>
+#include <M5Unified.h>
 #include <M5UnitLCD.h>
 
 M5UnitLCD display;
