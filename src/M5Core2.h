@@ -19,65 +19,66 @@
 #include "AXP.h"
 #include "RTC.h"
 
-
 class M5Core2 {
- public:
-  M5Core2();
-  [[deprecated("It is recommended to use M5Unified Lib, which will be discontinued soon.")]] 
-  void begin(bool LCDEnable = true, bool SDEnable = true,
-             bool SerialEnable = true, bool I2CEnable = false,
-             mbus_mode_t mode = kMBusModeOutput, bool SpeakerEnable = true);
-  void update();
+   public:
+    M5Core2();
+    [[deprecated(
+        "It is recommended to use M5Unified Lib, which will be discontinued "
+        "soon.")]] void
+    begin(bool LCDEnable = true, bool SDEnable = true, bool SerialEnable = true,
+          bool I2CEnable = false, mbus_mode_t mode = kMBusModeOutput,
+          bool SpeakerEnable = true);
+    void update();
 
-  void shutdown();
-  int shutdown(int seconds);
-  int shutdown(const RTC_TimeTypeDef &RTC_TimeStruct);
-  int shutdown(const RTC_DateTypeDef &RTC_DateStruct,
-               const RTC_TimeTypeDef &RTC_TimeStruct);
+    void shutdown();
+    int shutdown(int seconds);
+    int shutdown(const RTC_TimeTypeDef &RTC_TimeStruct);
+    int shutdown(const RTC_DateTypeDef &RTC_DateStruct,
+                 const RTC_TimeTypeDef &RTC_TimeStruct);
 
-  // LCD
-  M5Display Lcd;
+    // LCD
+    M5Display Lcd;
 
-  // Power
-  AXP Axp;
+    // Power
+    AXP Axp;
 
-  // Touch
-  M5Touch Touch;
+    // Touch
+    M5Touch Touch;
 
-  // Buttons (global button and gesture functions)
-  M5Buttons Buttons;
+    // Buttons (global button and gesture functions)
+    M5Buttons Buttons;
 
-  // Default "button" that gets events where there is no button.
-  Button background = Button(0, 0, TOUCH_W, TOUCH_H, true, "background");
+    // Default "button" that gets events where there is no button.
+    Button background = Button(0, 0, TOUCH_W, TOUCH_H, true, "background");
 
-  // Touch version of the buttons on older M5stack cores, below screen
-  Button BtnA = Button(10, 240, 110, 40, true, "BtnA");
-  Button BtnB = Button(130, 240, 70, 40, true, "BtnB");
-  Button BtnC = Button(230, 240, 80, 40, true, "BtnC");
+    // Touch version of the buttons on older M5stack cores, below screen
+    Button BtnA = Button(10, 240, 110, 40, true, "BtnA");
+    Button BtnB = Button(130, 240, 70, 40, true, "BtnB");
+    Button BtnC = Button(230, 240, 80, 40, true, "BtnC");
 
-  MPU6886 IMU;
+    MPU6886 IMU;
 
-  // I2C
-  CommUtil I2C;
+    // I2C
+    CommUtil I2C;
 
-  RTC Rtc;
+    RTC Rtc;
 
-  Speaker Spk;
+    Speaker Spk;
 
-  /**
-         * Functions have been moved to Power class for compatibility.
-         * These will be removed in a future release.
-         */
-  void setPowerBoostKeepOn(bool en) __attribute__((deprecated));
-  void setWakeupButton(uint8_t button) __attribute__((deprecated));
-  void powerOFF() __attribute__((deprecated));
+    /**
+     * Functions have been moved to Power class for compatibility.
+     * These will be removed in a future release.
+     */
+    void setPowerBoostKeepOn(bool en) __attribute__((deprecated));
+    void setWakeupButton(uint8_t button) __attribute__((deprecated));
+    void powerOFF() __attribute__((deprecated));
 
- private:
-  bool isInited;
+   private:
+    bool isInited;
 };
 
 extern M5Core2 M5;
-#define m5 M5
+#define m5  M5
 #define lcd Lcd
 #else
 #error "This library only supports boards with ESP32 processor."

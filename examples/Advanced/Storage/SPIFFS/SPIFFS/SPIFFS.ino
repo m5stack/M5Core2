@@ -28,7 +28,7 @@ void setup() {
         M5.Lcd.println(
             "SPIFFS format start...");  // output format String in LCD.
                                         // 在屏幕上输出格式化字符串
-        SPIFFS.format();  // Formatting SPIFFS.  格式化SPIFFS
+        SPIFFS.format();                // Formatting SPIFFS.  格式化SPIFFS
         M5.Lcd.println("SPIFFS format finish");
     }
 

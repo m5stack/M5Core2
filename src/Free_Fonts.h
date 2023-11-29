@@ -1,5 +1,5 @@
-// Attach this header file to your sketch to use the GFX Free Fonts. You can write
-// sketches without it, but it makes referencing them easier.
+// Attach this header file to your sketch to use the GFX Free Fonts. You can
+// write sketches without it, but it makes referencing them easier.
 
 // This calls up ALL the fonts but they only get loaded if you actually
 // use them in your sketch.
@@ -41,11 +41,13 @@
 
 #define LOAD_GFXFF
 
-#ifdef LOAD_GFXFF  // Only include the fonts if LOAD_GFXFF is defined in User_Setup.h
+#ifdef LOAD_GFXFF  // Only include the fonts if LOAD_GFXFF is defined in
+                   // User_Setup.h
 
-// Use these when printing or drawing text in GLCD and high rendering speed fonts
+// Use these when printing or drawing text in GLCD and high rendering speed
+// fonts
 #define GFXFF 1
-#define GLCD 0
+#define GLCD  0
 #define FONT2 2
 #define FONT4 4
 #define FONT6 6
@@ -59,67 +61,67 @@
 
 #define TT1 &TomThumb
 
-#define FM9 &FreeMono9pt7b
+#define FM9  &FreeMono9pt7b
 #define FM12 &FreeMono12pt7b
 #define FM18 &FreeMono18pt7b
 #define FM24 &FreeMono24pt7b
 
-#define FMB9 &FreeMonoBold9pt7b
+#define FMB9  &FreeMonoBold9pt7b
 #define FMB12 &FreeMonoBold12pt7b
 #define FMB18 &FreeMonoBold18pt7b
 #define FMB24 &FreeMonoBold24pt7b
 
-#define FMO9 &FreeMonoOblique9pt7b
+#define FMO9  &FreeMonoOblique9pt7b
 #define FMO12 &FreeMonoOblique12pt7b
 #define FMO18 &FreeMonoOblique18pt7b
 #define FMO24 &FreeMonoOblique24pt7b
 
-#define FMBO9 &FreeMonoBoldOblique9pt7b
+#define FMBO9  &FreeMonoBoldOblique9pt7b
 #define FMBO12 &FreeMonoBoldOblique12pt7b
 #define FMBO18 &FreeMonoBoldOblique18pt7b
 #define FMBO24 &FreeMonoBoldOblique24pt7b
 
-#define FSS9 &FreeSans9pt7b
+#define FSS9  &FreeSans9pt7b
 #define FSS12 &FreeSans12pt7b
 #define FSS18 &FreeSans18pt7b
 #define FSS24 &FreeSans24pt7b
 
-#define FSSB9 &FreeSansBold9pt7b
+#define FSSB9  &FreeSansBold9pt7b
 #define FSSB12 &FreeSansBold12pt7b
 #define FSSB18 &FreeSansBold18pt7b
 #define FSSB24 &FreeSansBold24pt7b
 
-#define FSSO9 &FreeSansOblique9pt7b
+#define FSSO9  &FreeSansOblique9pt7b
 #define FSSO12 &FreeSansOblique12pt7b
 #define FSSO18 &FreeSansOblique18pt7b
 #define FSSO24 &FreeSansOblique24pt7b
 
-#define FSSBO9 &FreeSansBoldOblique9pt7b
+#define FSSBO9  &FreeSansBoldOblique9pt7b
 #define FSSBO12 &FreeSansBoldOblique12pt7b
 #define FSSBO18 &FreeSansBoldOblique18pt7b
 #define FSSBO24 &FreeSansBoldOblique24pt7b
 
-#define FS9 &FreeSerif9pt7b
+#define FS9  &FreeSerif9pt7b
 #define FS12 &FreeSerif12pt7b
 #define FS18 &FreeSerif18pt7b
 #define FS24 &FreeSerif24pt7b
 
-#define FSI9 &FreeSerifItalic9pt7b
+#define FSI9  &FreeSerifItalic9pt7b
 #define FSI12 &FreeSerifItalic12pt7b
 #define FSI19 &FreeSerifItalic18pt7b
 #define FSI24 &FreeSerifItalic24pt7b
 
-#define FSB9 &FreeSerifBold9pt7b
+#define FSB9  &FreeSerifBold9pt7b
 #define FSB12 &FreeSerifBold12pt7b
 #define FSB18 &FreeSerifBold18pt7b
 #define FSB24 &FreeSerifBold24pt7b
 
-#define FSBI9 &FreeSerifBoldItalic9pt7b
+#define FSBI9  &FreeSerifBoldItalic9pt7b
 #define FSBI12 &FreeSerifBoldItalic12pt7b
 #define FSBI18 &FreeSerifBoldItalic18pt7b
 #define FSBI24 &FreeSerifBoldItalic24pt7b
 
-#define FF0 NULL  //ff0 reserved for GLCD
+#define FF0 NULL  // ff0 reserved for GLCD
 #define FF1 &FreeMono9pt7b
 #define FF2 &FreeMono12pt7b
 #define FF3 &FreeMono18pt7b
@@ -130,7 +132,7 @@
 #define FF7 &FreeMonoBold18pt7b
 #define FF8 &FreeMonoBold24pt7b
 
-#define FF9 &FreeMonoOblique9pt7b
+#define FF9  &FreeMonoOblique9pt7b
 #define FF10 &FreeMonoOblique12pt7b
 #define FF11 &FreeMonoOblique18pt7b
 #define FF12 &FreeMonoOblique24pt7b
@@ -199,7 +201,7 @@
 #define sFF7 "Mono bold 18"
 #define sFF8 "Mono bold 24"
 
-#define sFF9 "Mono oblique 9"
+#define sFF9  "Mono oblique 9"
 #define sFF10 "Mono oblique 12"
 #define sFF11 "Mono oblique 18"
 #define sFF12 "Mono oblique 24"
@@ -208,7 +210,8 @@
 #define sFF14 "Mono bold oblique 12"
 #define sFF15 "Mono bold oblique 18"
 #define sFF16 \
-  "Mono bold oblique 24"  // Full text line is too big for 480 pixel wide screen
+    "Mono bold oblique 24"  // Full text line is too big for 480 pixel wide
+                            // screen
 
 #define sFF17 "Sans 9"
 #define sFF18 "Sans 12"
@@ -258,23 +261,23 @@
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 #define GFXFF 1
-#define GLCD 1
+#define GLCD  1
 #define FONT2 2
 #define FONT4 4
 #define FONT6 6
 #define FONT7 7
 #define FONT8 8
 
-#define FF0 1
-#define FF1 1
-#define FF2 1
-#define FF3 1
-#define FF4 1
-#define FF5 1
-#define FF6 1
-#define FF7 1
-#define FF8 1
-#define FF9 1
+#define FF0  1
+#define FF1  1
+#define FF2  1
+#define FF3  1
+#define FF4  1
+#define FF5  1
+#define FF6  1
+#define FF7  1
+#define FF8  1
+#define FF9  1
 #define FF10 1
 #define FF11 1
 #define FF12 1
@@ -315,62 +318,62 @@
 #define FF47 1
 #define FF48 1
 
-#define FM9 1
+#define FM9  1
 #define FM12 1
 #define FM18 1
 #define FM24 1
 
-#define FMB9 1
+#define FMB9  1
 #define FMB12 1
 #define FMB18 1
 #define FMB24 1
 
-#define FMO9 1
+#define FMO9  1
 #define FMO12 1
 #define FMO18 1
 #define FMO24 1
 
-#define FMBO9 1
+#define FMBO9  1
 #define FMBO12 1
 #define FMBO18 1
 #define FMBO24 1
 
-#define FSS9 1
+#define FSS9  1
 #define FSS12 1
 #define FSS18 1
 #define FSS24 1
 
-#define FSSB9 1
+#define FSSB9  1
 #define FSSB12 1
 #define FSSB18 1
 #define FSSB24 1
 
-#define FSSO9 1
+#define FSSO9  1
 #define FSSO12 1
 #define FSSO18 1
 #define FSSO24 1
 
-#define FSSBO9 1
+#define FSSBO9  1
 #define FSSBO12 1
 #define FSSBO18 1
 #define FSSBO24 1
 
-#define FS9 1
+#define FS9  1
 #define FS12 1
 #define FS18 1
 #define FS24 1
 
-#define FSI9 1
+#define FSI9  1
 #define FSI12 1
 #define FSI19 1
 #define FSI24 1
 
-#define FSB9 1
+#define FSB9  1
 #define FSB12 1
 #define FSB18 1
 #define FSB24 1
 
-#define FSBI9 1
+#define FSBI9  1
 #define FSBI12 1
 #define FSBI18 1
 #define FSBI24 1
