@@ -59,9 +59,7 @@ void AXP192::begin() {
     delay(100);
     // I2C_WriteByteDataAt(0X15,0XFE,0XFF);
 
-    SetPeripherialsPower(true);
-
-    // axp: check v-bus status
+    // axp: check v-bus status & enable peripherals power (EXTEN) if 5V Out required
     if (Read8bit(0x00) & 0x08) {
         Write1Byte(0x30, Read8bit(0x30) | 0x80);
         // if v-bus can use, disable M-Bus 5V output to input
