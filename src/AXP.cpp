@@ -118,7 +118,11 @@ void AXP::begin() {
         ina3221.begin(&Wire1);
         axp2101.set_lcd_back_light_voltage(3000);
         axp2101.set_lcd_and_tf_voltage(3300);
-        axp2101.set_bus_5v(true);
+        if (ina3221.getVoltage(INA3221_CH2) > 4.5f)
+            axp2101.set_bus_5v(false);
+        else {
+            axp2101.set_bus_5v(true);
+        }
         axp2101.set_sys_led(true);
     } else {
         _pmic = pmic_unknown;
