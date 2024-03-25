@@ -274,6 +274,8 @@ void INA3221::setChannelEnable(ina3221_ch_t channel) {
         case INA3221_CH3:
             conf_reg.ch3_en = 1;
             break;
+        default:
+            break;
     }
 
     _write(INA3221_REG_CONF, (uint16_t *)&conf_reg);
@@ -294,14 +296,16 @@ void INA3221::setChannelDisable(ina3221_ch_t channel) {
         case INA3221_CH3:
             conf_reg.ch3_en = 0;
             break;
+        default:
+            break;
     }
 
     _write(INA3221_REG_CONF, (uint16_t *)&conf_reg);
 }
 
 void INA3221::setWarnAlertShuntLimit(ina3221_ch_t channel, int32_t voltageuV) {
-    ina3221_reg_t reg;
-    int16_t val = 0;
+    ina3221_reg_t reg = INA3221_REG_CONF;
+    int16_t val       = 0;
 
     switch (channel) {
         case INA3221_CH1:
@@ -313,6 +317,8 @@ void INA3221::setWarnAlertShuntLimit(ina3221_ch_t channel, int32_t voltageuV) {
         case INA3221_CH3:
             reg = INA3221_REG_CH3_WARNING_ALERT_LIM;
             break;
+        default:
+            break;
     }
 
     val = voltageuV / 5;
@@ -320,8 +326,8 @@ void INA3221::setWarnAlertShuntLimit(ina3221_ch_t channel, int32_t voltageuV) {
 }
 
 void INA3221::setCritAlertShuntLimit(ina3221_ch_t channel, int32_t voltageuV) {
-    ina3221_reg_t reg;
-    int16_t val = 0;
+    ina3221_reg_t reg = INA3221_REG_CONF;
+    int16_t val       = 0;
 
     switch (channel) {
         case INA3221_CH1:
@@ -332,6 +338,8 @@ void INA3221::setCritAlertShuntLimit(ina3221_ch_t channel, int32_t voltageuV) {
             break;
         case INA3221_CH3:
             reg = INA3221_REG_CH3_CRIT_ALERT_LIM;
+            break;
+        default:
             break;
     }
 
@@ -368,6 +376,8 @@ void INA3221::setCurrentSumEnable(ina3221_ch_t channel) {
         case INA3221_CH3:
             masken_reg.shunt_sum_en_ch3 = 1;
             break;
+        default:
+            break;
     }
 
     _write(INA3221_REG_MASK_ENABLE, (uint16_t *)&masken_reg);
@@ -389,6 +399,8 @@ void INA3221::setCurrentSumDisable(ina3221_ch_t channel) {
         case INA3221_CH3:
             masken_reg.shunt_sum_en_ch3 = 0;
             break;
+        default:
+            break;
     }
 
     _write(INA3221_REG_MASK_ENABLE, (uint16_t *)&masken_reg);
@@ -397,8 +409,8 @@ void INA3221::setCurrentSumDisable(ina3221_ch_t channel) {
 
 int32_t INA3221::getShuntVoltage(ina3221_ch_t channel) {
     int32_t res;
-    ina3221_reg_t reg;
-    uint16_t val_raw = 0;
+    ina3221_reg_t reg = INA3221_REG_CONF;
+    uint16_t val_raw  = 0;
 
     switch (channel) {
         case INA3221_CH1:
@@ -409,6 +421,8 @@ int32_t INA3221::getShuntVoltage(ina3221_ch_t channel) {
             break;
         case INA3221_CH3:
             reg = INA3221_REG_CH3_SHUNTV;
+            break;
+        default:
             break;
     }
 
@@ -494,9 +508,9 @@ float INA3221::getCurrentCompensated(ina3221_ch_t channel) {
 }
 
 float INA3221::getVoltage(ina3221_ch_t channel) {
-    float voltage_V = 0.0;
-    ina3221_reg_t reg;
-    uint16_t val_raw = 0;
+    float voltage_V   = 0.0;
+    ina3221_reg_t reg = INA3221_REG_CONF;
+    uint16_t val_raw  = 0;
 
     switch (channel) {
         case INA3221_CH1:
@@ -507,6 +521,8 @@ float INA3221::getVoltage(ina3221_ch_t channel) {
             break;
         case INA3221_CH3:
             reg = INA3221_REG_CH3_BUSV;
+            break;
+        default:
             break;
     }
 
