@@ -223,3 +223,41 @@ void MPU6886::getTempData(float* t) {
 
     *t = (float)temp / 326.8 + 25.0;
 }
+
+void MPU6886::sleep() {
+    unsigned char regdata;
+    I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_PWR_MGMT_1, 1, &regdata);
+    regdata |= (0x01 << 6);
+    I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_PWR_MGMT_1, 1, &regdata);
+}
+
+void MPU6886::wakeup() {
+    unsigned char regdata;
+    I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_PWR_MGMT_1, 1, &regdata);
+    regdata &= ~(0x01 << 6);
+    I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_PWR_MGMT_1, 1, &regdata);
+}
+
+void MPU6886::setAccelLPF(accel_lpf_t config)
+{
+    unsigned char regdata;
+    I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_ACCEL_CONFIG2, 1, &regdata);
+    regdata &= 0b11111000;
+    regdata |= config;
+    I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_ACCEL_CONFIG2, 1, &regdata);
+}
+
+void MPU6886::setGyroLPF(gyro_lpf_t config)
+{
+    unsigned char regdata;
+    I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_CONFIG, 1, &regdata);
+    regdata &= 0b11111000;
+    regdata |= config;
+    I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_CONFIG, 1, &regdata);
+
+    
+    I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_GYRO_CONFIG, 1, &regdata);
+    regdata &= 0b11111100;
+    regdata |= (config >> 3);
+    I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_GYRO_CONFIG, 1, &regdata);
+}

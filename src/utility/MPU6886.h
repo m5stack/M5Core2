@@ -55,6 +55,30 @@ class MPU6886 {
 
     enum Gscale { GFS_250DPS = 0, GFS_500DPS, GFS_1000DPS, GFS_2000DPS };
 
+    typedef enum {
+        ACCEL_LPF_BYPASS = 0b1000,
+        ACCEL_LPF_218HZ = 0b0001,
+        ACCEL_LPF_99HZ = 0b0010,
+        ACCEL_LPF_45HZ = 0b0011,
+        ACCEL_LPF_21HZ = 0b0100,
+        ACCEL_LPF_10HZ = 0b0101,
+        ACCEL_LPF_5HZ = 0b0110,
+        ACCEL_LPF_420HZ = 0b0111
+    } accel_lpf_t;
+
+    typedef enum {
+        GYRO_LPF_BYPASS_1 = 0b11000,
+        GYRO_LPF_BYPASS_2 = 0b10000,
+        GYRO_LPF_250HZ = 0b00000,
+        GYRO_LPF_176HZ = 0b00001,
+        GYRO_LPF_92HZ = 0b00010,
+        GYRO_LPF_41HZ = 0b00011,
+        GYRO_LPF_20HZ = 0b00100,
+        GYRO_LPF_10HZ = 0b00101,
+        GYRO_LPF_5HZ = 0b00110,
+        GYRO_LPF_3281HZ = 0b00111
+    } gyro_lpf_t;
+
     Gscale Gyscale = GFS_2000DPS;
     Ascale Acscale = AFS_8G;
 
@@ -73,6 +97,11 @@ class MPU6886 {
     void SetAccelFsr(Ascale scale);
 
     void getAhrsData(float* pitch, float* roll, float* yaw);
+
+    void sleep();
+    void wakeup();
+    void setAccelLPF(accel_lpf_t config);
+    void setGyroLPF(gyro_lpf_t config);
 
    public:
     float aRes, gRes;
