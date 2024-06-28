@@ -23,8 +23,7 @@ class M5Core2 {
    public:
     M5Core2();
     [[deprecated(
-        "It is recommended to use M5Unified Lib, which will be discontinued "
-        "soon.")]] void
+        "It is recommended to use M5Unified Lib")]] void
     begin(bool LCDEnable = true, bool SDEnable = true, bool SerialEnable = true,
           bool I2CEnable = false, mbus_mode_t mode = kMBusModeOutput,
           bool SpeakerEnable = true);
