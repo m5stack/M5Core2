@@ -129,6 +129,10 @@ class AXP {
     void SetPeripherialsPower(uint8_t state);
     void SetVibration(uint8_t state);
 
+    pmic_t getPmicType() const {
+        return _pmic;
+    }
+
    private:
     pmic_t _pmic;
 };

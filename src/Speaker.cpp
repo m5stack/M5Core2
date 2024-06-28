@@ -66,31 +66,30 @@ bool Speaker::InitI2SSpeakOrMic(int mode) {  // Init I2S.  初始化I2S
 }
 
 void Speaker::begin(void) {  // 初始化扬声器
-    Wire1.begin(21, 22);
-    uint8_t reg_addr = 0x94;
-    uint8_t gpio_bit = 0x04;
-    uint8_t data;
-    data = Read8bit(reg_addr);
+    uint8_t val = Read8bit(0x03);
+    bool axp192 = false;
+    if (val == 0x03) {
+        _pmic = pmic_axp192;
+    } else if (val == 0x4A) {
+        _pmic = pmic_axp2101;
+    } else {
+        _pmic = pmic_unknown;
+    }
+    Serial.printf("\n_pmic:%d", _pmic);
+    if (_pmic) {
+        uint8_t reg_addr = 0x94;
+        uint8_t gpio_bit = 0x04;
+        uint8_t data;
+        data = Read8bit(reg_addr);
+        data |= gpio_bit;
+        Write1Byte(reg_addr, data);
+    } else if (!_pmic) {
+        uint8_t reg_addr = 0x94;
+        uint8_t data     = 0x1C;
+        Write1Byte(reg_addr, data);
+    }
 
-    data |= gpio_bit;
-
-    Write1Byte(reg_addr, data);
     InitI2SSpeakOrMic(MODE_SPK);
-}
-
-uint8_t Speaker::Read8bit(uint8_t Addr) {
-    Wire1.beginTransmission(0x34);
-    Wire1.write(Addr);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    return Wire1.read();
-}
-
-void Speaker::Write1Byte(uint8_t Addr, uint8_t Data) {
-    Wire1.beginTransmission(0x34);
-    Wire1.write(Addr);
-    Wire1.write(Data);
-    Wire1.endTransmission();
 }
 
 size_t Speaker::PlaySound(const unsigned char* data,
