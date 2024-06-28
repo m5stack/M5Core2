@@ -36,6 +36,8 @@ class RTC {
 
     void clearIRQ();
     void disableIRQ();
+  
+    bool getVoltLow(void);
 
    public:
     uint8_t Second;

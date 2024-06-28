@@ -25,6 +25,10 @@ uint8_t RTC::ReadReg(uint8_t reg) {
     return Wire1.read();
 }
 
+bool RTC::getVoltLow(void) {
+    return (readReg(0x02) & 0x80) >> 7;  // RTCC_VLSEC_MASK
+}
+
 void RTC::GetBm8563Time(void) {
     Wire1.beginTransmission(0x51);
     Wire1.write(0x02);
