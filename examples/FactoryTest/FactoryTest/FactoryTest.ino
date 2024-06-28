@@ -1654,7 +1654,7 @@ void AppSetting() {
             }
 
             if (MoterBtn.inHotZone(pos)) {
-                M5.Axp.SetLDOEnable(3, MoterState);
+                M5.Axp.SetVibration(MoterState);
                 if (MoterState == 1) {
                     Disbuff.fillRect(193, 103, 14, 47, TFT_GREEN);
                 } else {
@@ -1935,10 +1935,10 @@ void setup() {
     InitI2SSpakerOrMic(MODE_SPK);
     xTaskCreatePinnedToCore(i2s_task, "i2s_task", 4096, NULL, 3, NULL, 0);
 
-    M5.Axp.SetLDOEnable(3, true);
+    M5.Axp.SetVibration(true);
     CoverScrollText("Motor Test", M5.Lcd.color565(SUCCE_COLOR));
     delay(150);
-    M5.Axp.SetLDOEnable(3, false);
+    M5.Axp.SetVibration(false);
 
     M5.Axp.SetLed(1);
     CoverScrollText("LED Test", M5.Lcd.color565(SUCCE_COLOR));

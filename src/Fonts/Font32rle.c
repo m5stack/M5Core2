@@ -645,7 +645,7 @@ PROGMEM const unsigned char chr_f32_7E[] = {
     0x82, 0x03, 0x80, 0x00, 0x80, 0x06, 0x81, 0x01, 0x81,
     0x00, 0x80, 0x07, 0x83, 0x7F, 0x7F, 0x2C};
 
-PROGMEM const unsigned char chr_f32_7F[] = {0x19};
+PROGMEM const unsigned char chr_f32_7F[]          = {0x19};
 PROGMEM const unsigned char* const chrtbl_f32[96] =  // character pointer table
     {chr_f32_20, chr_f32_21, chr_f32_22, chr_f32_23, chr_f32_24, chr_f32_25,
      chr_f32_26, chr_f32_27, chr_f32_28, chr_f32_29, chr_f32_2A, chr_f32_2B,

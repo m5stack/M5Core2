@@ -91,10 +91,12 @@ restoreConfig() { /* Check whether there is wifi configuration information
 boolean checkConnection() {  // Check wifi connection.  检测wifi连接情况
     int count = 0;           // count.  计数
     M5.Lcd.print("Waiting for Wi-Fi connection");
-    while (count < 30) { /* If you fail to connect to wifi within 30*350ms
-                            (10.5s), return false; otherwise return true.
-                                       若在30*500ms(15s)内未能连上wifi,返回false;否则返回true
-                          */
+    while (
+        count <
+        30) { /* If you fail to connect to wifi within 30*350ms
+                 (10.5s), return false; otherwise return true.
+                            若在30*500ms(15s)内未能连上wifi,返回false;否则返回true
+               */
         if (WiFi.status() == WL_CONNECTED) {
             M5.Lcd.printf("\nConnected!\n");
             return (true);
@@ -179,7 +181,7 @@ void startWebServer() {  // Open the web service.  打开Web服务
 void setupMode() {
     WiFi.mode(WIFI_MODE_STA);  // Set Wi-Fi mode to WIFI_MODE_STA.
                                // 设置Wi-Fi模式为WIFI_MODE_STA
-    WiFi.disconnect();  // Disconnect wifi connection.  断开wifi连接
+    WiFi.disconnect();         // Disconnect wifi connection.  断开wifi连接
     delay(100);
     int n = WiFi.scanNetworks();  // Store the number of wifi scanned into n.
                                   // 将扫描到的wifi个数存储到n中
