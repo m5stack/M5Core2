@@ -26,7 +26,7 @@ uint8_t RTC::ReadReg(uint8_t reg) {
 }
 
 bool RTC::getVoltLow(void) {
-  return readReg(0x02) & 0x80; // RTCC_VLSEC_MASK
+    return (readReg(0x02) & 0x80) >> 7;  // RTCC_VLSEC_MASK
 }
 
 void RTC::GetBm8563Time(void) {
