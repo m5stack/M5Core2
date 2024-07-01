@@ -1,23 +1,27 @@
 /*
-  Play wav file from SD card
-
-  SPDX-FileCopyrightText: 2024 M5Stack Technology CO LTD
-  SPDX-License-Identifier: MIT
-
-  ****************************************************************
-  Prepare a file named "speak_sd.wav" in the root of your SD card
-  Wav file format : 44100 16bit mono
-
-  Example of conversion using ffmpeg
-  ffmpeg -i input.wav -vn -ac 1 -ar 44100 -acodec pcm_s16le -f wav speak_sd.wav
-  ****************************************************************
+ * SPDX-FileCopyrightText: 2024 M5Stack Technology CO LTD
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * Play wav file from SD card
+ *
+ ****************************************************************
+ * Prepare a file named "resources_speak_sd.wav" in the root of your SD card
+ * Wav file format : 44100Hz 16bit mono
+ *
+ * Download it from https://github.com/m5stack/M5Core2/wiki
+ * or you can make it.
+ *   Example of conversion using ffmpeg
+ *   ffmpeg -i input.wav -vn -ac 1 -ar 44100 -acodec pcm_s16le -f wav resources_speak_sd.wav
+ ****************************************************************
 */
 #include <M5Core2.h>
 
-#define WAV_FILE_NAME "/speak_sd.wav"
+#define WAV_FILE_NAME "/resources_speak_sd.wav"
+
 File wavFile;
 uint8_t buffer[1024];
-bool play{};
+bool play{}, play_loop{true};
 
 struct __attribute__((packed)) wav_header_t {
     char RIFF[4];
@@ -86,6 +90,10 @@ bool seek_file(File& f) {
 void streaming(File& f) {
     // No more read
     if (!f.available()) {
+        // rewind to top (playback loop)
+        if (play_loop) {
+            seek_file(f);
+        }
         return;
     }
     // Read and play
