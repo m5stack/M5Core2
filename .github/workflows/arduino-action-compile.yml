@@ -40,20 +40,12 @@ jobs:
         # You may add a suffix behind the fqbn with "|" to specify one board for e.g. different compile options like arduino:avr:uno|trace
         #############################################################################################################
         arduino-boards-fqbn:
-<<<<<<< HEAD:.github/workflows/arduino-action-compile.yml
           - m5stack:esp32:m5stack_core2
-=======
-          - m5stack:esp32:core2
->>>>>>> d7b4461c702d44503857638f1447dcb2325f0d64:.github/workflows/arduino-action-core2-compile.yml
 
         # Specify parameters for each board.
         #############################################################################################################
         include:
-<<<<<<< HEAD:.github/workflows/arduino-action-compile.yml
           - arduino-boards-fqbn: m5stack:esp32:m5stack_core2
-=======
-          - arduino-boards-fqbn: m5stack:esp32:core2
->>>>>>> d7b4461c702d44503857638f1447dcb2325f0d64:.github/workflows/arduino-action-core2-compile.yml
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
             sketches-exclude: WhistleSwitch,50Hz,SimpleFrequencyDetector
 
