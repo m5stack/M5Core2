@@ -3,7 +3,7 @@
     Please note the selection of your device on line 15 of the programs!
 */
 
-bool Device = 0;  // Please select your device
+bool Device = 1;  // Please select your device
                   // Core2 = 1,Core2_AWS = 0;
 
 #include <ArduinoECCX08.h>
@@ -1242,6 +1242,7 @@ void AppWifi() {
 
     uint16_t color_yellow = Disbuff.color565(0xff, 0xa0, 0);
     uint16_t color_gery   = Disbuff.color565(0x43, 0x43, 0x43);
+    uint16_t color_blue   = Disbuff.color565(0x06, 0x04, 0xcf); 
 
     WiFi.scanNetworks(true);
 
@@ -1249,7 +1250,7 @@ void AppWifi() {
 
     uint16_t colorWifiBar[10] = {
         TFT_RED,   TFT_RED,   color_yellow, color_yellow, color_yellow,
-        TFT_GREEN, TFT_GREEN, TFT_GREEN,    TFT_GREEN,    TFT_GREEN};
+        TFT_GREEN, TFT_GREEN, TFT_GREEN,    color_blue,   color_blue};
     delay(100);
     while (1) {
         int WifiNumber = WiFi.scanComplete();
@@ -1290,7 +1291,7 @@ void AppWifi() {
             Serial.print(WifiNumber);
             Serial.println(" networks found");
             Disbuff.fillRect(0, 34, 320, 173, TFT_BLACK);
-            if (WifiNumber > 8) WifiNumber = 7;
+            if (WifiNumber > 7) WifiNumber = 7;
 
             for (int i = 0; i < WifiNumber; i++) {
                 Disbuff.fillRect(18, 34 + i * 24 + 2, 7, 20,
@@ -1654,7 +1655,7 @@ void AppSetting() {
             }
 
             if (MoterBtn.inHotZone(pos)) {
-                M5.Axp.SetLDOEnable(3, MoterState);
+                M5.Axp.SetVibration(MoterState);
                 if (MoterState == 1) {
                     Disbuff.fillRect(193, 103, 14, 47, TFT_GREEN);
                 } else {
@@ -1935,10 +1936,10 @@ void setup() {
     InitI2SSpakerOrMic(MODE_SPK);
     xTaskCreatePinnedToCore(i2s_task, "i2s_task", 4096, NULL, 3, NULL, 0);
 
-    M5.Axp.SetLDOEnable(3, true);
+    M5.Axp.SetVibration(true);
     CoverScrollText("Motor Test", M5.Lcd.color565(SUCCE_COLOR));
     delay(150);
-    M5.Axp.SetLDOEnable(3, false);
+    M5.Axp.SetVibration(false);
 
     M5.Axp.SetLed(1);
     CoverScrollText("LED Test", M5.Lcd.color565(SUCCE_COLOR));

@@ -44,14 +44,13 @@ void loop() {
         Wire.beginTransmission(
             address);  // Data transmission to the specified device address
                        // starts.   开始向指定的设备地址进行传输数据
-        error =
-            Wire.endTransmission(); /*Stop data transmission with the slave.
-                  停止与从机的数据传输 0: success.  成功 1: The amount of data
-                  exceeds the transmission buffer capacity limit.
-                  数据量超过传送缓存容纳限制 return value:              2:
-                  Received NACK when sending address.  传送地址时收到 NACK 3:
-                  Received NACK when transmitting data.  传送数据时收到 NACK 4:
-                  Other errors.  其它错误 */
+        error = Wire.endTransmission(); /*Stop data transmission with the slave.
+                      停止与从机的数据传输 0: success.  成功 1: The amount of
+                      data exceeds the transmission buffer capacity limit.
+                      数据量超过传送缓存容纳限制 return value:              2:
+                      Received NACK when sending address.  传送地址时收到 NACK
+                      3: Received NACK when transmitting data.  传送数据时收到
+                      NACK 4: Other errors.  其它错误 */
         if (error == 0) {
             M5.Lcd.print(address, HEX);
             M5.Lcd.print(" ");

@@ -626,7 +626,8 @@
       Down (plus or minus 30 degrees) for at least 100 pixels within 500 ms
 
 
-    Gesture fromTop(Zone(0, 0, 360, 30), ANYWHERE, "from top", 100, DIR_DOWN, 30);
+    Gesture fromTop(Zone(0, 0, 360, 30), ANYWHERE, "from top", 100, DIR_DOWN,
+30);
 
       The same but starting from within the top 30 pixels. (If you make that
       too narrow you may miss the swipe because the sensor 'sees' only once
@@ -738,29 +739,29 @@ class Gesture;
 #define BUTTON_FREEFONT FSS9
 #define BUTTON_TEXTFONT 1
 #define BUTTON_TEXTSIZE 1
-#define BUTTON_DATUM MC_DATUM
+#define BUTTON_DATUM    MC_DATUM
 
-#define TAP_TIME 150
-#define DBLTAP_TIME 300
-#define LONGPRESS_TIME 0
-#define REPEAT_DELAY 0
+#define TAP_TIME        150
+#define DBLTAP_TIME     300
+#define LONGPRESS_TIME  0
+#define REPEAT_DELAY    0
 #define REPEAT_INTERVAL 200
 
 #define GESTURE_MAXTIME 500
 #define GESTURE_MINDIST 75
-#define ANYWHERE Zone()
+#define ANYWHERE        Zone()
 
-#define NUM_EVENTS 11
-#define E_TOUCH 0x0001
-#define E_RELEASE 0x0002
-#define E_MOVE 0x0004
-#define E_GESTURE 0x0008
-#define E_TAP 0x0010
-#define E_DBLTAP 0x0020
-#define E_DRAGGED 0x0040
-#define E_PRESSED 0x0080
-#define E_PRESSING 0x0100
-#define E_LONGPRESSED 0x0200
+#define NUM_EVENTS     11
+#define E_TOUCH        0x0001
+#define E_RELEASE      0x0002
+#define E_MOVE         0x0004
+#define E_GESTURE      0x0008
+#define E_TAP          0x0010
+#define E_DBLTAP       0x0020
+#define E_DRAGGED      0x0040
+#define E_PRESSED      0x0080
+#define E_PRESSING     0x0100
+#define E_LONGPRESSED  0x0200
 #define E_LONGPRESSING 0x0400
 
 #define E_ALL 0x0FFF
@@ -768,9 +769,9 @@ class Gesture;
 #define NODRAW 0x0120  // Special color value: transparent
 
 struct ButtonColors {
-  uint16_t bg;
-  uint16_t text;
-  uint16_t outline;
+    uint16_t bg;
+    uint16_t text;
+    uint16_t outline;
 };
 
 class Button;
@@ -778,210 +779,211 @@ class Event;
 
 #ifdef _M5TOUCH_H_
 struct Finger {
-  Point current, previous, startPoint, tapPoint;
-  uint32_t startTime, tapTime;
-  Button* button;
+    Point current, previous, startPoint, tapPoint;
+    uint32_t startTime, tapTime;
+    Button* button;
 };
 #endif
 
 class Event {
- public:
-  Event();
-  operator uint16_t();
-  const char* typeName();
-  const char* objName();
-  uint16_t direction(bool rot1 = false);
-  bool isDirection(int16_t wanted, uint8_t plusminus = PLUSMINUS,
-                   bool rot1 = false);
-  uint16_t distance();
-  uint8_t finger;
-  uint16_t type;
-  Point from, to;
-  uint16_t duration;
-  Button* button;
-  Gesture* gesture;
+   public:
+    Event();
+    operator uint16_t();
+    const char* typeName();
+    const char* objName();
+    uint16_t direction(bool rot1 = false);
+    bool isDirection(int16_t wanted, uint8_t plusminus = PLUSMINUS,
+                     bool rot1 = false);
+    uint16_t distance();
+    uint8_t finger;
+    uint16_t type;
+    Point from, to;
+    uint16_t duration;
+    Button* button;
+    Gesture* gesture;
 };
 
 typedef std::function<void(Event&)> EventHandlerCallback;
 
 class Button : public Zone {
- public:
-  static std::vector<Button*> instances;
-  Button(int16_t x_, int16_t y_, int16_t w_, int16_t h_, bool rot1_ = false,
-         const char* name_ = "", ButtonColors off_ = {NODRAW, NODRAW, NODRAW},
-         ButtonColors on_ = {NODRAW, NODRAW, NODRAW},
-         uint8_t datum_ = BUTTON_DATUM, int16_t dx_ = 0, int16_t dy_ = 0,
-         uint8_t r_ = 0xFF);
-  Button(uint8_t pin_, uint8_t invert_, uint32_t dbTime_, String hw = "hw",
-         int16_t x_ = 0, int16_t y_ = 0, int16_t w_ = 0, int16_t h_ = 0,
-         bool rot1_ = false, const char* name_ = "",
-         ButtonColors off_ = {NODRAW, NODRAW, NODRAW},
-         ButtonColors on_ = {NODRAW, NODRAW, NODRAW},
-         uint8_t datum_ = BUTTON_DATUM, int16_t dx_ = 0, int16_t dy_ = 0,
-         uint8_t r_ = 0xFF);
-  ~Button();
-  operator bool();
-  bool operator==(const Button& b);
-  bool operator!=(const Button& b);
-  bool operator==(Button* b);
-  bool operator!=(Button* b);
-  int16_t instanceIndex();
-  bool read(bool manualRead = true);
-  void fingerDown(Point pos = Point(), uint8_t finger = 0);
-  void fingerUp(uint8_t finger = 0);
-  void fingerMove(Point pos, uint8_t finger);
-  void cancel();
-  bool isPressed();
-  bool isReleased();
-  bool wasPressed();
-  bool wasReleased();
-  bool pressedFor(uint32_t ms);
-  bool pressedFor(uint32_t ms, uint32_t continuous_time);
-  bool releasedFor(uint32_t ms);
-  bool wasReleasefor(uint32_t ms);
-  void addHandler(EventHandlerCallback fn, uint16_t eventMask = E_ALL);
-  void delHandlers(EventHandlerCallback fn = nullptr);
-  char* getName();
-  uint32_t lastChange();
-  Event event;
-  uint16_t userData;
-  uint16_t tapTime, dbltapTime, longPressTime;
-  uint16_t repeatDelay, repeatInterval;
+   public:
+    static std::vector<Button*> instances;
+    Button(int16_t x_, int16_t y_, int16_t w_, int16_t h_, bool rot1_ = false,
+           const char* name_ = "", ButtonColors off_ = {NODRAW, NODRAW, NODRAW},
+           ButtonColors on_ = {NODRAW, NODRAW, NODRAW},
+           uint8_t datum_ = BUTTON_DATUM, int16_t dx_ = 0, int16_t dy_ = 0,
+           uint8_t r_ = 0xFF);
+    Button(uint8_t pin_, uint8_t invert_, uint32_t dbTime_, String hw = "hw",
+           int16_t x_ = 0, int16_t y_ = 0, int16_t w_ = 0, int16_t h_ = 0,
+           bool rot1_ = false, const char* name_ = "",
+           ButtonColors off_ = {NODRAW, NODRAW, NODRAW},
+           ButtonColors on_  = {NODRAW, NODRAW, NODRAW},
+           uint8_t datum_ = BUTTON_DATUM, int16_t dx_ = 0, int16_t dy_ = 0,
+           uint8_t r_ = 0xFF);
+    ~Button();
+    operator bool();
+    bool operator==(const Button& b);
+    bool operator!=(const Button& b);
+    bool operator==(Button* b);
+    bool operator!=(Button* b);
+    int16_t instanceIndex();
+    bool read(bool manualRead = true);
+    void fingerDown(Point pos = Point(), uint8_t finger = 0);
+    void fingerUp(uint8_t finger = 0);
+    void fingerMove(Point pos, uint8_t finger);
+    void cancel();
+    bool isPressed();
+    bool isReleased();
+    bool wasPressed();
+    bool wasReleased();
+    bool pressedFor(uint32_t ms);
+    bool pressedFor(uint32_t ms, uint32_t continuous_time);
+    bool releasedFor(uint32_t ms);
+    bool wasReleasefor(uint32_t ms);
+    void addHandler(EventHandlerCallback fn, uint16_t eventMask = E_ALL);
+    void delHandlers(EventHandlerCallback fn = nullptr);
+    char* getName();
+    uint32_t lastChange();
+    Event event;
+    uint16_t userData;
+    uint16_t tapTime, dbltapTime, longPressTime;
+    uint16_t repeatDelay, repeatInterval;
 
- protected:
-  void init();
-  bool postReleaseEvents();
-  bool timeoutEvents();
-  friend class M5Buttons;
-  char _name[16];
-  uint8_t _pin;
-  uint16_t _dbTime;
-  bool _invert;
-  bool _changed, _state, _tapWait, _pressing;
-  bool _longPressing, _cancelled, _manuallyRead;
-  uint8_t _setState;
-  uint32_t _time, _lastRepeat;
-  uint32_t _lastChange, _lastLongPress, _pressTime, _hold_time;
-  uint8_t _finger;
-  Point _fromPt[2], _toPt[2], _currentPt[2];
+   protected:
+    void init();
+    bool postReleaseEvents();
+    bool timeoutEvents();
+    friend class M5Buttons;
+    char _name[16];
+    uint8_t _pin;
+    uint16_t _dbTime;
+    bool _invert;
+    bool _changed, _state, _tapWait, _pressing;
+    bool _longPressing, _cancelled, _manuallyRead;
+    uint8_t _setState;
+    uint32_t _time, _lastRepeat;
+    uint32_t _lastChange, _lastLongPress, _pressTime, _hold_time;
+    uint8_t _finger;
+    Point _fromPt[2], _toPt[2], _currentPt[2];
 
-  // visual stuff
- public:
-  void draw(ButtonColors bc);
-  void draw();
-  void hide(uint16_t color = NODRAW);
-  void erase(uint16_t color = BLACK);
-  void setLabel(const char* label_);
-  void setFont(const GFXfont* freeFont_);
-  void setFont(uint8_t textFont_ = 0);
-  void setTextSize(uint8_t textSize_ = 0);
-  char* label();
-  ButtonColors off, on;
-  Zone drawZone;
-  uint8_t datum, r;
-  int16_t dx, dy;
-  void (*drawFn)(Button& b, ButtonColors bc);
+    // visual stuff
+   public:
+    void draw(ButtonColors bc);
+    void draw();
+    void hide(uint16_t color = NODRAW);
+    void erase(uint16_t color = BLACK);
+    void setLabel(const char* label_);
+    void setFont(const GFXfont* freeFont_);
+    void setFont(uint8_t textFont_ = 0);
+    void setTextSize(uint8_t textSize_ = 0);
+    char* label();
+    ButtonColors off, on;
+    Zone drawZone;
+    uint8_t datum, r;
+    int16_t dx, dy;
+    void (*drawFn)(Button& b, ButtonColors bc);
 
- protected:
-  bool _hidden;
-  bool _compat;  // For TFT_eSPI_Button emulation
-  char _label[51];
-  uint8_t _textFont;
-  const GFXfont* _freeFont;
-  uint8_t _textSize;
+   protected:
+    bool _hidden;
+    bool _compat;  // For TFT_eSPI_Button emulation
+    char _label[51];
+    uint8_t _textFont;
+    const GFXfont* _freeFont;
+    uint8_t _textSize;
 };
 
 class Gesture {
- public:
-  static std::vector<Gesture*> instances;
-  Gesture(Zone fromZone_, Zone toZone_, const char* name_ = "",
-          uint16_t minDistance_ = GESTURE_MINDIST,
-          int16_t direction_ = INVALID_VALUE, uint8_t plusminus_ = PLUSMINUS,
-          bool rot1_ = false, uint16_t maxTime_ = GESTURE_MAXTIME);
-  Gesture(const char* name_ = "", uint16_t minDistance_ = GESTURE_MINDIST,
-          int16_t direction_ = INVALID_VALUE, uint8_t plusminus_ = PLUSMINUS,
-          bool rot1_ = false, uint16_t maxTime_ = GESTURE_MAXTIME);
-  ~Gesture();
-  operator bool();
-  int16_t instanceIndex();
-  bool test(Point& from, Point& to, uint16_t duration);
-  bool wasDetected();
-  void addHandler(EventHandlerCallback fn, uint16_t eventMask = E_ALL);
-  void delHandlers(EventHandlerCallback fn = nullptr);
-  char* getName();
-  Zone fromZone;
-  Zone toZone;
-  Event event;
-  int16_t direction;
-  uint8_t plusminus;
-  bool rot1;
-  uint16_t maxTime, minDistance;
+   public:
+    static std::vector<Gesture*> instances;
+    Gesture(Zone fromZone_, Zone toZone_, const char* name_ = "",
+            uint16_t minDistance_ = GESTURE_MINDIST,
+            int16_t direction_ = INVALID_VALUE, uint8_t plusminus_ = PLUSMINUS,
+            bool rot1_ = false, uint16_t maxTime_ = GESTURE_MAXTIME);
+    Gesture(const char* name_ = "", uint16_t minDistance_ = GESTURE_MINDIST,
+            int16_t direction_ = INVALID_VALUE, uint8_t plusminus_ = PLUSMINUS,
+            bool rot1_ = false, uint16_t maxTime_ = GESTURE_MAXTIME);
+    ~Gesture();
+    operator bool();
+    int16_t instanceIndex();
+    bool test(Point& from, Point& to, uint16_t duration);
+    bool wasDetected();
+    void addHandler(EventHandlerCallback fn, uint16_t eventMask = E_ALL);
+    void delHandlers(EventHandlerCallback fn = nullptr);
+    char* getName();
+    Zone fromZone;
+    Zone toZone;
+    Event event;
+    int16_t direction;
+    uint8_t plusminus;
+    bool rot1;
+    uint16_t maxTime, minDistance;
 
- protected:
-  friend class M5Buttons;
-  bool _detected;
-  char _name[16];
+   protected:
+    friend class M5Buttons;
+    bool _detected;
+    char _name[16];
 };
 
 struct EventHandler {
-  uint16_t eventMask;
-  Button* button;
-  Gesture* gesture;
-  EventHandlerCallback fn;
+    uint16_t eventMask;
+    Button* button;
+    Gesture* gesture;
+    EventHandlerCallback fn;
 };
 
 class M5Buttons {
- public:
-  static M5Buttons* instance;
-  static void drawFunction(Button& b, ButtonColors bc);
-  M5Buttons();
-  Button* which(Point& p);
-  void draw();
-  void update();
-  void setFont(const GFXfont* freeFont_);
-  void setFont(uint8_t textFont_);
-  void setTextSize(uint8_t textSize_);
-  void (*drawFn)(Button& b, ButtonColors bc);
-  void fireEvent(uint8_t finger, uint16_t type, Point& from, Point& to,
-                 uint16_t duration, Button* button, Gesture* gesture);
-  void addHandler(EventHandlerCallback fn, uint16_t eventMask = E_ALL,
-                  Button* button = nullptr, Gesture* gesture = nullptr);
-  void delHandlers(EventHandlerCallback fn, Button* button, Gesture* gesture);
-  Event event;
+   public:
+    static M5Buttons* instance;
+    static void drawFunction(Button& b, ButtonColors bc);
+    M5Buttons();
+    Button* which(Point& p);
+    void draw();
+    void update();
+    void setFont(const GFXfont* freeFont_);
+    void setFont(uint8_t textFont_);
+    void setTextSize(uint8_t textSize_);
+    void (*drawFn)(Button& b, ButtonColors bc);
+    void fireEvent(uint8_t finger, uint16_t type, Point& from, Point& to,
+                   uint16_t duration, Button* button, Gesture* gesture);
+    void addHandler(EventHandlerCallback fn, uint16_t eventMask = E_ALL,
+                    Button* button = nullptr, Gesture* gesture = nullptr);
+    void delHandlers(EventHandlerCallback fn, Button* button, Gesture* gesture);
+    Event event;
 
- protected:
-  std::vector<EventHandler> _eventHandlers;
-  uint8_t _textFont;
-  const GFXfont* _freeFont;
-  uint8_t _textSize;
-  bool _leftovers;
+   protected:
+    std::vector<EventHandler> _eventHandlers;
+    uint8_t _textFont;
+    const GFXfont* _freeFont;
+    uint8_t _textSize;
+    bool _leftovers;
 
 #ifdef _M5TOUCH_H_
- protected:
-  Finger _finger[2];
+   protected:
+    Finger _finger[2];
 #endif
 };
 
 // TFT_eSPI_Button compatibility emulation
 class TFT_eSPI_Button : public Button {
- public:
-  TFT_eSPI_Button();
-  void initButton(TFT_eSPI* gfx, int16_t x, int16_t y, uint16_t w, uint16_t h,
-                  uint16_t outline, uint16_t fill, uint16_t textcolor,
-                  char* label_, uint8_t textsize_);
-  void initButtonUL(TFT_eSPI* gfx, int16_t x_, int16_t y_, uint16_t w_,
-                    uint16_t h_, uint16_t outline, uint16_t fill,
-                    uint16_t textcolor, char* label_, uint8_t textsize_);
-  void setLabelDatum(int16_t x_delta, int16_t y_delta,
-                     uint8_t datum = MC_DATUM);
-  void drawButton(bool inverted = false, String long_name = "");
-  bool contains(int16_t x, int16_t y);
-  void press(bool p);
-  bool isPressed();
-  bool justPressed();
-  bool justReleased();
- private:
-  bool  currstate, laststate;
+   public:
+    TFT_eSPI_Button();
+    void initButton(TFT_eSPI* gfx, int16_t x, int16_t y, uint16_t w, uint16_t h,
+                    uint16_t outline, uint16_t fill, uint16_t textcolor,
+                    char* label_, uint8_t textsize_);
+    void initButtonUL(TFT_eSPI* gfx, int16_t x_, int16_t y_, uint16_t w_,
+                      uint16_t h_, uint16_t outline, uint16_t fill,
+                      uint16_t textcolor, char* label_, uint8_t textsize_);
+    void setLabelDatum(int16_t x_delta, int16_t y_delta,
+                       uint8_t datum = MC_DATUM);
+    void drawButton(bool inverted = false, String long_name = "");
+    bool contains(int16_t x, int16_t y);
+    void press(bool p);
+    bool isPressed();
+    bool justPressed();
+    bool justReleased();
+
+   private:
+    bool currstate, laststate;
 };
 
 #endif /* _M5BUTTON_H_ */

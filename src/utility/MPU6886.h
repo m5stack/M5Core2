@@ -12,18 +12,18 @@
 #include <Arduino.h>
 #include "MahonyAHRS.h"
 
-#define MPU6886_ADDRESS 0x68
-#define MPU6886_WHOAMI 0x75
+#define MPU6886_ADDRESS          0x68
+#define MPU6886_WHOAMI           0x75
 #define MPU6886_ACCEL_INTEL_CTRL 0x69
-#define MPU6886_SMPLRT_DIV 0x19
-#define MPU6886_INT_PIN_CFG 0x37
-#define MPU6886_INT_ENABLE 0x38
-#define MPU6886_ACCEL_XOUT_H 0x3B
-#define MPU6886_ACCEL_XOUT_L 0x3C
-#define MPU6886_ACCEL_YOUT_H 0x3D
-#define MPU6886_ACCEL_YOUT_L 0x3E
-#define MPU6886_ACCEL_ZOUT_H 0x3F
-#define MPU6886_ACCEL_ZOUT_L 0x40
+#define MPU6886_SMPLRT_DIV       0x19
+#define MPU6886_INT_PIN_CFG      0x37
+#define MPU6886_INT_ENABLE       0x38
+#define MPU6886_ACCEL_XOUT_H     0x3B
+#define MPU6886_ACCEL_XOUT_L     0x3C
+#define MPU6886_ACCEL_YOUT_H     0x3D
+#define MPU6886_ACCEL_YOUT_L     0x3E
+#define MPU6886_ACCEL_ZOUT_H     0x3F
+#define MPU6886_ACCEL_ZOUT_L     0x40
 
 #define MPU6886_TEMP_OUT_H 0x41
 #define MPU6886_TEMP_OUT_L 0x42
@@ -35,55 +35,84 @@
 #define MPU6886_GYRO_ZOUT_H 0x47
 #define MPU6886_GYRO_ZOUT_L 0x48
 
-#define MPU6886_USER_CTRL 0x6A
-#define MPU6886_PWR_MGMT_1 0x6B
-#define MPU6886_PWR_MGMT_2 0x6C
-#define MPU6886_CONFIG 0x1A
-#define MPU6886_GYRO_CONFIG 0x1B
-#define MPU6886_ACCEL_CONFIG 0x1C
+#define MPU6886_USER_CTRL     0x6A
+#define MPU6886_PWR_MGMT_1    0x6B
+#define MPU6886_PWR_MGMT_2    0x6C
+#define MPU6886_CONFIG        0x1A
+#define MPU6886_GYRO_CONFIG   0x1B
+#define MPU6886_ACCEL_CONFIG  0x1C
 #define MPU6886_ACCEL_CONFIG2 0x1D
-#define MPU6886_FIFO_EN 0x23
+#define MPU6886_FIFO_EN       0x23
 
-//#define G (9.8)
-#define RtA 57.324841
-#define AtR 0.0174533
+// #define G (9.8)
+#define RtA     57.324841
+#define AtR     0.0174533
 #define Gyro_Gr 0.0010653
 
 class MPU6886 {
- public:
-  enum Ascale { AFS_2G = 0, AFS_4G, AFS_8G, AFS_16G };
+   public:
+    enum Ascale { AFS_2G = 0, AFS_4G, AFS_8G, AFS_16G };
 
-  enum Gscale { GFS_250DPS = 0, GFS_500DPS, GFS_1000DPS, GFS_2000DPS };
+    enum Gscale { GFS_250DPS = 0, GFS_500DPS, GFS_1000DPS, GFS_2000DPS };
 
-  Gscale Gyscale = GFS_2000DPS;
-  Ascale Acscale = AFS_8G;
+    typedef enum {
+        ACCEL_LPF_BYPASS = 0b1000,
+        ACCEL_LPF_218HZ = 0b0001,
+        ACCEL_LPF_99HZ = 0b0010,
+        ACCEL_LPF_45HZ = 0b0011,
+        ACCEL_LPF_21HZ = 0b0100,
+        ACCEL_LPF_10HZ = 0b0101,
+        ACCEL_LPF_5HZ = 0b0110,
+        ACCEL_LPF_420HZ = 0b0111
+    } accel_lpf_t;
 
- public:
-  MPU6886();
-  int Init(void);
-  void getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az);
-  void getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz);
-  void getTempAdc(int16_t* t);
+    typedef enum {
+        GYRO_LPF_BYPASS_1 = 0b11000,
+        GYRO_LPF_BYPASS_2 = 0b10000,
+        GYRO_LPF_250HZ = 0b00000,
+        GYRO_LPF_176HZ = 0b00001,
+        GYRO_LPF_92HZ = 0b00010,
+        GYRO_LPF_41HZ = 0b00011,
+        GYRO_LPF_20HZ = 0b00100,
+        GYRO_LPF_10HZ = 0b00101,
+        GYRO_LPF_5HZ = 0b00110,
+        GYRO_LPF_3281HZ = 0b00111
+    } gyro_lpf_t;
 
-  void getAccelData(float* ax, float* ay, float* az);
-  void getGyroData(float* gx, float* gy, float* gz);
-  void getTempData(float* t);
+    Gscale Gyscale = GFS_2000DPS;
+    Ascale Acscale = AFS_8G;
 
-  void SetGyroFsr(Gscale scale);
-  void SetAccelFsr(Ascale scale);
+   public:
+    MPU6886();
+    int Init(void);
+    void getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az);
+    void getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz);
+    void getTempAdc(int16_t* t);
 
-  void getAhrsData(float* pitch, float* roll, float* yaw);
+    void getAccelData(float* ax, float* ay, float* az);
+    void getGyroData(float* gx, float* gy, float* gz);
+    void getTempData(float* t);
 
- public:
-  float aRes, gRes;
+    void SetGyroFsr(Gscale scale);
+    void SetAccelFsr(Ascale scale);
 
- private:
- protected:
-  void I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr,
-                       uint8_t number_Bytes, uint8_t* read_Buffer);
-  void I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr,
-                        uint8_t number_Bytes, uint8_t* write_Buffer);
-  void getGres();
-  void getAres();
+    void getAhrsData(float* pitch, float* roll, float* yaw);
+
+    void sleep();
+    void wakeup();
+    void setAccelLPF(accel_lpf_t config);
+    void setGyroLPF(gyro_lpf_t config);
+
+   public:
+    float aRes, gRes;
+
+   private:
+   protected:
+    void I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr,
+                         uint8_t number_Bytes, uint8_t* read_Buffer);
+    void I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr,
+                          uint8_t number_Bytes, uint8_t* write_Buffer);
+    void getGres();
+    void getAres();
 };
 #endif

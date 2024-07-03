@@ -1,13 +1,50 @@
-#ifndef __AXP192_H__
-#define __AXP192_H__
+#ifndef __AXP_PMIC_H__
+#define __AXP_PMIC_H__
 
 #include <Wire.h>
 #include <Arduino.h>
 
-#define AXP192_ADDR 0X34
+#include "AXP192.h"
+#include "AXP2101.h"
+#include "INA3221.h"
 
-class AXP192 {
+#define SLEEP_MSEC(us) (((uint64_t)us) * 1000L)
+#define SLEEP_SEC(us)  (((uint64_t)us) * 1000000L)
+#define SLEEP_MIN(us)  (((uint64_t)us) * 60L * 1000000L)
+#define SLEEP_HR(us)   (((uint64_t)us) * 60L * 60L * 1000000L)
+
+typedef enum {
+    kMBusModeOutput = 0,  // powered by USB or Battery
+    kMBusModeInput  = 1   // powered by outside input
+} mbus_mode_t;
+
+#define AXP_ADDR 0X34
+
+void WriteBitOn(uint8_t Addr, uint8_t bit);
+void WriteBitOff(uint8_t Addr, uint8_t bit);
+
+void Write1Byte(uint8_t Addr, uint8_t Data);
+uint8_t Read8bit(uint8_t Addr);
+uint16_t Read12Bit(uint8_t Addr);
+uint16_t Read13Bit(uint8_t Addr);
+uint16_t Read16bit(uint8_t Addr);
+uint32_t Read24bit(uint8_t Addr);
+uint32_t Read32bit(uint8_t Addr);
+void ReadBuff(uint8_t Addr, uint8_t Size, uint8_t *Buff);
+bool writeRegister8Array(const std::uint8_t *reg_data_array,
+                         std::size_t length);
+
+uint8_t calcVoltageData(uint16_t value, uint16_t maxv, uint16_t minv,
+                        uint16_t step);
+
+class AXP {
    public:
+    enum pmic_t { pmic_unknown = 0, pmic_axp192, pmic_axp2101 };
+
+    AXP192 axp192;
+    AXP2101 axp2101;
+    INA3221 ina3221;
+
     enum CHGCurrent {
         kCHG_100mA = 0,
         kCHG_190mA,
@@ -27,9 +64,10 @@ class AXP192 {
         kCHG_1320mA,
     };
 
-    AXP192();
+    AXP();
     void begin();
     // Will be deprecated
+    void begin(mbus_mode_t mode);
     void ScreenBreath(int brightness);
     bool GetBatState();
 
@@ -42,6 +80,10 @@ class AXP192 {
     float GetCoulombData(void);
     float GetBatteryLevel(void);
     void PowerOff(void);
+    void SetSleep(void) {
+        PowerOff();
+    };
+
     void SetAdcState(bool state);
     // -- sleep
     void PrepareToSleep(void);
@@ -85,6 +127,14 @@ class AXP192 {
     void SetSpkEnable(uint8_t state);
     void SetCHGCurrent(uint8_t state);
     void SetPeripherialsPower(uint8_t state);
+    void SetVibration(uint8_t state);
+
+    pmic_t getPmicType() const {
+        return _pmic;
+    }
+
+   private:
+    pmic_t _pmic;
 };
 
 #endif

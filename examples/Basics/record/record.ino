@@ -53,9 +53,9 @@ void loop() {
                                    // 将触摸坐标存储在pos.内
     if (pos.y > 240) {
         if (pos.x < 109) {
-            M5.Axp.SetLDOEnable(3, true);  // Open the vibration.   开启震动马达
+            M5.Axp.SetVibration(true);  // Open the vibration.   开启震动马达
             delay(100);
-            M5.Axp.SetLDOEnable(3, false);
+            M5.Axp.SetVibration(false);
             data_offset = 0;
             M5.Spk.InitI2SSpeakOrMic(MODE_MIC);
             size_t byte_read;

@@ -20,7 +20,7 @@ confirm for calibration. 将WEIGHT UNIT连接至端口A（G32/33）， 校准说
 
 */
 
-#include <M5Core2.h>
+#include <M5Unified.h>
 #include <M5GFX.h>
 #include "HX711.h"
 

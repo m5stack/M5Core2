@@ -18,7 +18,7 @@ publishing. Before use, adjust the DIP switch of the module base to G16/17 ON
 - [PubSubClient](https://github.com/knolleary/pubsubclient.git)
 */
 
-#include <M5Core2.h>
+#include <M5Unified.h>
 #include "M5GFX.h"
 
 // Compatible with SIM76XX series.
