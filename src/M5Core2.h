@@ -26,7 +26,7 @@ class M5Core2 {
 
     void begin(bool LCDEnable = true, bool SDEnable = true,
                bool SerialEnable = true, bool I2CEnable = false,
-               mbus_mode_t mode = kMBusModeOutput, bool SpeakerEnable = true);
+               mbus_mode_t mode = kMBusModeOutput, bool SpeakerEnable = false);
     void update();
 
     void shutdown();
