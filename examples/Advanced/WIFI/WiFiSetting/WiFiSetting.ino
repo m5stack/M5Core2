@@ -77,8 +77,8 @@ restoreConfig() { /* Check whether there is wifi configuration information
     wifi_password = preferences.getString("WIFI_PASSWD");
     M5.Lcd.printf(
         "WIFI-SSID: %s\n",
-        wifi_ssid);  // Screen print format string.  屏幕打印格式化字符串
-    M5.Lcd.printf("WIFI-PASSWD: %s\n", wifi_password);
+        wifi_ssid.c_str());  // Screen print format string.  屏幕打印格式化字符串
+    M5.Lcd.printf("WIFI-PASSWD: %s\n", wifi_password.c_str());
     WiFi.begin(wifi_ssid.c_str(), wifi_password.c_str());
 
     if (wifi_ssid.length() > 0) {
@@ -130,9 +130,9 @@ void startWebServer() {  // Open the web service.  打开Web服务
             });
         webServer.on("/setap", []() {
             String ssid = urlDecode(webServer.arg("ssid"));
-            M5.Lcd.printf("SSID: %s\n", ssid);
+            M5.Lcd.printf("SSID: %s\n", ssid.c_str());
             String pass = urlDecode(webServer.arg("pass"));
-            M5.Lcd.printf("Password: %s\n\nWriting SSID to EEPROM...\n", pass);
+            M5.Lcd.printf("Password: %s\n\nWriting SSID to EEPROM...\n", pass.c_str());
 
             // Store wifi config.  存储wifi配置信息
             M5.Lcd.println("Writing Password to nvr...");
