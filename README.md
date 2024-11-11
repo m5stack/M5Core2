@@ -6,7 +6,7 @@
 
 English | [中文](README_cn.md)
 
-<img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_01.webp" alt="M5Core2_P1" width="350" height="350">
+<img src="https://static-cdn.m5stack.com/resource/docs/products/core/core2/core2_01.webp" alt="M5Core2_P1" width="350" height="350">
 
 **For the Detailed documentation of M5Core2, Please [Click here](https://docs.m5stack.com/en/core/core2)**
 
@@ -26,7 +26,7 @@ The 3 icons on the front of the screen are capacitive buttons which are programm
 
 ## M5Core2 M-BUS Schematic diagram
 
-<img src="https://static-cdn.m5stack.com/resource/docs/static/assets/img/product_pics/core/core2/core2_mbus.webp" width = "50%">
+<img src="https://static-cdn.m5stack.com/resource/docs/products/core/core2/core2_mbus_01.webp" width = "50%">
 
 ## More Information
 
