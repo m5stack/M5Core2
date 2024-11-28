@@ -18,6 +18,7 @@
 #define TFT_ESPI_VERSION "1.4.21"
 
 // #define ESP32 //Just used to test ESP32 options
+#include "hal/gpio_ll.h"
 
 // Include header file that defines the fonts loaded, the TFT drivers
 // available and the pins to be used
@@ -146,12 +147,8 @@
     GPIO.out1_w1tc.val = (1 << (TFT_DC - 32)); \
     GPIO.out1_w1ts.val = (1 << (TFT_DC - 32))
 #else
-#define DC_C             \
-    GPIO.out1_w1tc.val = \
-        (1 << (TFT_DC - 32))  //;GPIO.out1_w1tc.val = (1 << (TFT_DC - 32))
-#define DC_D             \
-    GPIO.out1_w1ts.val = \
-        (1 << (TFT_DC - 32))  //;GPIO.out1_w1ts.val = (1 << (TFT_DC - 32))
+#define DC_C GPIO.out1_w1tc.val = (1 << (TFT_DC - 32))  //;GPIO.out1_w1tc.val = (1 << (TFT_DC - 32))
+#define DC_D GPIO.out1_w1ts.val = (1 << (TFT_DC - 32))  //;GPIO.out1_w1ts.val = (1 << (TFT_DC - 32))
 #endif
 #else
 #if TFT_DC >= 0
@@ -213,9 +210,7 @@
 #define CS_L                                   \
     GPIO.out1_w1tc.val = (1 << (TFT_CS - 32)); \
     GPIO.out1_w1tc.val = (1 << (TFT_CS - 32))
-#define CS_H             \
-    GPIO.out1_w1ts.val = \
-        (1 << (TFT_CS - 32))  //;GPIO.out1_w1ts.val = (1 << (TFT_CS - 32))
+#define CS_H GPIO.out1_w1ts.val = (1 << (TFT_CS - 32))  //;GPIO.out1_w1ts.val = (1 << (TFT_CS - 32))
 #endif
 #else
 #if TFT_CS >= 0
@@ -309,9 +304,9 @@
 
 #if defined(ESP32) && defined(ESP32_PARALLEL)
 // Mask for the 8 data bits to set pin directions
-#define dir_mask                                                     \
-    ((1 << TFT_D0) | (1 << TFT_D1) | (1 << TFT_D2) | (1 << TFT_D3) | \
-     (1 << TFT_D4) | (1 << TFT_D5) | (1 << TFT_D6) | (1 << TFT_D7))
+#define dir_mask                                                                                                     \
+    ((1 << TFT_D0) | (1 << TFT_D1) | (1 << TFT_D2) | (1 << TFT_D3) | (1 << TFT_D4) | (1 << TFT_D5) | (1 << TFT_D6) | \
+     (1 << TFT_D7))
 
 // Data bits and the write line are cleared to 0 in one step
 #define clr_mask (dir_mask | (1 << TFT_WR))
@@ -384,8 +379,7 @@
 // #define RD_H digitalWrite(TFT_WR, HIGH)
 #endif
 
-#elif defined( \
-    ILI9488_DRIVER)  // 16 bit colour converted to 3 bytes for 18 bit RGB
+#elif defined(ILI9488_DRIVER)  // 16 bit colour converted to 3 bytes for 18 bit RGB
 
 // Write 8 bits to TFT
 #define tft_Write_8(C) spi.transfer(C)
@@ -425,36 +419,32 @@
 // to avoid the function call overhead
 
 // Write 8 bits
-#define tft_Write_8(C)                                     \
-    WRITE_PERI_REG(SPI_MOSI_DLEN_REG(SPI_PORT), 8 - 1);    \
-    WRITE_PERI_REG(SPI_W0_REG(SPI_PORT), C);               \
-    SET_PERI_REG_MASK(SPI_CMD_REG(SPI_PORT), SPI_USR);     \
-    while (READ_PERI_REG(SPI_CMD_REG(SPI_PORT)) & SPI_USR) \
-        ;
+#define tft_Write_8(C)                                  \
+    WRITE_PERI_REG(SPI_MOSI_DLEN_REG(SPI_PORT), 8 - 1); \
+    WRITE_PERI_REG(SPI_W0_REG(SPI_PORT), C);            \
+    SET_PERI_REG_MASK(SPI_CMD_REG(SPI_PORT), SPI_USR);  \
+    while (READ_PERI_REG(SPI_CMD_REG(SPI_PORT)) & SPI_USR);
 
 // Write 16 bits with corrected endianess for 16 bit colours
 #define tft_Write_16(C)                                    \
     WRITE_PERI_REG(SPI_MOSI_DLEN_REG(SPI_PORT), 16 - 1);   \
     WRITE_PERI_REG(SPI_W0_REG(SPI_PORT), C << 8 | C >> 8); \
     SET_PERI_REG_MASK(SPI_CMD_REG(SPI_PORT), SPI_USR);     \
-    while (READ_PERI_REG(SPI_CMD_REG(SPI_PORT)) & SPI_USR) \
-        ;
+    while (READ_PERI_REG(SPI_CMD_REG(SPI_PORT)) & SPI_USR);
 
 // Write 16 bits
-#define tft_Write_16S(C)                                   \
-    WRITE_PERI_REG(SPI_MOSI_DLEN_REG(SPI_PORT), 16 - 1);   \
-    WRITE_PERI_REG(SPI_W0_REG(SPI_PORT), C);               \
-    SET_PERI_REG_MASK(SPI_CMD_REG(SPI_PORT), SPI_USR);     \
-    while (READ_PERI_REG(SPI_CMD_REG(SPI_PORT)) & SPI_USR) \
-        ;
+#define tft_Write_16S(C)                                 \
+    WRITE_PERI_REG(SPI_MOSI_DLEN_REG(SPI_PORT), 16 - 1); \
+    WRITE_PERI_REG(SPI_W0_REG(SPI_PORT), C);             \
+    SET_PERI_REG_MASK(SPI_CMD_REG(SPI_PORT), SPI_USR);   \
+    while (READ_PERI_REG(SPI_CMD_REG(SPI_PORT)) & SPI_USR);
 
 // Write 32 bits
-#define tft_Write_32(C)                                    \
-    WRITE_PERI_REG(SPI_MOSI_DLEN_REG(SPI_PORT), 32 - 1);   \
-    WRITE_PERI_REG(SPI_W0_REG(SPI_PORT), C);               \
-    SET_PERI_REG_MASK(SPI_CMD_REG(SPI_PORT), SPI_USR);     \
-    while (READ_PERI_REG(SPI_CMD_REG(SPI_PORT)) & SPI_USR) \
-        ;
+#define tft_Write_32(C)                                  \
+    WRITE_PERI_REG(SPI_MOSI_DLEN_REG(SPI_PORT), 32 - 1); \
+    WRITE_PERI_REG(SPI_W0_REG(SPI_PORT), C);             \
+    SET_PERI_REG_MASK(SPI_CMD_REG(SPI_PORT), SPI_USR);   \
+    while (READ_PERI_REG(SPI_CMD_REG(SPI_PORT)) & SPI_USR);
 
 #endif
 
@@ -560,20 +550,19 @@
 #endif  // #ifdef LOAD_GFXFF
 
 // These enumerate the text plotting alignment (reference datum point)
-#define TL_DATUM 0  // Top left (default)
-#define TC_DATUM 1  // Top centre
-#define TR_DATUM 2  // Top right
-#define ML_DATUM 3  // Middle left
-#define CL_DATUM 3  // Centre left, same as above
-#define MC_DATUM 4  // Middle centre
-#define CC_DATUM 4  // Centre centre, same as above
-#define MR_DATUM 5  // Middle right
-#define CR_DATUM 5  // Centre right, same as above
-#define BL_DATUM 6  // Bottom left
-#define BC_DATUM 7  // Bottom centre
-#define BR_DATUM 8  // Bottom right
-#define L_BASELINE \
-    9  // Left character baseline (Line the 'A' character would sit on)
+#define TL_DATUM   0   // Top left (default)
+#define TC_DATUM   1   // Top centre
+#define TR_DATUM   2   // Top right
+#define ML_DATUM   3   // Middle left
+#define CL_DATUM   3   // Centre left, same as above
+#define MC_DATUM   4   // Middle centre
+#define CC_DATUM   4   // Centre centre, same as above
+#define MR_DATUM   5   // Middle right
+#define CR_DATUM   5   // Centre right, same as above
+#define BL_DATUM   6   // Bottom left
+#define BC_DATUM   7   // Bottom centre
+#define BR_DATUM   8   // Bottom right
+#define L_BASELINE 9   // Left character baseline (Line the 'A' character would sit on)
 #define C_BASELINE 10  // Centre character baseline
 #define R_BASELINE 11  // Right character baseline
 
@@ -605,7 +594,8 @@
 
 // Swap any type
 template <typename T>
-static inline void swap_coord(T &a, T &b) {
+static inline void swap_coord(T &a, T &b)
+{
     T t = a;
     a   = b;
     b   = t;
@@ -734,7 +724,7 @@ typedef uint16_t (*getColorCallback)(uint16_t x, uint16_t y);
 
 // Class functions and variables
 class TFT_eSPI : public Print {
-   public:
+public:
     TFT_eSPI(int16_t _W = TFT_WIDTH, int16_t _H = TFT_HEIGHT);
 
     void init(uint8_t tc = TAB_COLOUR),
@@ -744,22 +734,18 @@ class TFT_eSPI : public Print {
     // These are virtual so the TFT_eSprite class can override them with sprite
     // specific functions
     virtual void drawPixel(int32_t x, int32_t y, uint32_t color),
-        drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uint32_t bg,
-                 uint8_t size),
-        drawLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1,
-                 uint32_t color),
+        drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uint32_t bg, uint8_t size),
+        drawLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint32_t color),
         drawFastVLine(int32_t x, int32_t y, int32_t h, uint32_t color),
         drawFastHLine(int32_t x, int32_t y, int32_t w, uint32_t color),
         fillRect(int32_t x, int32_t y, int32_t w, int32_t h, uint32_t color);
 
-    virtual int16_t drawChar(uint16_t uniCode, int32_t x, int32_t y,
-                             uint8_t font),
-        drawChar(uint16_t uniCode, int32_t x, int32_t y), height(void),
-        width(void);
+    virtual int16_t drawChar(uint16_t uniCode, int32_t x, int32_t y, uint8_t font),
+        drawChar(uint16_t uniCode, int32_t x, int32_t y), height(void), width(void);
 
     // The TFT_eSprite class inherits the following functions
-    void setWindow(int32_t xs, int32_t ys, int32_t xe, int32_t ye),
-        pushColor(uint16_t color), pushColor(uint16_t color, uint32_t len),
+    void setWindow(int32_t xs, int32_t ys, int32_t xe, int32_t ye), pushColor(uint16_t color),
+        pushColor(uint16_t color, uint32_t len),
         pushColors(uint16_t *data, uint32_t len,
                    bool swap = true),  // With byte swap option
         pushColors(uint8_t *data, uint32_t len),
@@ -767,45 +753,32 @@ class TFT_eSPI : public Print {
         fillScreen(uint32_t color);
 
     void drawRect(int32_t x, int32_t y, int32_t w, int32_t h, uint32_t color),
-        drawRoundRect(int32_t x0, int32_t y0, int32_t w, int32_t h,
-                      int32_t radius, uint32_t color),
-        fillRoundRect(int32_t x0, int32_t y0, int32_t w, int32_t h,
-                      int32_t radius, uint32_t color),
+        drawRoundRect(int32_t x0, int32_t y0, int32_t w, int32_t h, int32_t radius, uint32_t color),
+        fillRoundRect(int32_t x0, int32_t y0, int32_t w, int32_t h, int32_t radius, uint32_t color),
 
         setRotation(uint8_t r), invertDisplay(boolean i),
 
         drawCircle(int32_t x0, int32_t y0, int32_t r, uint32_t color),
-        drawCircleHelper(int32_t x0, int32_t y0, int32_t r, uint8_t cornername,
-                         uint32_t color),
+        drawCircleHelper(int32_t x0, int32_t y0, int32_t r, uint8_t cornername, uint32_t color),
         fillCircle(int32_t x0, int32_t y0, int32_t r, uint32_t color),
-        fillCircleHelper(int32_t x0, int32_t y0, int32_t r, uint8_t cornername,
-                         int32_t delta, uint32_t color),
+        fillCircleHelper(int32_t x0, int32_t y0, int32_t r, uint8_t cornername, int32_t delta, uint32_t color),
 
-        drawEllipse(int16_t x0, int16_t y0, int32_t rx, int32_t ry,
-                    uint16_t color),
-        fillEllipse(int16_t x0, int16_t y0, int32_t rx, int32_t ry,
-                    uint16_t color),
+        drawEllipse(int16_t x0, int16_t y0, int32_t rx, int32_t ry, uint16_t color),
+        fillEllipse(int16_t x0, int16_t y0, int32_t rx, int32_t ry, uint16_t color),
 
-        drawTriangle(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2,
-                     int32_t y2, uint32_t color),
-        fillTriangle(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2,
-                     int32_t y2, uint32_t color),
+        drawTriangle(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color),
+        fillTriangle(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color),
 
-        drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w,
-                   int16_t h, uint16_t color),
-        drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w,
-                    int16_t h, uint16_t color),
-        drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w,
-                    int16_t h, uint16_t fgcolor, uint16_t bgcolor),
+        drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color),
+        drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color),
+        drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t fgcolor,
+                    uint16_t bgcolor),
         setBitmapColor(uint16_t fgcolor, uint16_t bgcolor),  // For 1bpp sprites
-        setPivot(int16_t x, int16_t y), setCursor(int16_t x, int16_t y),
-        setCursor(int16_t x, int16_t y, uint8_t font),
-        setTextColor(uint16_t color),
-        setTextColor(uint16_t fgcolor, uint16_t bgcolor),
-        setTextSize(uint8_t size),
+        setPivot(int16_t x, int16_t y), setCursor(int16_t x, int16_t y), setCursor(int16_t x, int16_t y, uint8_t font),
+        setTextColor(uint16_t color), setTextColor(uint16_t fgcolor, uint16_t bgcolor), setTextSize(uint8_t size),
 
-        setTextWrap(boolean wrapX, boolean wrapY = false),
-        setTextDatum(uint8_t datum), setTextPadding(uint16_t x_width),
+        setTextWrap(boolean wrapX, boolean wrapY = false), setTextDatum(uint8_t datum),
+        setTextPadding(uint16_t x_width),
 
 #ifdef LOAD_GFXFF
         setFreeFont(const GFXfont *f = NULL), setTextFont(uint8_t font),
@@ -832,22 +805,16 @@ class TFT_eSPI : public Print {
     void pushRect(int32_t x0, int32_t y0, int32_t w, int32_t h, uint16_t *data);
 
     // These are used to render images or sprites stored in RAM arrays
-    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h,
-                   uint16_t *data);
-    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h, uint16_t *data,
-                   uint16_t transparent);
+    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h, uint16_t *data);
+    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h, uint16_t *data, uint16_t transparent);
 
     // These are used to render images stored in FLASH (PROGMEM)
-    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h,
-                   const uint16_t *data, uint16_t transparent);
-    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h,
-                   const uint16_t *data);
+    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h, const uint16_t *data, uint16_t transparent);
+    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h, const uint16_t *data);
 
     // These are used by pushSprite for 1 and 8 bit colours
-    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h, uint8_t *data,
-                   bool bpp8 = true);
-    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h, uint8_t *data,
-                   uint8_t transparent, bool bpp8 = true);
+    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h, uint8_t *data, bool bpp8 = true);
+    void pushImage(int32_t x0, int32_t y0, int32_t w, int32_t h, uint8_t *data, uint8_t transparent, bool bpp8 = true);
 
     // Swap the byte order for pushImage() - corrects endianness
     void setSwapBytes(bool swap);
@@ -857,8 +824,7 @@ class TFT_eSPI : public Print {
     // PC for documentation purposes It reads a screen area and returns the RGB
     // 8 bit colour values of each pixel Set w and h to 1 to read 1 pixel's
     // colour. The data buffer must be at least w * h * 3 bytes
-    void readRectRGB(int32_t x0, int32_t y0, int32_t w, int32_t h,
-                     uint8_t *data);
+    void readRectRGB(int32_t x0, int32_t y0, int32_t w, int32_t h, uint8_t *data);
 
     uint8_t getRotation(void), getTextDatum(void),
         color16to8(uint16_t color565);  // Convert 16 bit colour to 8 bits
@@ -869,50 +835,41 @@ class TFT_eSPI : public Print {
 
     uint16_t fontsLoaded(void),
         color565(uint8_t red, uint8_t green,
-                 uint8_t blue),  // Convert 8 bit red, green and blue to 16 bits
+                 uint8_t blue),        // Convert 8 bit red, green and blue to 16 bits
         color8to16(uint8_t color332);  // Convert 8 bit colour to 16 bits
 
     int16_t drawNumber(long long_num, int32_t poX, int32_t poY, uint8_t font),
         drawNumber(long long_num, int32_t poX, int32_t poY),
-        drawFloat(float floatNumber, uint8_t decimal, int32_t poX, int32_t poY,
-                  uint8_t font),
+        drawFloat(float floatNumber, uint8_t decimal, int32_t poX, int32_t poY, uint8_t font),
         drawFloat(float floatNumber, uint8_t decimal, int32_t poX, int32_t poY),
 
         // Handle char arrays
         drawString(const char *string, int32_t poX, int32_t poY, uint8_t font),
         drawString(const char *string, int32_t poX, int32_t poY),
-        drawCentreString(
-            const char *string, int32_t dX, int32_t poY,
-            uint8_t font),  // Deprecated, use setTextDatum() and drawString()
-        drawRightString(
-            const char *string, int32_t dX, int32_t poY,
-            uint8_t font),  // Deprecated, use setTextDatum() and drawString()
+        drawCentreString(const char *string, int32_t dX, int32_t poY,
+                         uint8_t font),  // Deprecated, use setTextDatum() and drawString()
+        drawRightString(const char *string, int32_t dX, int32_t poY,
+                        uint8_t font),  // Deprecated, use setTextDatum() and drawString()
 
         // Handle String type
-        drawString(const String &string, int32_t poX, int32_t poY,
-                   uint8_t font),
+        drawString(const String &string, int32_t poX, int32_t poY, uint8_t font),
         drawString(const String &string, int32_t poX, int32_t poY),
-        drawCentreString(
-            const String &string, int32_t dX, int32_t poY,
-            uint8_t font),  // Deprecated, use setTextDatum() and drawString()
-        drawRightString(
-            const String &string, int32_t dX, int32_t poY,
-            uint8_t font);  // Deprecated, use setTextDatum() and drawString()
+        drawCentreString(const String &string, int32_t dX, int32_t poY,
+                         uint8_t font),  // Deprecated, use setTextDatum() and drawString()
+        drawRightString(const String &string, int32_t dX, int32_t poY,
+                        uint8_t font);  // Deprecated, use setTextDatum() and drawString()
 
-    int16_t textWidth(const char *string, uint8_t font),
-        textWidth(const char *string),
-        textWidth(const String &string, uint8_t font),
-        textWidth(const String &string), fontHeight(int16_t font),
+    int16_t textWidth(const char *string, uint8_t font), textWidth(const char *string),
+        textWidth(const String &string, uint8_t font), textWidth(const String &string), fontHeight(int16_t font),
         fontHeight(void);
 
     void setAddrWindow(int32_t xs, int32_t ys, int32_t w, int32_t h);
 
     // Compatibility additions
     void startWrite(void);  // Begin SPI transaction
-    void writeColor(
-        uint16_t color,
-        uint32_t len);    // Write colours without transaction overhead
-    void endWrite(void);  // End SPI transaction
+    void writeColor(uint16_t color,
+                    uint32_t len);  // Write colours without transaction overhead
+    void endWrite(void);            // End SPI transaction
 
     uint16_t decodeUTF8(uint8_t *buf, uint16_t *index, uint16_t remaining);
     uint16_t decodeUTF8(uint8_t c);
@@ -933,8 +890,7 @@ class TFT_eSPI : public Print {
     void setAttribute(uint8_t id = 0, uint8_t a = 0);
     uint8_t getAttribute(uint8_t id = 0);
 
-    void getSetup(
-        setup_t &tft_settings);  // Sketch provides the instance to populate
+    void getSetup(setup_t &tft_settings);  // Sketch provides the instance to populate
 
     static SPIClass &getSPIinstance(void);
 
@@ -954,7 +910,7 @@ class TFT_eSPI : public Print {
     uint8_t decoderState = 0;  // UTF8 decoder state
     uint16_t decoderBuffer;    // Unicode code-point buffer
 
-   private:
+private:
     inline void spi_begin() __attribute__((always_inline));
     inline void spi_end() __attribute__((always_inline));
 
@@ -976,7 +932,7 @@ class TFT_eSPI : public Print {
 
     uint32_t lastColor = 0xFFFF;
 
-   protected:
+protected:
     getColorCallback getColor = nullptr;
     uint8_t _smooth_bpp;
     int32_t win_xe, win_ye;
@@ -993,15 +949,15 @@ class TFT_eSPI : public Print {
 
     bool isDigits;  // adjust bounding box for numbers to reduce visual jiggling
     bool textwrapX,
-        textwrapY;    // If set, 'wrap' text at right and optionally bottom edge
-                      // of display
-    bool _swapBytes;  // Swap the byte order for TFT pushImage()
+        textwrapY;               // If set, 'wrap' text at right and optionally bottom edge
+                                 // of display
+    bool _swapBytes;             // Swap the byte order for TFT pushImage()
     bool locked, inTransaction;  // Transaction and mutex lock flags for ESP32
 
     bool _booted;  // init() or begin() has already run once
     bool _cp437;   // If set, use correct CP437 charset (default is ON)
-    bool _utf8;  // If set, use UTF-8 decoder in print stream 'write()' function
-                 // (default ON)
+    bool _utf8;    // If set, use UTF-8 decoder in print stream 'write()' function
+                   // (default ON)
 
     uint32_t _lastColor;  // Buffered value of last colour used
 
@@ -1021,7 +977,7 @@ class TFT_eSPI : public Print {
     // This is part of the TFT_eSPI class and is associated with anti-aliased
     // font functions
 
-   public:
+public:
     // These are for the new antialiased fonts
     void loadFont(String fontName, fs::FS &ffs);
     void loadFont(String fontName, bool flash = true);
@@ -1041,8 +997,8 @@ class TFT_eSPI : public Print {
         uint16_t spaceWidth;  // Width of a space character
         int16_t ascent;       // Height of top of 'd' above baseline, other
                               // characters may be taller
-        int16_t descent;  // Offset to bottom of 'p', other characters may have
-                          // a larger descent
+        int16_t descent;      // Offset to bottom of 'p', other characters may have
+                              // a larger descent
         uint16_t maxAscent;   // Maximum ascent found in font
         uint16_t maxDescent;  // Maximum descent found in font
     } fontMetrics;
@@ -1063,7 +1019,7 @@ class TFT_eSPI : public Print {
     bool fontLoaded = false;  // Flags when a anti-aliased font is loaded
     fs::File fontFile;
 
-   private:
+private:
     void loadMetrics(uint16_t gCount);
     uint32_t readInt32(void);
 
