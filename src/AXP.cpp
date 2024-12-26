@@ -1,21 +1,25 @@
 #include "AXP.h"
 
-void WriteBitOn(uint8_t Addr, uint8_t bit) {
+void WriteBitOn(uint8_t Addr, uint8_t bit)
+{
     Write1Byte(Addr, (Read8bit(Addr)) | bit);
 }
 
-void WriteBitOff(uint8_t Addr, uint8_t bit) {
+void WriteBitOff(uint8_t Addr, uint8_t bit)
+{
     Write1Byte(Addr, (Read8bit(Addr)) & ~bit);
 }
 
-void Write1Byte(uint8_t Addr, uint8_t Data) {
+void Write1Byte(uint8_t Addr, uint8_t Data)
+{
     Wire1.beginTransmission(0x34);
     Wire1.write(Addr);
     Wire1.write(Data);
     Wire1.endTransmission();
 }
 
-uint8_t Read8bit(uint8_t Addr) {
+uint8_t Read8bit(uint8_t Addr)
+{
     Wire1.beginTransmission(0x34);
     Wire1.write(Addr);
     Wire1.endTransmission();
@@ -23,7 +27,8 @@ uint8_t Read8bit(uint8_t Addr) {
     return Wire1.read();
 }
 
-uint16_t Read12Bit(uint8_t Addr) {
+uint16_t Read12Bit(uint8_t Addr)
+{
     uint16_t Data = 0;
     uint8_t buf[2];
     ReadBuff(Addr, 2, buf);
@@ -31,7 +36,8 @@ uint16_t Read12Bit(uint8_t Addr) {
     return Data;
 }
 
-uint16_t Read13Bit(uint8_t Addr) {
+uint16_t Read13Bit(uint8_t Addr)
+{
     uint16_t Data = 0;
     uint8_t buf[2];
     ReadBuff(Addr, 2, buf);
@@ -39,7 +45,8 @@ uint16_t Read13Bit(uint8_t Addr) {
     return Data;
 }
 
-uint16_t Read16bit(uint8_t Addr) {
+uint16_t Read16bit(uint8_t Addr)
+{
     uint16_t ReData = 0;
     Wire1.beginTransmission(0x34);
     Wire1.write(Addr);
@@ -52,7 +59,8 @@ uint16_t Read16bit(uint8_t Addr) {
     return ReData;
 }
 
-uint32_t Read24bit(uint8_t Addr) {
+uint32_t Read24bit(uint8_t Addr)
+{
     uint32_t ReData = 0;
     Wire1.beginTransmission(0x34);
     Wire1.write(Addr);
@@ -65,7 +73,8 @@ uint32_t Read24bit(uint8_t Addr) {
     return ReData;
 }
 
-uint32_t Read32bit(uint8_t Addr) {
+uint32_t Read32bit(uint8_t Addr)
+{
     uint32_t ReData = 0;
     Wire1.beginTransmission(0x34);
     Wire1.write(Addr);
@@ -78,7 +87,8 @@ uint32_t Read32bit(uint8_t Addr) {
     return ReData;
 }
 
-void ReadBuff(uint8_t Addr, uint8_t Size, uint8_t* Buff) {
+void ReadBuff(uint8_t Addr, uint8_t Size, uint8_t* Buff)
+{
     Wire1.beginTransmission(0x34);
     Wire1.write(Addr);
     Wire1.endTransmission();
@@ -88,23 +98,26 @@ void ReadBuff(uint8_t Addr, uint8_t Size, uint8_t* Buff) {
     }
 }
 
-bool writeRegister8Array(const std::uint8_t* reg_data_array,
-                         std::size_t length) {
+bool writeRegister8Array(const std::uint8_t* reg_data_array, std::size_t length)
+{
     for (size_t i = 0; i < length; i += 2) {
         Write1Byte(reg_data_array[i], reg_data_array[i + 1]);
     }
     return true;
 }
 
-AXP::AXP() {
+AXP::AXP()
+{
 }
 
 // Will be deprecated
-void AXP::begin(mbus_mode_t mode) {
+void AXP::begin(mbus_mode_t mode)
+{
     begin();
 }
 
-void AXP::begin() {
+void AXP::begin()
+{
     Wire1.begin(21, 22);
     Wire1.setClock(100000);
     uint8_t val = Read8bit(0x03);
@@ -129,7 +142,8 @@ void AXP::begin() {
     }
 }
 
-void AXP::ScreenBreath(int brightness) {
+void AXP::ScreenBreath(int brightness)
+{
     if (_pmic == pmic_axp192) {
         axp192.ScreenBreath(brightness);
     }
@@ -143,7 +157,8 @@ void AXP::ScreenBreath(int brightness) {
     }
 }
 
-bool AXP::GetBatState() {
+bool AXP::GetBatState()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetBatState();
     }
@@ -160,45 +175,52 @@ bool AXP::GetBatState() {
 // get discharge data: uint32_t GetCoulombdischargeData(void);
 // get coulomb val affter calculation: float GetCoulombData(void);
 //------------------------------------------
-void AXP::EnableCoulombcounter(void) {
+void AXP::EnableCoulombcounter(void)
+{
     if (_pmic == pmic_axp192) {
         axp192.EnableCoulombcounter();
     }
 }
 
-void AXP::DisableCoulombcounter(void) {
+void AXP::DisableCoulombcounter(void)
+{
     if (_pmic == pmic_axp192) {
         axp192.DisableCoulombcounter();
     }
 }
 
-void AXP::StopCoulombcounter(void) {
+void AXP::StopCoulombcounter(void)
+{
     if (_pmic == pmic_axp192) {
         axp192.StopCoulombcounter();
     }
 }
 
-void AXP::ClearCoulombcounter(void) {
+void AXP::ClearCoulombcounter(void)
+{
     if (_pmic == pmic_axp192) {
         axp192.ClearCoulombcounter();
     }
 }
 
-uint32_t AXP::GetCoulombchargeData(void) {
+uint32_t AXP::GetCoulombchargeData(void)
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetCoulombchargeData();
     }
     return 0;
 }
 
-uint32_t AXP::GetCoulombdischargeData(void) {
+uint32_t AXP::GetCoulombdischargeData(void)
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetCoulombdischargeData();
     }
     return 0;
 }
 
-float AXP::GetCoulombData(void) {
+float AXP::GetCoulombData(void)
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetCoulombData();
     }
@@ -206,7 +228,8 @@ float AXP::GetCoulombData(void) {
 }
 
 // Cut all power, except for LDO1 (RTC)
-void AXP::PowerOff(void) {
+void AXP::PowerOff(void)
+{
     if (_pmic == pmic_axp192) {
         axp192.PowerOff();
     }
@@ -216,7 +239,8 @@ void AXP::PowerOff(void) {
     }
 }
 
-void AXP::SetAdcState(bool state) {
+void AXP::SetAdcState(bool state)
+{
     // Enable / Disable all ADCs
 
     if (_pmic == pmic_axp192) {
@@ -224,7 +248,8 @@ void AXP::SetAdcState(bool state) {
     }
 }
 
-void AXP::PrepareToSleep(void) {
+void AXP::PrepareToSleep(void)
+{
     if (_pmic == pmic_axp192) {
         axp192.PrepareToSleep();
     }
@@ -235,26 +260,28 @@ void AXP::PrepareToSleep(void) {
 }
 
 // Get current battery level
-float AXP::GetBatteryLevel(void) {
+float AXP::GetBatteryLevel(void)
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetBatteryLevel();
     }
     if (_pmic == pmic_axp2101) {
-        const float batVoltage = ina3221.getVoltage(INA3221_CH1);
-        const float batPercentage =
-            (batVoltage < 3.248088) ? (0) : (batVoltage - 3.120712) * 100;
+        const float batVoltage    = ina3221.getVoltage(INA3221_CH1);
+        const float batPercentage = (batVoltage < 3.248088) ? (0) : (batVoltage - 3.120712) * 100;
         return (batPercentage <= 100) ? batPercentage : 100;
     }
     return -1;
 }
 
-void AXP::RestoreFromLightSleep(void) {
+void AXP::RestoreFromLightSleep(void)
+{
     if (_pmic == pmic_axp192) {
         axp192.RestoreFromLightSleep();
     }
 }
 
-uint8_t AXP::GetWarningLeve(void) {
+uint8_t AXP::GetWarningLeve(void)
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetWarningLeve();
     }
@@ -262,26 +289,30 @@ uint8_t AXP::GetWarningLeve(void) {
 }
 
 // -- sleep
-void AXP::DeepSleep(uint64_t time_in_us) {
+void AXP::DeepSleep(uint64_t time_in_us)
+{
     if (_pmic == pmic_axp192) {
         return axp192.DeepSleep(time_in_us);
     }
 }
 
-void AXP::LightSleep(uint64_t time_in_us) {
+void AXP::LightSleep(uint64_t time_in_us)
+{
     if (_pmic == pmic_axp192) {
         return axp192.LightSleep(time_in_us);
     }
 }
 
-uint8_t AXP::GetWarningLevel(void) {
+uint8_t AXP::GetWarningLevel(void)
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetWarningLevel();
     }
     return -1;
 }
 
-float AXP::GetBatVoltage() {
+float AXP::GetBatVoltage()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetBatVoltage();
     }
@@ -291,7 +322,8 @@ float AXP::GetBatVoltage() {
     return -1;
 }
 
-float AXP::GetBatCurrent() {
+float AXP::GetBatCurrent()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetBatCurrent();
     }
@@ -301,7 +333,8 @@ float AXP::GetBatCurrent() {
     return -1;
 }
 
-float AXP::GetVinVoltage() {
+float AXP::GetVinVoltage()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetVinVoltage();
     }
@@ -311,7 +344,8 @@ float AXP::GetVinVoltage() {
     return -1;
 }
 
-float AXP::GetVinCurrent() {
+float AXP::GetVinCurrent()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetVinCurrent();
     }
@@ -321,7 +355,8 @@ float AXP::GetVinCurrent() {
     return -1;
 }
 
-float AXP::GetVBusVoltage() {
+float AXP::GetVBusVoltage()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetVBusVoltage();
     }
@@ -331,7 +366,8 @@ float AXP::GetVBusVoltage() {
     return -1;
 }
 
-float AXP::GetVBusCurrent() {
+float AXP::GetVBusCurrent()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetVBusCurrent();
     }
@@ -341,72 +377,83 @@ float AXP::GetVBusCurrent() {
     return -1;
 }
 
-float AXP::GetTempInAXP192() {
+float AXP::GetTempInAXP192()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetTempInAXP192();
     }
     return -1;
 }
 
-float AXP::GetBatPower() {
+float AXP::GetBatPower()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetBatPower();
     }
     return -1;
 }
 
-float AXP::GetBatChargeCurrent() {
+float AXP::GetBatChargeCurrent()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetBatChargeCurrent();
     }
     return -1;
 }
-float AXP::GetAPSVoltage() {
+float AXP::GetAPSVoltage()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetAPSVoltage();
     }
     return -1;
 }
 
-float AXP::GetBatCoulombInput() {
+float AXP::GetBatCoulombInput()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetBatCoulombInput();
     }
     return -1;
 }
 
-float AXP::GetBatCoulombOut() {
+float AXP::GetBatCoulombOut()
+{
     if (_pmic == pmic_axp192) {
         return axp192.GetBatCoulombOut();
     }
     return -1;
 }
 
-void AXP::SetCoulombClear() {
+void AXP::SetCoulombClear()
+{
     if (_pmic == pmic_axp192) {
         axp192.SetCoulombClear();
     }
 }
 
-void AXP::SetLDO2(bool State) {
+void AXP::SetLDO2(bool State)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetLDO2(State);
     }
 }
 
-void AXP::SetDCDC3(bool State) {
+void AXP::SetDCDC3(bool State)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetDCDC3(State);
     }
 }
 
-uint8_t AXP::AXPInState() {
+uint8_t AXP::AXPInState()
+{
     if (_pmic == pmic_axp192) {
         return axp192.AXPInState();
     }
     return -1;
 }
-bool AXP::isACIN() {
+bool AXP::isACIN()
+{
     if (_pmic == pmic_axp192) {
         return axp192.isACIN();
     }
@@ -416,13 +463,15 @@ bool AXP::isACIN() {
 
     return true;
 }
-bool AXP::isCharging() {
+bool AXP::isCharging()
+{
     if (_pmic == pmic_axp192) {
         return axp192.isCharging();
     }
     return true;
 }
-bool AXP::isVBUS() {
+bool AXP::isVBUS()
+{
     if (_pmic == pmic_axp192) {
         return axp192.isVBUS();
     }
@@ -432,22 +481,24 @@ bool AXP::isVBUS() {
     return true;
 }
 
-uint8_t calcVoltageData(uint16_t value, uint16_t maxv, uint16_t minv,
-                        uint16_t step) {
+uint8_t calcVoltageData(uint16_t value, uint16_t maxv, uint16_t minv, uint16_t step)
+{
     uint8_t data = 0;
     if (value > maxv) value = maxv;
     if (value > minv) data = (value - minv) / step;
     return data;
 }
 
-void AXP::SetLDOVoltage(uint8_t number, uint16_t voltage) {
+void AXP::SetLDOVoltage(uint8_t number, uint16_t voltage)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetLDOVoltage(number, voltage);
     }
 }
 
 /// @param number 0=DCDC1 / 1=DCDC2 / 2=DCDC3
-void AXP::SetDCVoltage(uint8_t number, uint16_t voltage) {
+void AXP::SetDCVoltage(uint8_t number, uint16_t voltage)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetDCVoltage(number, voltage);
     }
@@ -455,7 +506,8 @@ void AXP::SetDCVoltage(uint8_t number, uint16_t voltage) {
     }
 }
 
-void AXP::SetESPVoltage(uint16_t voltage) {
+void AXP::SetESPVoltage(uint16_t voltage)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetESPVoltage(voltage);
     }
@@ -464,7 +516,8 @@ void AXP::SetESPVoltage(uint16_t voltage) {
     }
 }
 
-void AXP::SetLcdVoltage(uint16_t voltage) {
+void AXP::SetLcdVoltage(uint16_t voltage)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetLcdVoltage(voltage);
     }
@@ -473,7 +526,8 @@ void AXP::SetLcdVoltage(uint16_t voltage) {
     }
 }
 
-void AXP::SetLDOEnable(uint8_t number, bool state) {
+void AXP::SetLDOEnable(uint8_t number, bool state)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetLDOEnable(number, state);
     }
@@ -482,7 +536,8 @@ void AXP::SetLDOEnable(uint8_t number, bool state) {
     }
 }
 
-void AXP::SetLCDRSet(bool state) {
+void AXP::SetLCDRSet(bool state)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetLCDRSet(state);
     }
@@ -494,7 +549,8 @@ void AXP::SetLCDRSet(bool state) {
 // Select source for BUS_5V
 // 0 : use internal boost
 // 1 : powered externally
-void AXP::SetBusPowerMode(uint8_t state) {
+void AXP::SetBusPowerMode(uint8_t state)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetBusPowerMode(state);
     }
@@ -502,7 +558,8 @@ void AXP::SetBusPowerMode(uint8_t state) {
     }
 }
 
-void AXP::SetLed(uint8_t state) {
+void AXP::SetLed(uint8_t state)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetLed(state);
     }
@@ -512,7 +569,8 @@ void AXP::SetLed(uint8_t state) {
 }
 
 // set led state(GPIO high active,set 1 to enable amplifier)
-void AXP::SetSpkEnable(uint8_t state) {
+void AXP::SetSpkEnable(uint8_t state)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetSpkEnable(state);
     }
@@ -521,7 +579,8 @@ void AXP::SetSpkEnable(uint8_t state) {
     }
 }
 
-void AXP::SetCHGCurrent(uint8_t state) {
+void AXP::SetCHGCurrent(uint8_t state)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetCHGCurrent(state);
     }
@@ -530,7 +589,8 @@ void AXP::SetCHGCurrent(uint8_t state) {
     }
 }
 
-void AXP::SetPeripherialsPower(uint8_t state) {
+void AXP::SetPeripherialsPower(uint8_t state)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetPeripherialsPower(state);
     }
@@ -539,7 +599,8 @@ void AXP::SetPeripherialsPower(uint8_t state) {
     }
 }
 
-void AXP::SetVibration(uint8_t state) {
+void AXP::SetVibration(uint8_t state)
+{
     if (_pmic == pmic_axp192) {
         axp192.SetLDOEnable(3, state);
     }
@@ -549,5 +610,15 @@ void AXP::SetVibration(uint8_t state) {
         } else {
             axp2101.set_vib_motor_voltage(0);
         }
+    }
+}
+
+void AXP::SetBatteryCharge(bool enable)
+{
+    if (_pmic == pmic_axp192) {
+        axp192.SetBatteryCharge(enable);
+    }
+    if (_pmic == pmic_axp2101) {
+        axp2101.set_bat_charge(enable);
     }
 }

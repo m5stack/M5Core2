@@ -31,14 +31,12 @@ uint16_t Read16bit(uint8_t Addr);
 uint32_t Read24bit(uint8_t Addr);
 uint32_t Read32bit(uint8_t Addr);
 void ReadBuff(uint8_t Addr, uint8_t Size, uint8_t *Buff);
-bool writeRegister8Array(const std::uint8_t *reg_data_array,
-                         std::size_t length);
+bool writeRegister8Array(const std::uint8_t *reg_data_array, std::size_t length);
 
-uint8_t calcVoltageData(uint16_t value, uint16_t maxv, uint16_t minv,
-                        uint16_t step);
+uint8_t calcVoltageData(uint16_t value, uint16_t maxv, uint16_t minv, uint16_t step);
 
 class AXP {
-   public:
+public:
     enum pmic_t { pmic_unknown = 0, pmic_axp192, pmic_axp2101 };
 
     AXP192 axp192;
@@ -80,7 +78,8 @@ class AXP {
     float GetCoulombData(void);
     float GetBatteryLevel(void);
     void PowerOff(void);
-    void SetSleep(void) {
+    void SetSleep(void)
+    {
         PowerOff();
     };
 
@@ -129,11 +128,15 @@ class AXP {
     void SetPeripherialsPower(uint8_t state);
     void SetVibration(uint8_t state);
 
-    pmic_t getPmicType() const {
+    /// set battery charge enable.
+    /// @param enable true=enable / false=disable
+    void SetBatteryCharge(bool enable);
+    pmic_t getPmicType() const
+    {
         return _pmic;
     }
 
-   private:
+private:
     pmic_t _pmic;
 };
 

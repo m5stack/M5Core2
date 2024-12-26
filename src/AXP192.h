@@ -7,7 +7,7 @@
 #define AXP192_ADDR 0X34
 
 class AXP192 {
-   public:
+public:
     enum CHGCurrent {
         kCHG_100mA = 0,
         kCHG_190mA,
@@ -85,6 +85,10 @@ class AXP192 {
     void SetSpkEnable(uint8_t state);
     void SetCHGCurrent(uint8_t state);
     void SetPeripherialsPower(uint8_t state);
+
+    /// set battery charge enable.
+    /// @param enable true=enable / false=disable
+    void SetBatteryCharge(bool enable);
 };
 
 #endif
