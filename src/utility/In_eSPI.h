@@ -20,6 +20,8 @@
 // #define ESP32 //Just used to test ESP32 options
 #include "hal/gpio_ll.h"
 
+#include "hal/gpio_ll.h"
+
 // Include header file that defines the fonts loaded, the TFT drivers
 // available and the pins to be used
 #include "In_eSPI_Setup.h"
